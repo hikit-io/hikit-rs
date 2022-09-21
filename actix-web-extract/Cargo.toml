@@ -8,4 +8,4 @@ repository = "https://github.com/hikit-io/hikit-rs"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-actix-web = "4.0.0"
+actix-web = "4.0"
