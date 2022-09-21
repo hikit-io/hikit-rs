@@ -1,0 +1,18 @@
+[package]
+name = "jira2"
+version = "0.0.3"
+edition = "2021"
+description = "Jira rest api v2"
+license = "MIT"
+repository = "https://github.com/hikit-io/hikit-rs"
+
+[dependencies]
+serde = "^1.0"
+serde_derive = "^1.0"
+serde_json = "^1.0"
+url = "^2.2"
+[dependencies.reqwest]
+version = "^0.11"
+features = ["json", "multipart"]
+
+[dev-dependencies]
