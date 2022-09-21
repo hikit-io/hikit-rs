@@ -550,7 +550,22 @@ dependencies = [
 ]
 
 [[package]]
-name = "hk-apns"
+name = "hi-apns"
+version = "0.1.0"
+
+[[package]]
+name = "hi-jira2"
+version = "0.0.1"
+dependencies = [
+ "reqwest",
+ "serde",
+ "serde_derive",
+ "serde_json",
+ "url",
+]
+
+[[package]]
+name = "hi-push"
 version = "0.1.0"
 
 [[package]]
@@ -664,17 +679,6 @@ name = "itoa"
 version = "1.0.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6c8af84674fe1f223a982c933a0ee1086ac4d4052aa0fb8060c12c6ad838e754"
-
-[[package]]
-name = "jira2"
-version = "0.0.3"
-dependencies = [
- "reqwest",
- "serde",
- "serde_derive",
- "serde_json",
- "url",
-]
 
 [[package]]
 name = "jobserver"

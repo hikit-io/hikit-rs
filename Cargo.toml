@@ -1,7 +1,9 @@
 [workspace]
 members = [
-    "jirav2",
     "struct-fields",
     "actix-web-extract",
-    "apns",
+
+    "hi-jira2",
+    "hi-apns",
+    "hi-push"
 ]

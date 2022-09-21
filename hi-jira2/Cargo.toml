@@ -1,6 +1,6 @@
 [package]
-name = "jira2"
-version = "0.0.3"
+name = "hi-jira2"
+version = "0.0.1"
 edition = "2021"
 description = "Jira rest api v2"
 license = "MIT"
