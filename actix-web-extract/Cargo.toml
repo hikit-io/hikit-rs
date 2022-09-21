@@ -1,6 +1,6 @@
 [package]
 name = "actix-web-extract"
-version = "0.0.1-beta3"
+version = "0.0.1"
 edition = "2021"
 description = "common"
 license = "MIT"
@@ -8,4 +8,4 @@ repository = "https://github.com/hikit-io/hikit-rs"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-actix-web = "4.0.0-rc.3"
+actix-web = "4.0.0"
