@@ -3,39 +3,43 @@ macro_rules! struct_fields {
     (
         $(#[$meta:meta])*
         $vis:vis struct $name:ident {
-            $($(#[$vmeta:meta])* $vname:ident : $tname:ty,)*
+            $($(#[$vmeta:meta])* $fieldVis:vis $vname:ident : $tname:ty,)*
         }
     ) => {
         $(#[$meta])*
         $vis struct $name {
-            $($(#[$vmeta])* $vname:$tname,)+
+            $($(#[$vmeta])* $fieldVis $vname:$tname,)+
         }
-        paste::paste!{
+        affix::paste!{
             #[derive(Debug)]
             $vis struct [<$name Fields>] {
                 $(pub $vname:&'static str,)+
             }
+
+            impl $name{
+               $vis fn fields() -> &'static [<$name Fields>] {
+                    &[<$name Fields>] {
+                        $($vname:stringify!([<$vname:camel>]),)+
+                    }
+                }
+            }
         }
-        // impl $name {
-        //     $vis fn fields() -> [<$name Fields>]{
-        //         [<$name Fields>]{
-        //             $(pub $vname:$vname,)+
-        //         }
-        //     }
-        // }
     }
 }
 
 #[cfg(test)]
+#[allow(unused)]
 mod tests {
     struct_fields! {
         #[derive(Clone)]
         pub struct TestStruct{
              _id:String,
+            name:String,
         }
     }
     #[test]
     fn it_works() {
-        // assert_eq!(TestStruct::fields()._id, "_id");
+        assert_eq!(TestStruct::fields()._id, "id");
+        assert_eq!(TestStruct::fields().name, "name");
     }
 }
