@@ -1,0 +1,24 @@
+[package]
+name = "hi-hyper-multipart"
+version = "0.0.2"
+edition = "2021"
+description = "Multipart builder for hyper."
+license = "MIT"
+repository = "https://github.com/hikit-io/hikit-rs"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+bytes = "1.2.1"
+mime_guess = "2.0.4"
+http = "0.2.8"
+hyper = { version = "0.14.20", features = ["stream", "tcp"] }
+percent-encoding = "2.2.0"
+futures-util = "0.3.24"
+futures-core = "0.3.24"
+uuid = { version = "1.2.1", features = ["v4"] }
+
+[dev-dependencies]
+tokio = { version = "1.21.2", features = ["full"] }
+mime = "0.3.16"
+reqwest = "0.11.12"
