@@ -3,8 +3,8 @@ members = [
     "struct-fields",
     "actix-web-extract",
     "agora-rtm",
+    "hyper-multipart",
 
     "hi-jira2",
-    "hi-apns",
     "hi-push",
 ]
