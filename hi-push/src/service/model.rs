@@ -5,7 +5,7 @@ use serde_repr::{Deserialize_repr, Serialize_repr};
 
 #[derive(Debug, Serialize_repr, Deserialize_repr)]
 #[repr(i32)]
-pub enum ChannleType {
+pub enum ChannelType {
     #[cfg(feature = "xiaomi")]
     Mi = 1,
     #[cfg(feature = "huawei")]
@@ -50,10 +50,10 @@ pub struct Channel {
     pub ch_id: String,
     pub app_id: String,
     //
-    pub _type: ChannleType,
+    pub _type: ChannelType,
 
     pub client_id: String,
-    pub cliend_secret: String,
+    pub client_secret: String,
     //
     pub project_id: String,
     // apple
@@ -62,8 +62,8 @@ pub struct Channel {
     pub agentid: i64,
 
     pub key_type: String,
-    pub priviate_key_id: String,
-    pub priviate_key: String,
+    pub private_key_id: String,
+    pub private_key: String,
     pub client_email: String,
     pub auth_uri: String,
     pub token_uri: String,

@@ -55,23 +55,23 @@ impl<'a> App<'a> {
     pub async fn new_client<'b>(conf: &'b model::Channel) -> anyhow::Result<super::Client<'b>> {
         Ok(match conf._type {
             #[cfg(feature = "xiaomi")]
-            model::ChannleType::Mi => super::Client::Mi(xiaomi::Client::new(&xiaomi::Config {
+            model::ChannelType::Mi => super::Client::Mi(xiaomi::Client::new(&xiaomi::Config {
                 client_id: &conf.client_id,
-                client_secret: &conf.cliend_secret,
+                client_secret: &conf.client_secret,
                 project_id: &conf.project_id,
             })?),
             #[cfg(feature = "huawei")]
-            model::ChannleType::Huawei => super::Client::Huawei(
-                huawei::Client::new(&conf.client_id, &conf.cliend_secret).await?,
+            model::ChannelType::Huawei => super::Client::Huawei(
+                huawei::Client::new(&conf.client_id, &conf.client_secret).await?,
             ),
             #[cfg(feature = "fcm")]
-            model::ChannleType::Fcm => super::Client::Fcm(
+            model::ChannelType::Fcm => super::Client::Fcm(
                 fcm::Client::new(
                     fcm::Config {
                         key_type: Some(conf.key_type.clone()),
                         project_id: Some(conf.project_id.to_string()),
-                        private_key_id: Some(conf.priviate_key_id.clone()),
-                        private_key: (conf.priviate_key.clone()),
+                        private_key_id: Some(conf.private_key_id.clone()),
+                        private_key: (conf.private_key.clone()),
                         client_email: (conf.client_email.clone()),
                         client_id: Some(conf.client_id.clone()),
                         auth_uri: Some(conf.auth_uri.clone()),
@@ -83,12 +83,12 @@ impl<'a> App<'a> {
                     .await?,
             ),
             #[cfg(feature = "wecom")]
-            model::ChannleType::Wecom => super::Client::Wecom(
-                wecom::Client::new(&conf.client_id, &conf.cliend_secret, conf.agentid).await?,
+            model::ChannelType::Wecom => super::Client::Wecom(
+                wecom::Client::new(&conf.client_id, &conf.client_secret, conf.agentid).await?,
             ),
             #[cfg(feature = "apns")]
-            model::ChannleType::Apns => {
-                super::Client::Apns(apns::Client::new(&conf.certs, &conf.cliend_secret)?)
+            model::ChannelType::Apns => {
+                super::Client::Apns(apns::Client::new(&conf.certs, &conf.client_secret)?)
             }
         })
     }
