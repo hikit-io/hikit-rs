@@ -72,7 +72,7 @@ impl Client {
             custom: notification.custom.as_ref(),
         };
 
-        let mut resp = self
+        let resp = self
             .cli
             .post(&url)
             .headers(headers)

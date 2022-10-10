@@ -1,4 +1,5 @@
-use std::{default, ops::Add, sync::Arc, time::Duration};
+use std::{sync::Arc, time::Duration};
+use http::StatusCode;
 
 use serde::{Deserialize, Serialize};
 use serde_repr::Serialize_repr;
@@ -12,6 +13,7 @@ use oauth2::{
 };
 use oauth2::{AuthUrl, ClientId, ClientSecret, TokenUrl};
 use tokio::sync::RwLock;
+use crate::InnerError;
 
 type Token = StandardTokenResponse<EmptyExtraTokenFields, BasicTokenType>;
 
@@ -34,7 +36,7 @@ pub struct Client<'a> {
 
 #[derive(Default, Debug, Serialize, Clone)]
 pub struct Message<'a> {
-    pub validate_only: Option<bool>,
+    pub validate_only: bool,
     #[serde(borrow)]
     pub message: InnerMessage<'a>,
 }
@@ -46,8 +48,11 @@ pub struct InnerMessage<'a> {
        消息体中有message.data，没有message.notification和message.android.notification，消息类型为透传消息。
        如果用户发送的是网页应用的透传消息，那么接收消息中字段orignData为透传消息内容。
     */
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub data: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub notification: Option<Notification<'a>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub android: Option<AndroidConfig<'a>>,
     #[serde(borrow)]
     pub token: Vec<&'a str>, // max: 1000 除开token，4096Bytes
@@ -88,7 +93,7 @@ pub struct AndroidConfig<'a> {
        2：生产态
        默认值是2。
     */
-    pub fast_app_target: i64,
+    pub fast_app_target: Option<i64>,
     pub data: Option<&'a str>,
     pub notification: Option<AndroidNotification<'a>>,
 }
@@ -151,10 +156,12 @@ pub enum ClickActionType {
     Main = 3,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, PartialEq, Clone)]
 pub enum Code {
     #[serde(rename = "80000000")]
     Success,
+    #[serde(rename = "80000001")]
+    Common,
     #[serde(rename = "80100000")]
     PartFailedErr,
     #[serde(rename = "80100001")]
@@ -162,15 +169,16 @@ pub enum Code {
     #[serde(rename = "80100002")]
     TokenMustOne,
     #[serde(rename = "80100003")]
-    MsgError,
+    MsgBodyError,
     #[serde(rename = "80100004")]
     TTLErr,
     #[serde(rename = "80200001")]
-    TokenFailedErr,
+    AuthFailedErr,
     #[serde(rename = "80200003")]
-    TokenTimeoutErr,
+    AuthTokenTimeoutErr,
     #[serde(rename = "80300007")]
     TokenInvalid,
+    Other(String),
 }
 
 #[derive(Default, Debug, Serialize, Clone)]
@@ -228,15 +236,51 @@ pub struct Color {
 }
 
 #[derive(Debug, Deserialize)]
-pub struct Response {
+#[serde(rename_all = "camelCase")]
+pub struct SendResponse {
     pub msg: String,
     pub code: Code,
     pub request_id: String,
 }
 
+#[derive(Debug)]
+pub struct Response {
+    pub msg: String,
+    pub code: Code,
+    pub request_id: String,
+    pub success: i64,
+    pub failure: i64,
+    pub illegal_tokens: Vec<String>,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct InvalidMsg {
+    pub success: i64,
+    pub failure: i64,
+    pub illegal_tokens: Vec<String>,
+}
+
+impl SendResponse {
+    pub fn get_invalid_tokens(&self) -> Option<InvalidMsg> {
+        serde_json::from_str::<InvalidMsg>(self.msg.as_str())
+            .ok()
+    }
+
+    pub fn is_part_failed_err(&self) -> bool {
+        self.code == Code::PartFailedErr
+    }
+
+    pub fn take_invalid_tokens(&self) -> (Option<InvalidMsg>, bool) {
+        (
+            serde_json::from_str::<InvalidMsg>(self.msg.as_str()).ok(),
+            self.is_part_failed_err()
+        )
+    }
+}
+
 impl<'a> Client<'a> {
     const TOKEN_URL: &'static str = "https://oauth-login.cloud.huawei.com/oauth2/v3/token";
-    const PUSH_URL: &'static str = "https://oauth-login.cloud.huawei.com/oauth2/v3/token";
+    const PUSH_URL: &'static str = "https://push-api.cloud.huawei.com/v2/{}/messages:send";
 
     pub async fn new(
         client_id: &'a str,
@@ -307,6 +351,11 @@ impl<'a> Client<'a> {
         }
         true
     }
+
+    #[inline]
+    fn build_push_url(&self) -> String {
+        format!("https://push-api.cloud.huawei.com/v1/{}/messages:send", self.client_id)
+    }
 }
 
 #[async_trait::async_trait]
@@ -320,44 +369,104 @@ impl<'b> super::Pusher<'b, Message<'b>, Response> for Client<'_> {
             Some(token) => token.clone(),
             None => match self.request_token().await {
                 Ok(token) => token,
-                //todo handle _e
-                Err(_e) => return Err(super::RetryError::Auth("".to_string()).into()),
+                Err(e) => return Err(super::RetryError::Auth(e.to_string()).into()),
             },
         };
 
-        if self.valid_token(&token) {
+        if !self.valid_token(&token) {
             return Err(super::RetryError::Auth("token expired or invalid".to_string()).into());
         }
 
         let resp = self
             .cli
-            .post(Self::PUSH_URL)
+            .post(self.build_push_url())
             .bearer_auth(token.access_token().secret())
             .json(msg)
             .send()
-            .await;
+            .await?;
 
-        match resp {
-            Ok(resp) => match resp.error_for_status() {
-                Ok(mut resp) => Ok(resp.json::<Response>().await.unwrap()),
-                Err(e) => Err(super::InnerError::Http(e.to_string()).into()),
-            },
-            Err(e) => Err(super::InnerError::Http(e.to_string()).into()),
+        let status = resp.status();
+
+        match status {
+            StatusCode::OK | StatusCode::BAD_REQUEST => {
+                let resp = resp.json::<SendResponse>().await?;
+                let invalid = resp.get_invalid_tokens();
+
+                let mut res = Response {
+                    msg: resp.msg.clone(),
+                    code: resp.code.clone(),
+                    request_id: resp.request_id.clone(),
+                    success: 0,
+                    failure: 0,
+                    illegal_tokens: vec![],
+                };
+                match resp.code {
+                    Code::Success => {}
+                    Code::PartFailedErr => {
+                        res.success = invalid.as_ref().map_or(msg.message.token.len() as i64, |e| e.success);
+                        res.failure = invalid.as_ref().map_or(0, |e| e.failure);
+                        res.illegal_tokens = invalid.map_or(Default::default(), |e| e.illegal_tokens);
+                    }
+                    Code::ParameterError
+                    | Code::TokenMustOne
+                    | Code::MsgBodyError
+                    | Code::TTLErr => {
+                        return Err(super::InnerError::InvalidParams(resp.msg).into());
+                    }
+                    Code::AuthFailedErr | Code::AuthTokenTimeoutErr => {
+                        return Err(super::RetryError::Auth(resp.msg).into());
+                    }
+                    Code::TokenInvalid => {
+                        res.failure = msg.message.token.len() as i64;
+                        res.illegal_tokens = msg.message.token.iter().map(|e| e.to_string()).collect();
+                    }
+                    Code::Other(_) | Code::Common => {
+                        return Err(super::InnerError::Unknown(format!("{:?}", resp)).into());
+                    }
+                }
+                Ok(res)
+            }
+            _ => match resp.error_for_status() {
+                Ok(_) => unreachable!(""),
+                Err(e) => Err(e)?
+            }
         }
     }
 }
 
 #[cfg(test)]
 mod tests {
+    use crate::Pusher;
+
     #[tokio::test]
     async fn test_push() {
         use super::*;
 
-        let _cli = Client::new(
-            "101383969",
-            "96ae46309c1a891bec33ae073b8fec7c1b90cdaa6b1c575150452497706b2d4f",
+        let client_id = std::env::var("HW_CLIENT_ID").unwrap();
+        let client_secret = std::env::var("HW_CLIENT_SECRET").unwrap();
+
+        let hw = Client::new(
+            &client_id,
+            &client_secret,
         )
             .await
             .unwrap();
+        let msg = Message {
+            validate_only: false,
+            message: InnerMessage {
+                data: Some("hello"),
+                notification: None,
+                android: Some(AndroidConfig {
+                    ..Default::default()
+                }),
+                token: vec![
+                    "IQAAAACy0kYwAADWsJ-W5yOcL9booZrr1XdycVGvPWwWVrBG3AR838oq8gHM26Od6g_cxkQO_U1NbR720haQQ3VapXWyDMZyYj-MrSJeqUoq5k79Lw",
+                    "1IQAAAACy0kYwAADWsJ-W5yOcL9booZrr1XdycVGvPWwWVrBG3AR838oq8gHM26Od6g_cxkQO_U1NbR720haQQ3VapXWyDMZyYj-MrSJeqUoq5k79Lw",
+                ],
+            },
+        };
+        let resp = hw.push(&msg).await;
+
+        println!("{resp:?}");
     }
 }

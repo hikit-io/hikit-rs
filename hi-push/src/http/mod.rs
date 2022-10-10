@@ -9,7 +9,20 @@ pub async fn register_token(
     Json(params): Json<RegisterTokenParams>,
 ) -> Json<Response<RegisterTokenResp>> {
     let res = app
-        .register_token(&params.group, &params.chan, &params.token, params.overside)
+        .register_token(&params.group, &params.chan, &params.token, params._override)
+        .await;
+
+    let resp = ResponseBuilder::default().build().unwrap();
+
+    Json(resp)
+}
+
+pub async fn revoke_token(
+    Extension(app): Extension<Arc<service::App<'_>>>,
+    Json(params): Json<RegisterTokenParams>,
+) -> Json<Response<RegisterTokenResp>> {
+    let res = app
+        .revoke_token(&params.group, &params.chan, &params.token, params._override)
         .await;
 
     let resp = ResponseBuilder::default().build().unwrap();
@@ -44,6 +57,7 @@ pub async fn push_notification(
 pub fn api_router() -> axum::Router {
     axum::Router::new()
         .route("/register", post(register_token))
+        .route("/revoke", post(revoke_token))
         .route("/transparent", post(push_transparent))
         .route("/notification", post(push_notification))
 }
@@ -59,6 +73,6 @@ pub async fn start() -> anyhow::Result<()> {
 mod test {
     #[tokio::test]
     async fn test_main() {
-        super::start().await;
+        super::start().await.expect("start failed");
     }
 }

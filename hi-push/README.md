@@ -14,7 +14,7 @@
 
 ### Layer
 
-platform: fcm, apns, emal, wecom, huawei, xiaomi
+platform: fcm, apns, email, wecom, huawei, xiaomi
 
 lib:
 

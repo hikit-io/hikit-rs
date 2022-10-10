@@ -10,20 +10,18 @@ license = "MIT"
 [dependencies]
 reqwest = { version = "0.11.12", features = ["json", "socks", "multipart", "native-tls", "stream"] }
 tokio = "1.20.1"
+
 tracing = "0.1.36"
 tracing-subscriber = "0.3.15"
+
 serde = "1.0.144"
 serde_repr = "0.1.9"
 serde_json = "1.0.85"
-
-# xiaomi or huawei or fcm
-flatten-json-object = "0.6.1"
 
 openssl = { version = "^0.10", features = ["vendored"] }
 async-trait = "0.1.57"
 derive_builder = "0.11.2"
 governor = "0.5"
-oauth2 = "4.2.3"
 chrono = "0.4.22"
 tokio-retry = "0.3.0"
 
@@ -54,24 +52,32 @@ uuid = { version = "1.1.2", optional = true, features = ["serde"] }
 axum = { version = "0.5.16", optional = true, features = ["http2", "headers", "ws"] }
 # grpc
 tonic = { version = "0.8.0", optional = true }
+# xiaomi or huawei or fcm
+flatten-json-object = { version = "0.6.1", optional = true }
+# huawei
+oauth2 = { version = "4.2.3", optional = true }
 
 [features]
 default = ["fcm", "email", "huawei", "apns", "xiaomi", "wecom", "rtm", "grpc-api", "http-api", "mongo"]
+full = ["fcm", "email", "huawei", "apns", "xiaomi", "wecom", "rtm", "grpc-api", "http-api", "mongo"]
 fcm = [
     "http",
     "yup-oauth2",
     "httpcodec",
     "hi-hyper-multipart",
+    "flatten-json-object",
     "bytecodec",
     "multer",
+    "uuid",
+    "hyper",
 ]
 email = [
     "lettre"
 ]
-huawei = []
+huawei = ["oauth2"]
 apns = ["uuid"]
-xiaomi = []
-wecom = []
+xiaomi = ["flatten-json-object"]
+wecom = ["flatten-json-object"]
 rtm = []
 
 grpc-api = ["tonic"]

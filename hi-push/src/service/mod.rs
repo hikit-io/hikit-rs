@@ -122,20 +122,20 @@ impl<'a> App<'a> {
         };
         // push message by channel
         for (chan, tokens) in token_map {
-            let push_res = self
-                .svcs
-                .retry_batch_push(
-                    &chan,
-                    super::Message {
-                        tokens: &tokens,
-                        body: todo!(),
-                        android: todo!(),
-                        apns: todo!(),
-                        wecom: todo!(),
-                    },
-                )
-                .await?;
-            push_results.results.push(push_res);
+            // let push_res = self
+            //     .svcs
+            //     .retry_batch_push(
+            //         &chan,
+            //         super::Message {
+            //             tokens: &tokens,
+            //             body: todo!(),
+            //             android: todo!(),
+            //             apns: todo!(),
+            //             wecom: todo!(),
+            //         },
+            //     )
+            //     .await?;
+            // push_results.results.push(push_res);
         }
         Ok(())
     }
@@ -145,10 +145,23 @@ impl<'a> App<'a> {
         group: &str,
         ch_id: &str,
         token: &str,
-        overside: Option<bool>,
+        _override: Option<bool>,
     ) -> anyhow::Result<()> {
         match &self.db {
-            Database::Mongo(db) => insert_token(db, ch_id, group, token, overside).await?,
+            Database::Mongo(db) => insert_token(db, ch_id, group, token, _override).await?,
+        };
+        Ok(())
+    }
+
+    pub async fn revoke_token(
+        &self,
+        group: &str,
+        ch_id: &str,
+        token: &str,
+        _override: Option<bool>,
+    ) -> anyhow::Result<()> {
+        match &self.db {
+            Database::Mongo(db) => insert_token(db, ch_id, group, token, _override).await?,
         };
         Ok(())
     }
@@ -156,21 +169,21 @@ impl<'a> App<'a> {
 
 #[cfg(test)]
 mod tests {
-    #[derive(Debug)]
-    struct Context<'a, 'b> {
-        name: &'a str,
-        vars: Vec<&'b str>,
-    }
-
-    #[test]
-    fn test_it() {
-        let mut ctx = Context {
-            name: "",
-            vars: Vec::default(),
-        };
-        {
-            let b = String::from("dd");
-            ctx.vars.push(&b);
-        }
-    }
+    // #[derive(Debug)]
+    // struct Context<'a, 'b> {
+    //     name: &'a str,
+    //     vars: Vec<&'b str>,
+    // }
+    //
+    // #[test]
+    // fn test_it() {
+    //     let mut ctx = Context {
+    //         name: "",
+    //         vars: Vec::default(),
+    //     };
+    //     {
+    //         let b = String::from("dd");
+    //         ctx.vars.push(&b);
+    //     }
+    // }
 }

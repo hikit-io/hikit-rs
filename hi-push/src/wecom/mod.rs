@@ -1,13 +1,11 @@
-use std::{sync::Arc, time::Duration};
+use std::{sync::Arc};
 
 use derive_builder::Builder;
 use serde::{Deserialize, Serialize};
 use serde_repr::Serialize_repr;
 use tokio::sync::RwLock;
 
-pub struct Client<'a> {
-    client_id: &'a str,
-    client_secret: &'a str,
+pub struct Client {
     agentid: i64,
     cli: reqwest::Client,
     token_url: String,
@@ -25,14 +23,14 @@ pub struct Response {
     pub response_code: Option<String>,
 }
 
-impl<'a> Client<'a> {
+impl Client {
     const MAX_TOKEN: i32 = 1000;
 
     pub async fn new(
-        client_id: &'a str,
-        client_secret: &'a str,
+        client_id: &str,
+        client_secret: &str,
         agentid: i64,
-    ) -> Result<Client<'a>, super::Error> {
+    ) -> Result<Client, super::Error> {
         let cli = reqwest::Client::builder()
             .build()
             .map_err(|e| super::InnerError::Http(e.to_string()))?;
@@ -42,9 +40,7 @@ impl<'a> Client<'a> {
             client_id, client_secret
         );
         let client = Client {
-            client_id,
             cli,
-            client_secret,
             agentid,
             token_url,
             token: Default::default(),
@@ -98,7 +94,7 @@ impl<'a> Client<'a> {
 }
 
 #[async_trait::async_trait]
-impl<'b> super::Pusher<'b, Message<'b>, Response> for Client<'_> {
+impl<'b> super::Pusher<'b, Message<'b>, Response> for Client {
     async fn push(&self, msg: &'b Message) -> Result<Response, crate::Error> {
         let token = self.token.clone();
 
@@ -127,7 +123,7 @@ impl<'b> super::Pusher<'b, Message<'b>, Response> for Client<'_> {
 
         match resp {
             Ok(resp) => match resp.error_for_status() {
-                Ok(mut resp) => Ok(resp.json::<Response>().await.unwrap()),
+                Ok(resp) => Ok(resp.json::<Response>().await.unwrap()),
                 Err(e) => Err(super::InnerError::Http(e.to_string()).into()),
             },
             Err(e) => Err(super::InnerError::Http(e.to_string()).into()),
@@ -264,10 +260,16 @@ mod tests {
     #[tokio::test]
     async fn test_client() {
         use super::*;
+
+        let client_id = std::env::var("WECOM_CLIENT_ID").unwrap();
+        let client_secret = std::env::var("WECOM_CLIENT_SECRET").unwrap();
+        let agent_id = std::env::var("WECOM_AGENT_ID").unwrap().parse::<i64>().expect("");
+
+
         let cli = Client::new(
-            "ww1792ac25c99153bd",
-            "u-djCJvXF3_wGXhQeQnRSKBQ89Tr2VMWRFdUMwmr9Ds",
-            1000024,
+            &client_id,
+            &client_secret,
+            agent_id,
         )
             .await
             .unwrap();

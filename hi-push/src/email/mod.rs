@@ -115,19 +115,16 @@ mod tests {
 
     #[tokio::test]
     async fn test_push() {
-        let cli = super::Client::new("avc@agora.io", "ubNR!Y_2@8", "smtp.office365.com").await;
+        let client_id = std::env::var("EMAIL_CLIENT_ID").unwrap();
+        let client_secret = std::env::var("EMAIL_CLIENT_SECRET").unwrap();
+
+        let cli = super::Client::new(&client_id, &client_secret, "smtp.office365.com").await;
         let msg = super::Message {
             title: "Hello Email",
             body: "This is test.",
-            to: vec!["nieaowei@agora.io", "1234"],
+            to: vec!["public@hikit.io", "1234"],
         };
         let res = cli.retry_push(&msg).await;
         println!("{:?}", res);
-        assert_eq!(
-            Ok(super::Response {
-                results: Default::default()
-            }),
-            res
-        );
     }
 }

@@ -127,7 +127,15 @@ pub struct RegisterTokenParams {
     pub group: String,
     pub token: String,
     pub chan: String,
-    pub overside: Option<bool>,
+    #[serde(rename="override")]
+    pub _override: Option<bool>,
+}
+
+#[derive(Deserialize)]
+pub struct RevokeTokenParams {
+    pub group: String,
+    pub token: String,
+    pub chan: String,
 }
 
 #[derive(Deserialize)]
@@ -168,7 +176,7 @@ pub struct PushNotificationParams {
 
 #[derive(Deserialize)]
 pub struct PlatformParams {
-    pub andorid: String,
+    pub android: String,
     pub apns: String,
     pub wecom: String,
     pub rtm: String,

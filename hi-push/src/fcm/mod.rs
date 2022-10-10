@@ -13,8 +13,6 @@ use http::Uri;
 use httpcodec::{BodyDecoder, BodyEncoder, HeaderField, HttpVersion, Method, RequestEncoder, RequestTarget, ResponseDecoder};
 use yup_oauth2 as oauth2;
 use hyper_tls::HttpsConnector;
-
-
 use hyper_socks2::SocksConnector;
 use hi_hyper_multipart as multipart;
 use hyper::client::connect::dns::GaiResolver;
@@ -93,7 +91,7 @@ impl Client {
         format!("{}", Self::DEFAULT_BATCH_ENDPOINT)
     }
 
-    pub async fn with_proxy<'a>(mut self, config: ProxyConfig<'a>) -> Self {
+    pub async fn with_proxy<'f>(&'f mut self, config: ProxyConfig<'f>) -> &'f mut Self {
         let mut connector = HttpConnector::new();
         connector.enforce_http(false);
 
@@ -156,9 +154,9 @@ impl Client {
             req.header_mut().add_field(HeaderField::new("Content-Type", "application/json").unwrap());
             req.header_mut().add_field(HeaderField::new("User-Agent", "").unwrap());
 
-            encoder.start_encoding(req);
+            encoder.start_encoding(req).unwrap();
 
-            encoder.encode_all(&mut buf);
+            encoder.encode_all(&mut buf).unwrap();
 
             let length = buf.len();
 
@@ -286,57 +284,11 @@ struct FcmError {
 
 #[async_trait]
 impl<'b> super::Pusher<'b, MulticastMessage<'b>, BatchResponse> for Client {
+
     const TOKEN_LIMIT: usize = 1000;
+
     async fn push(&self, msg: &'b MulticastMessage) -> Result<BatchResponse, crate::Error> {
         self.multicast_send(msg).await
-        // let res = match &self.fcm {
-        //     InnerClient::FcmClient(cli) => {
-        //         cli.projects()
-        //             .messages_send(
-        //                 SendMessageRequest {
-        //                     message: Some(msg.clone()),
-        //                     validate_only: Some(false),
-        //                 },
-        //                 &self.build_parent(),
-        //             )
-        //             .doit()
-        //             .await
-        //     }
-        //     InnerClient::ProxyFcmClient(cli) => {
-        //         cli.projects()
-        //             .messages_send(
-        //                 SendMessageRequest {
-        //                     message: Some(msg.clone()),
-        //                     validate_only: Some(false),
-        //                 },
-        //                 &self.build_parent(),
-        //             )
-        //             .doit()
-        //             .await
-        //     }
-        // };
-
-
-        // match res {
-        //     Ok((mut resp, _msg)) => {
-        //         if resp.status().is_success() {
-        //             let body = resp.body_mut();
-        //             let res = body::to_bytes(body).await;
-        //             match res {
-        //                 Ok(data) => {
-        //                     let resp: BatchResponse = serde_json::from_slice(&data)
-        //                         .map_err(|e| super::InnerError::Response(e.to_string()))?;
-        //                     Ok(resp)
-        //                 }
-        //                 Err(e) => Err(super::InnerError::Response(e.to_string()).into()),
-        //             }
-        //         } else {
-        //             Err(super::InnerError::Response("()".to_string()).into())
-        //         }
-        //     }
-        //     Err(err) => Err(super::InnerError::Http(err.to_string()).into()),
-        // };
-        // Ok(())
     }
 }
 
@@ -369,7 +321,7 @@ mod test {
         })
             .await.unwrap();
 
-        fcm = fcm.with_proxy(ProxyConfig { addr: "socks5://127.0.0.1:7890", user: None, pass: None }).await;
+        fcm.with_proxy(ProxyConfig { addr: "socks5://127.0.0.1:7890", user: None, pass: None }).await;
 
 
         let res = fcm

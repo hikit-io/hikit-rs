@@ -1,6 +1,7 @@
-use reqwest::StatusCode;
 use std::collections::HashMap;
 use thiserror::Error;
+use std::error::Error as StdError;
+use ::http::StatusCode;
 
 use async_trait::async_trait;
 use flatten_json_object::{ArrayFormatting, Flattener};
@@ -34,6 +35,8 @@ pub mod http;
 
 #[cfg(all(any(feature = "http", feature = "grpc")))]
 pub mod service;
+
+pub(crate) type BoxError = Box<dyn StdError + Send + Sync>;
 
 pub enum Transparent<'a> {
     Text(&'a str),
@@ -84,13 +87,13 @@ pub struct Message<'a> {
     pub wecom: Option<WecomExtra<'a>>,
 }
 
-#[derive(Debug, PartialEq, Error)]
+#[derive(Debug, Error)]
 #[error(transparent)]
 pub struct Error {
     inner: InnerError,
 }
 
-#[derive(Debug, Eq, PartialEq, Error)]
+#[derive(Debug, Error)]
 pub enum InnerError {
     #[error("new client error: `{0}`")]
     Client(String),
@@ -104,49 +107,64 @@ pub enum InnerError {
     Biz(String),
     #[error("retryable error : `{0}`")]
     RetryError(RetryError),
-    #[error("missing required paramater: `{0}`")]
+    #[error("missing required parameter: `{0}`")]
     MissingRequired(String),
+    #[error("invalid parameter: `{0}`")]
+    InvalidParams(String),
     #[error("no exist client")]
     NoExistClient,
     #[error("serde error: `{0}`")]
-    Serde(String),
+    Serde(BoxError),
     #[error("message limit")]
     MessageLimit,
+    #[error("token limit")]
+    TokenLimit,
     #[error("unknown error: `{0}`")]
     Unknown(String),
+    #[error("auth error: `{0}`")]
+    Auth(String),
 }
-//
-// impl From<reqwest::Error> for Error {
-//     fn from(e: reqwest::Error) -> Self {
-//         let inner = if e.is_builder() {
-//             InnerError::Client(e.to_string())
-//         } else if e.is_status() {
-//             match e.status().unwrap() {
-//                 StatusCode::BAD_REQUEST => InnerError::MissingRequired(e.to_string()),
-//                 StatusCode::SERVICE_UNAVAILABLE => {
-//                     InnerError::RetryError(RetryError::Server(e.to_string()))
-//                 }
-//                 StatusCode::GATEWAY_TIMEOUT => {
-//                     InnerError::RetryError(RetryError::Timeout(e.to_string()))
-//                 }
-//                 StatusCode::REQUEST_TIMEOUT => {
-//                     InnerError::RetryError(RetryError::Timeout(e.to_string()))
-//                 }
-//                 StatusCode::UNAUTHORIZED => InnerError::RetryError(RetryError::Auth(e.to_string())),
-//                 _ => InnerError::Unknown(e.to_string()),
-//             }
-//         } else if e.is_timeout() {
-//             InnerError::RetryError(RetryError::Timeout(e.to_string()))
-//         } else if e.is_body() {
-//             InnerError::Format(e.to_string())
-//         } else if e.is_decode() {
-//             InnerError::Serde(e.to_string())
-//         } else {
-//             InnerError::Unknown("unknown".to_string())
-//         };
-//         Self { inner }
-//     }
-// }
+
+impl From<serde_json::Error> for Error {
+    fn from(e: serde_json::Error) -> Self {
+        Self {
+            inner: InnerError::Serde(Box::new(e))
+        }
+    }
+}
+
+
+impl From<reqwest::Error> for Error {
+    fn from(e: reqwest::Error) -> Self {
+        let inner = if e.is_builder() {
+            InnerError::Client(e.to_string())
+        } else if e.is_status() {
+            match e.status().unwrap() {
+                StatusCode::BAD_REQUEST => InnerError::MissingRequired(e.to_string()),
+                StatusCode::SERVICE_UNAVAILABLE => {
+                    InnerError::RetryError(RetryError::Server(e.to_string()))
+                }
+                StatusCode::GATEWAY_TIMEOUT => {
+                    InnerError::RetryError(RetryError::Timeout(e.to_string()))
+                }
+                StatusCode::REQUEST_TIMEOUT => {
+                    InnerError::RetryError(RetryError::Timeout(e.to_string()))
+                }
+                StatusCode::UNAUTHORIZED => InnerError::RetryError(RetryError::Auth(e.to_string())),
+                _ => InnerError::Unknown(e.to_string()),
+            }
+        } else if e.is_timeout() {
+            InnerError::RetryError(RetryError::Timeout(e.to_string()))
+        } else if e.is_body() {
+            InnerError::Format(e.to_string())
+        } else if e.is_decode() {
+            InnerError::Serde(Box::new(e))
+        } else {
+            InnerError::Unknown(e.to_string())
+        };
+        Self { inner }
+    }
+}
 
 #[derive(Debug, Eq, PartialEq, Error)]
 pub enum RetryError {
@@ -241,7 +259,7 @@ impl<'a> TryFrom<Message<'a>> for xiaomi::Message<'a> {
             Body::Notify { title, body, .. } => xiaomi::Message {
                 title,
                 description: body,
-                registration_id: Some(msg.tokens.join("|")),
+                registration_id: Some(msg.tokens.join(",")),
                 pass_through: xiaomi::Passtrough::Notice,
                 restricted_package_name: extra.map_or("", |v| v.package_name),
                 extra: xiaomi::Extra {
@@ -302,7 +320,7 @@ impl<'a> TryFrom<Message<'a>> for Vec<xiaomi::Message<'a>> {
             for j in start_index..end_index {
                 mi_tokens.push(tokens[i * 1000 + j]);
             }
-            msg.registration_id = Some(mi_tokens.join("|"));
+            msg.registration_id = Some(mi_tokens.join(","));
             msgs.push(msg);
         }
 
@@ -320,7 +338,7 @@ impl<'a> TryFrom<Message<'a>> for huawei::Message<'a> {
 
         match msg.body {
             Body::Transparent(data) => Ok(huawei::Message {
-                validate_only: Some(false),
+                validate_only: false,
                 message: huawei::InnerMessage {
                     data: Some(data),
                     android: Some(huawei::AndroidConfig {
@@ -331,7 +349,7 @@ impl<'a> TryFrom<Message<'a>> for huawei::Message<'a> {
                 },
             }),
             Body::Notify { title, body } => Ok(huawei::Message {
-                validate_only: Some(false),
+                validate_only: false,
                 message: huawei::InnerMessage {
                     token: msg.tokens.to_vec(),
                     notification: Some(huawei::Notification {
@@ -362,7 +380,7 @@ impl<'a> TryFrom<Message<'a>> for huawei::Message<'a> {
                             ticker: extra.map_or(None, |e| Some(e.ticker)),
                             click_action: extra
                                 .map(|e| huawei::ClickAction::new_intent(e.click_action))
-                                .ok_or(InnerError::Format("missing click action".to_string()))?,
+                                .ok_or(InnerError::MissingRequired("missing click action".to_string()))?,
                             visibility: extra.map_or(None, |e| match e.visibility {
                                 Visibility::Unspecified => Some(""),
                                 Visibility::Private => Some("PRIVATE"),
@@ -417,9 +435,9 @@ impl<'a> TryFrom<Message<'a>> for Vec<huawei::Message<'a>> {
     }
 }
 
-impl<'a> FromMessage<'a> for fcm::Message {}
+impl<'a> FromMessage<'a> for fcm::MulticastMessage<'a> {}
 
-impl<'a> TryFrom<Message<'a>> for fcm::Message {
+impl<'a> TryFrom<Message<'a>> for fcm::MulticastMessage<'a> {
     type Error = Error;
 
     fn try_from(msg: Message<'a>) -> Result<Self, Self::Error> {
@@ -435,18 +453,17 @@ impl<'a> TryFrom<Message<'a>> for fcm::Message {
                         .set_preserve_empty_objects(false)
                         .flatten(&val)
                         .unwrap();
-                    serde_json::from_value::<HashMap<String, String>>(val)
-                        .map_err(|e| InnerError::Serde(e.to_string()))?
+                    serde_json::from_value::<HashMap<String, String>>(val)?
                 } else {
                     HashMap::from_iter([("text".to_string(), data.to_string())])
                 };
-                Ok(fcm::Message {
+                Ok(fcm::MulticastMessage {
                     data: Some(data),
-                    token: Some(msg.tokens.join("|")),
+                    tokens: msg.tokens.to_vec(),
                     ..Default::default()
                 })
             }
-            Body::Notify { title, body } => Ok(fcm::Message {
+            Body::Notify { title, body } => Ok(fcm::MulticastMessage {
                 notification: Some(fcm::Notification {
                     body: Some(body.to_string()),
                     title: Some(title.to_string()),
@@ -502,20 +519,20 @@ impl<'a> TryFrom<Message<'a>> for fcm::Message {
 }
 
 
-impl<'a> FromMessage<'a> for Vec<fcm::Message> {}
+impl<'a> FromMessage<'a> for Vec<fcm::MulticastMessage<'a>> {}
 
-impl<'a> TryFrom<Message<'a>> for Vec<fcm::Message> {
+impl<'a> TryFrom<Message<'a>> for Vec<fcm::MulticastMessage<'a>> {
     type Error = Error;
 
     fn try_from(msg: Message<'a>) -> Result<Self, Self::Error> {
         let tokens = msg.tokens;
 
-        let hw_msg: fcm::Message = msg.try_into()?;
+        let hw_msg: fcm::MulticastMessage = msg.try_into()?;
 
         let mut msgs = Vec::new();
 
         for i in 0..(tokens.len() / 1000) + 1 {
-            let mut fcm_tokens = String::new();
+            let mut fcm_tokens = Vec::new();
 
             let mut msg = hw_msg.clone();
 
@@ -526,12 +543,9 @@ impl<'a> TryFrom<Message<'a>> for Vec<fcm::Message> {
                 tokens.len()
             };
             for j in start_index..end_index {
-                fcm_tokens += tokens[j];
-                if j != end_index - 1 {
-                    fcm_tokens += "|";
-                }
+                fcm_tokens.push(tokens[j]);
             }
-            msg.token = Some(fcm_tokens);
+            msg.tokens = fcm_tokens;
             msgs.push(msg);
         }
 
@@ -690,7 +704,7 @@ pub enum Client<'a> {
     #[cfg(feature = "fcm")]
     Fcm(fcm::Client),
     #[cfg(feature = "wecom")]
-    Wecom(wecom::Client<'a>),
+    Wecom(wecom::Client),
     #[cfg(feature = "apns")]
     Apns(apns::Client),
 }
@@ -753,7 +767,7 @@ impl<'a> Service<'a> {
             Client::Huawei(client) => {
                 let resp = client.push(&msg.try_into()?).await?;
                 Ok(PushResult {
-                    request_id: "".to_string(),
+                    request_id: resp.request_id,
                     code: "".to_string(),
                     reason: "".to_string(),
                     success: 0,
@@ -764,12 +778,26 @@ impl<'a> Service<'a> {
             #[cfg(feature = "fcm")]
             Client::Fcm(client) => {
                 let resp = client.push(&msg.try_into()?).await?;
+                let mut push_result = PushResult::default();
+
+                let mut tokens = Vec::new();
+                for resp in resp.responses {
+                    match resp {
+                        fcm::SendResponse::Ok { message_id } => {
+                            push_result.request_id = message_id;
+                        }
+                        fcm::SendResponse::Error { token, error } => {
+                            tokens.push(token);
+                        }
+                    }
+                }
+
                 Ok(PushResult {
                     request_id: "".to_string(),
                     code: "".to_string(),
                     reason: "".to_string(),
-                    success: 0,
-                    failure: 0,
+                    success: resp.success_count,
+                    failure: resp.failure_count,
                     invalid_tokens: Vec::new(),
                 })
             }
@@ -868,6 +896,12 @@ mod tests {
         })
             .await.unwrap();
 
+        fcm_.with_proxy(fcm::ProxyConfig {
+            addr: "socks5://127.0.0.1:7890",
+            user: None,
+            pass: None,
+        }).await;
+
         let apns_ = apns::Client::new(b"", "pass").unwrap();
 
         let hw = huawei::Client::new("", "").await.unwrap();
@@ -963,12 +997,12 @@ mod tests {
             apns: None,
             wecom: None,
         };
-        let hw_msg: fcm::Message = msg.clone().try_into().unwrap();
-        assert_eq!(hw_msg.token.unwrap().split('|').collect::<Vec<_>>().len(), 1100);
+        let hw_msg: fcm::MulticastMessage = msg.clone().try_into().unwrap();
+        assert_eq!(hw_msg.tokens.len(), 1100);
 
-        let hw_msgs: Vec<fcm::Message> = msg.try_into().unwrap();
+        let hw_msgs: Vec<fcm::MulticastMessage> = msg.try_into().unwrap();
         assert_eq!(hw_msgs.len(), 2);
-        assert_eq!(hw_msgs[0].token.as_ref().unwrap().split('|').collect::<Vec<_>>().len(), 1000);
-        assert_eq!(hw_msgs[1].token.as_ref().unwrap().split('|').collect::<Vec<_>>().len(), 100);
+        assert_eq!(hw_msgs[0].tokens.len(), 1000);
+        assert_eq!(hw_msgs[1].tokens.len(), 100);
     }
 }
