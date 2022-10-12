@@ -26,9 +26,9 @@ type AuthClient = oauth2::Client<
     StandardErrorResponse<RevocationErrorResponseType>,
 >;
 
-pub struct Client<'a> {
-    client_id: &'a str,
-    client_secret: &'a str,
+pub struct Client {
+    client_id: String,
+    client_secret: String,
     auth: AuthClient,
     token: Arc<RwLock<Option<Token>>>,
     cli: reqwest::Client,
@@ -278,14 +278,14 @@ impl SendResponse {
     }
 }
 
-impl<'a> Client<'a> {
+impl Client {
     const TOKEN_URL: &'static str = "https://oauth-login.cloud.huawei.com/oauth2/v3/token";
     const PUSH_URL: &'static str = "https://push-api.cloud.huawei.com/v2/{}/messages:send";
 
     pub async fn new(
-        client_id: &'a str,
-        client_secret: &'a str,
-    ) -> Result<Client<'a>, super::Error> {
+        client_id: &str,
+        client_secret: &str,
+    ) -> Result<Client, super::Error> {
         let auth = BasicClient::new(
             ClientId::new(client_id.to_string()),
             Some(ClientSecret::new(client_secret.to_string())),
@@ -303,10 +303,10 @@ impl<'a> Client<'a> {
             .build()
             .map_err(|e| super::InnerError::Http(e.to_string()))?;
 
-        let res = Client::<'a> {
+        let res = Client {
             auth,
-            client_id,
-            client_secret,
+            client_id: client_id.to_string(),
+            client_secret: client_secret.to_string(),
             token: Default::default(),
             cli,
         };
@@ -359,7 +359,7 @@ impl<'a> Client<'a> {
 }
 
 #[async_trait::async_trait]
-impl<'b> super::Pusher<'b, Message<'b>, Response> for Client<'_> {
+impl<'b> super::Pusher<'b, Message<'b>, Response> for Client {
     async fn push(&self, msg: &'b Message) -> Result<Response, crate::Error> {
         let token = self.token.clone();
 

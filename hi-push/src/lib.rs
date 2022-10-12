@@ -43,7 +43,7 @@ pub enum Transparent<'a> {
     Json(serde_json::Map<String, serde_json::Value>),
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Copy)]
 pub enum Body<'a> {
     Transparent(&'a str),
     Notify { title: &'a str, body: &'a str },
@@ -71,7 +71,7 @@ pub struct PushResult {
     pub invalid_tokens: Vec<String>,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub struct PushResults {
     pub success: i64,
     pub failure: i64,
@@ -123,6 +123,8 @@ pub enum InnerError {
     Unknown(String),
     #[error("auth error: `{0}`")]
     Auth(String),
+    #[error("UnsupportedType error: `{0}`")]
+    UnsupportedType(String),
 }
 
 impl From<serde_json::Error> for Error {
@@ -233,7 +235,7 @@ pub trait Pusher<'b, M, R>
             .await
     }
 
-    async fn retry_batch_push(&self, msgs: &'b [&'b M]) -> Result<Vec<R>, Error> {
+    async fn retry_batch_push(&self, msgs: &'b [M]) -> Result<Vec<R>, Error> {
         let mut resps = Vec::new();
         for msg in msgs {
             let resp = self.retry_push(msg).await?;
@@ -254,6 +256,7 @@ impl<'a> TryFrom<Message<'a>> for xiaomi::Message<'a> {
             Body::Transparent(data) => xiaomi::Message {
                 payload: Some(data),
                 pass_through: xiaomi::Passtrough::Transparent,
+                registration_id: Some(msg.tokens.join(",")),
                 ..Default::default()
             },
             Body::Notify { title, body, .. } => xiaomi::Message {
@@ -635,6 +638,31 @@ impl<'a> TryFrom<Message<'a>> for Vec<apns::Notification<'a>> {
     }
 }
 
+
+#[cfg(feature = "email")]
+impl<'a> FromMessage<'a> for email::Message<'a> {}
+
+#[cfg(feature = "email")]
+impl<'a> TryFrom<Message<'a>> for email::Message<'a> {
+    type Error = Error;
+
+    fn try_from(msg: Message<'a>) -> Result<Self, Self::Error> {
+        match msg.body {
+            Body::Transparent(_) => {
+                Err(InnerError::UnsupportedType("Transparent".to_string()).into())
+            }
+            Body::Notify { title, body } => {
+                Ok(Self {
+                    title: title,
+                    body: body,
+                    to: msg.tokens,
+                })
+            }
+        }
+    }
+}
+
+
 #[derive(Debug, Serialize_repr, Deserialize_repr, Clone)]
 #[repr(u8)]
 pub enum Visibility {
@@ -696,26 +724,28 @@ pub struct IosExtra<'a> {
     pub topic: &'a str,
 }
 
-pub enum Client<'a> {
+pub enum Client {
     #[cfg(feature = "xiaomi")]
     Mi(xiaomi::Client),
     #[cfg(feature = "huawei")]
-    Huawei(huawei::Client<'a>),
+    Huawei(huawei::Client),
     #[cfg(feature = "fcm")]
     Fcm(fcm::Client),
     #[cfg(feature = "wecom")]
     Wecom(wecom::Client),
     #[cfg(feature = "apns")]
     Apns(apns::Client),
+    #[cfg(feature = "email")]
+    Email(email::Client),
+    #[cfg(feature = "rtm")]
+    Rtm(rtm::Client),
 }
 
-struct Service<'a> {
-    // client_id: &'a str,
-    // client_secret: &'a str,
-    pushers: RwLock<HashMap<&'a str, Client<'a>>>, // ch_id <=> client
+struct Service {
+    pushers: RwLock<HashMap<String, Client>>, // ch_id <=> client
 }
 
-impl<'a> Service<'a> {
+impl Service {
     // fn new(client_id: &'a str, client_secret: &'a str) -> Self {
     pub fn new() -> Self {
         Self {
@@ -726,7 +756,7 @@ impl<'a> Service<'a> {
     /*
         Remove client from service.
     */
-    pub async fn remove_client(&self, ch_id: &'a str) {
+    pub async fn remove_client(&self, ch_id: &str) {
         let mut pushers = self.pushers.write().await;
         (*pushers).remove(ch_id);
     }
@@ -734,9 +764,9 @@ impl<'a> Service<'a> {
     /*
         Add client to service. Repeated.
     */
-    pub async fn register_client(&self, ch_id: &'a str, cli: Client<'a>) {
+    pub async fn register_client(&self, ch_id: &str, cli: Client) {
         let mut pushers = self.pushers.write().await;
-        (*pushers).insert(ch_id, cli);
+        (*pushers).insert(ch_id.to_string(), cli);
     }
 
     /*
@@ -744,95 +774,147 @@ impl<'a> Service<'a> {
     */
     pub async fn retry_batch_push(
         &self,
-        ch_id: &'a str,
+        ch_id: &str,
         msg: Message<'_>,
-    ) -> Result<PushResult, Error> {
+    ) -> Result<PushResults, Error> {
         let pusher = self.pushers.read().await;
         let pusher = (*pusher).get(ch_id).ok_or(InnerError::NoExistClient)?;
 
         match pusher {
             #[cfg(feature = "xiaomi")]
             Client::Mi(client) => {
-                let resp = client.push(&msg.try_into()?).await?;
-                Ok(PushResult {
-                    request_id: "".to_string(),
-                    code: resp.code.to_string(),
-                    reason: resp.description,
-                    success: 0,
-                    failure: 0,
-                    invalid_tokens: Vec::new(),
-                })
+                let token_len = msg.tokens.len();
+                let msg: Vec<xiaomi::Message> = msg.try_into()?;
+                let resp = client.retry_batch_push(msg.as_slice()).await?;
+
+                let mut res = PushResults::default();
+                for resp in resp.into_iter() {
+                    res.results.push(PushResult {
+                        request_id: resp.data.id,
+                        code: resp.code.to_string(),
+                        reason: resp.reason,
+                        invalid_tokens: Vec::new(),
+                        ..Default::default()
+                    });
+                }
+                res.success = token_len as i64;
+                Ok(res)
             }
             #[cfg(feature = "huawei")]
             Client::Huawei(client) => {
-                let resp = client.push(&msg.try_into()?).await?;
-                Ok(PushResult {
-                    request_id: resp.request_id,
-                    code: "".to_string(),
-                    reason: "".to_string(),
-                    success: 0,
-                    failure: 0,
-                    invalid_tokens: Vec::new(),
-                })
+                let msg: Vec<huawei::Message> = msg.try_into()?;
+                let resp = client.retry_batch_push(msg.as_slice()).await?;
+                let mut res = PushResults::default();
+                for resp in resp.into_iter() {
+                    res.results.push(PushResult {
+                        request_id: resp.request_id,
+                        code: serde_json::to_string(&resp.code).unwrap(),
+                        reason: resp.msg,
+                        success: resp.success,
+                        failure: resp.failure,
+                        invalid_tokens: Vec::new(),
+                    });
+                    res.success += resp.success;
+                    res.failure += resp.failure;
+                }
+                Ok(res)
             }
             #[cfg(feature = "fcm")]
             Client::Fcm(client) => {
-                let resp = client.push(&msg.try_into()?).await?;
-                let mut push_result = PushResult::default();
+                let msg: Vec<fcm::MulticastMessage> = msg.try_into()?;
+                let resp = client.retry_batch_push(msg.as_slice()).await?;
 
-                let mut tokens = Vec::new();
-                for resp in resp.responses {
-                    match resp {
-                        fcm::SendResponse::Ok { message_id } => {
-                            push_result.request_id = message_id;
-                        }
-                        fcm::SendResponse::Error { token, error } => {
-                            tokens.push(token);
+                let mut res = PushResults::default();
+                for resp in resp.into_iter() {
+                    for respons in resp.responses {
+                        match respons {
+                            fcm::SendResponse::Ok { message_id } => {
+                                res.results.push(PushResult {
+                                    request_id: message_id,
+                                    ..Default::default()
+                                });
+                            }
+                            fcm::SendResponse::Error { error, token } => {
+                                res.results.push(PushResult {
+                                    invalid_tokens: vec![token],
+                                    reason: error,
+                                    ..Default::default()
+                                });
+                            }
                         }
                     }
+                    res.success += resp.success_count;
+                    res.failure += resp.failure_count;
                 }
-
-                Ok(PushResult {
-                    request_id: "".to_string(),
-                    code: "".to_string(),
-                    reason: "".to_string(),
-                    success: resp.success_count,
-                    failure: resp.failure_count,
-                    invalid_tokens: Vec::new(),
-                })
+                Ok(res)
             }
             #[cfg(feature = "wecom")]
             Client::Wecom(client) => {
-                let resp = client.push(&msg.try_into()?).await?;
-                Ok(PushResult {
-                    request_id: "".to_string(),
-                    code: "".to_string(),
-                    reason: "".to_string(),
+                let token_len = msg.tokens.len();
+                let msg: wecom::Message = msg.try_into()?;
+
+                let resp = client.retry_push(&msg).await?;
+                let invalid_tokens: Vec<String> = resp.invaliduser.unwrap_or_default().split("|").map(|e| e.to_string()).collect();
+
+                let res = PushResult {
+                    request_id: resp.msgid,
+                    code: resp.errcode.to_string(),
+                    reason: resp.errmsg,
+                    success: (token_len - invalid_tokens.len()) as i64,
+                    failure: invalid_tokens.len() as i64,
+                    invalid_tokens,
+                };
+
+                Ok(PushResults {
                     success: 0,
                     failure: 0,
-                    invalid_tokens: Vec::new(),
+                    results: vec![res],
                 })
             }
             #[cfg(feature = "apns")]
             Client::Apns(client) => {
                 let a: Vec<apns::Notification> = msg.try_into()?;
-                let resps = client.push(a.as_slice()).await?;
-                let mut res = PushResult::default();
+                let resps = client.retry_batch_push(a.as_slice()).await?;
+                let mut res = PushResults::default();
                 for resp in resps {
                     if resp.status_code.is_success() {
+                        res.results.push(PushResult {
+                            request_id: resp.apns_id,
+                            code: resp.status_code.to_string(),
+                            reason: serde_json::to_string(&resp.reason).unwrap(),
+                            success: 1,
+                            failure: 0,
+                            invalid_tokens: vec![],
+                        });
                         res.success += 1;
                     } else {
+                        res.results.push(PushResult {
+                            request_id: resp.apns_id,
+                            code: resp.status_code.to_string(),
+                            reason: serde_json::to_string(&resp.reason).unwrap(),
+                            success: 0,
+                            failure: 1,
+                            invalid_tokens: vec![resp.token],
+                        });
                         res.failure += 1;
                     }
                 }
-                Ok(PushResult {
-                    request_id: "".to_string(),
-                    code: "".to_string(),
-                    reason: "".to_string(),
-                    success: 0,
-                    failure: 0,
-                    invalid_tokens: Vec::new(),
-                })
+                Ok(res)
+            }
+            #[cfg(feature = "email")]
+            Client::Email(client) => {
+                let mut res = PushResults::default();
+                let msg = msg.try_into()?;
+                match client.retry_push(&msg).await{
+                    Ok(resp) => {}
+                    Err(_) => {}
+                }
+                Ok(res)
+            }
+            #[cfg(feature = "rtm")]
+            Client::Rtm(client) => {
+                let mut res = PushResults::default();
+                Ok(res)
             }
         }
     }

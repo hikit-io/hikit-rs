@@ -1,4 +1,6 @@
 mod types;
+
+use async_trait::async_trait;
 pub use self::types::*;
 
 use super::Error;
@@ -71,7 +73,6 @@ impl Client {
             aps: &notification.payload,
             custom: notification.custom.as_ref(),
         };
-
         let resp = self
             .cli
             .post(&url)
@@ -93,6 +94,7 @@ impl Client {
 
         resp.apns_id = apns_id.to_string();
         resp.status_code = status_code;
+        resp.token = notification.device_token.to_string();
 
         Ok(resp)
     }
@@ -100,18 +102,23 @@ impl Client {
     pub async fn push<'b>(
         &self,
         notification: &'b [Notification<'_>],
-    ) -> Result<Vec<Response>, Error> {
-        let mut resps = Vec::new();
+    ) -> Result<BatchResponse, Error> {
+        let mut resps = BatchResponse::default();
 
         for notify in notification {
             let resp = self._push(notify).await;
             match resp {
                 Ok(res) => {
-                    resps.push(res);
+                    if res.reason == ApiErrorReason::BadDeviceToken {
+                        resps.responses.push(res);
+                    }
                 }
-                Err(err) => {}
+                Err(err) => {
+                    resps.failure += 1
+                }
             }
         }
+        resps.failure = (notification.len() as i64 - resps.success) as i64;
         Ok(resps)
     }
 
@@ -125,9 +132,17 @@ impl Client {
     }
 }
 
+#[async_trait]
+impl<'a> super::Pusher<'a, Notification<'a>, Response> for Client {
+    async fn push(&self, msg: &'a Notification) -> Result<Response, Error> {
+        self._push(msg).await
+    }
+}
+
 #[cfg(test)]
 mod test {
-
     #[test]
-    fn test_cert() {}
+    fn test_cert() {
+
+    }
 }

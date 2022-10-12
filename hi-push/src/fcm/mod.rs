@@ -125,7 +125,6 @@ impl Client {
     pub async fn multicast_send<'b>(&self, msg: &MulticastMessage<'b>) -> Result<BatchResponse, super::Error> {
         let mut form = multipart::Form::new();
 
-
         for (index, &token) in msg.tokens.iter().enumerate() {
             let mut encoder = RequestEncoder::new(BodyEncoder::new(BytesEncoder::new()));
 

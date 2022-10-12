@@ -10,12 +10,13 @@ pub struct Client {
 #[derive(Serialize)]
 pub struct Msg<'a> {
     destination: &'a str,
-    enable_offline_messaging: bool,
-    enable_historical_messaging: bool,
+    enable_offline_messaging: Option<bool>, // under 1.5
+    enable_historical_messaging: Option<bool>,
     payload: &'a str,
 }
 
 impl Client {
+    const PUSH_URL: &'static str = "";
     pub fn new(client_id: &str, client_secret: &str) -> Result<Self, super::Error> {
         let cli = reqwest::Client::builder()
             .build()
@@ -31,8 +32,10 @@ impl Client {
 #[async_trait]
 impl<'b> super::Pusher<'b, Msg<'b>, ()> for Client {
     async fn push(&self, msg: &'b Msg) -> Result<(), super::Error> {
-
-        let req = self.cli.post("/").basic_auth(&self.client_id, Some(&self.client_secret));
+        let req = self.cli
+            .post(Client::PUSH_URL)
+            .basic_auth(&self.client_id, Some(&self.client_secret))
+            .send();
 
         Ok(())
     }

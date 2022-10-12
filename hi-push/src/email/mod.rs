@@ -9,7 +9,7 @@ use lettre::{
 pub struct Message<'a> {
     pub title: &'a str,
     pub body: &'a str,
-    pub to: Vec<&'a str>,
+    pub to: &'a [&'a str],
 }
 
 #[derive(Debug, PartialEq)]
@@ -24,15 +24,15 @@ pub struct Response<'a> {
     results: Vec<PushResult<'a>>,
 }
 
-pub struct Client<'a> {
-    client_id: &'a str,
+pub struct Client {
+    client_id: String,
     // client_secret: &'a str,
     // push_url: &'a str,
     cli: SmtpTransport,
 }
 
-impl<'a> Client<'a> {
-    async fn new(client_id: &'a str, client_secret: &'a str, push_url: &'a str) -> Client<'a> {
+impl Client {
+    pub async fn new(client_id: &str, client_secret: &str, push_url: &str) -> Client {
         let creds = Credentials::new(client_id.to_string(), client_secret.to_string());
         let mailer = SmtpTransport::starttls_relay(push_url)
             .unwrap()
@@ -44,7 +44,7 @@ impl<'a> Client<'a> {
             .build();
 
         Self {
-            client_id,
+            client_id: client_id.to_string(),
             // client_secret,
             // push_url,
             cli: mailer,
@@ -53,11 +53,11 @@ impl<'a> Client<'a> {
 }
 
 #[async_trait]
-impl<'b> super::Pusher<'b, Message<'b>, Response<'b>> for Client<'_> {
+impl<'b> super::Pusher<'b, Message<'b>, Response<'b>> for Client {
     async fn push(&self, msg: &'b Message) -> Result<Response<'b>, super::Error> {
         let mut results = Vec::new();
 
-        for to in &msg.to {
+        for to in msg.to {
             let to_mail = match format!("<{to}>").parse::<lettre::message::Mailbox>() {
                 Ok(o) => o,
                 Err(e) => {

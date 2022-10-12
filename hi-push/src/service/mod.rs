@@ -4,11 +4,13 @@ pub mod model;
 pub mod mongo;
 
 use std::collections::HashMap;
+use anyhow::anyhow;
 
 #[cfg(feature = "mongo")]
 pub use mongo::*;
 
-use crate::{apns, fcm, huawei, xiaomi, PushResults};
+use crate::{apns, fcm, huawei, xiaomi, PushResults, email, rtm};
+use crate::service::model::Body;
 
 #[cfg(feature = "wecom")]
 use crate::wecom;
@@ -23,84 +25,142 @@ pub enum Message {
     Notification(model::PushNotificationParams),
 }
 
-pub struct App<'a> {
-    svcs: super::Service<'a>,
+pub struct App {
+    service: super::Service,
     #[cfg(feature = "mongo")]
     db: Database,
-    chans: Vec<model::Channel>,
+    channels: Vec<model::Channel>,
 }
 
-impl<'a> App<'a> {
-    pub async fn new(db: Database) -> App<'a> {
+
+impl App {
+    #[cfg(feature = "mysql")]
+    pub async fn new(db: sea_orm::Database) -> App {
         let svcs = super::Service::new();
         Self {
-            svcs,
+            service: svcs,
             db,
-            chans: Vec::new(),
+            channels: Vec::new(),
         }
     }
 
-    pub async fn init(&'a mut self) -> anyhow::Result<()> {
+    #[cfg(feature = "mongo")]
+    pub async fn new(mongodb: mongodb::Database) -> App {
+        let svcs = super::Service::new();
+        Self {
+            service: svcs,
+            db: Database::Mongo(mongodb),
+            channels: Vec::new(),
+        }
+    }
+
+    pub async fn init(&mut self) -> anyhow::Result<()> {
         let chans = match &self.db {
-            Database::Mongo(db) => fetch_all_chans(db).await?,
+            Database::Mongo(db) => fetch_all_channels(db).await?,
         };
-        self.chans = chans;
-        for chan in &self.chans {
-            let cli = Self::new_client(chan).await?;
-            self.svcs.register_client(&chan.ch_id, cli).await;
+        self.channels = chans;
+        for chan in &self.channels {
+            self.register_client(chan).await?;
         }
         Ok(())
     }
 
-    pub async fn new_client<'b>(conf: &'b model::Channel) -> anyhow::Result<super::Client<'b>> {
+    pub async fn running_ch_ids(&self) -> Vec<String> {
+        let pushers = self.service.pushers.read().await;
+        pushers.iter().map(|e| e.0.clone()).collect()
+    }
+
+    pub async fn register_client(&self, chan: &model::Channel) -> anyhow::Result<()> {
+        match Self::new_client(chan).await {
+            Ok(cli) => {
+                tracing::info!("load channel:{}",chan.ch_id);
+                self.service.register_client(&chan.ch_id, cli).await;
+            }
+            Err(e) => {
+                tracing::error!("load channel error:`{}` {} ",chan.ch_id,e);
+            }
+        }
+        Ok(())
+    }
+
+
+    pub async fn new_client(conf: &model::Channel) -> anyhow::Result<super::Client> {
         Ok(match conf._type {
             #[cfg(feature = "xiaomi")]
             model::ChannelType::Mi => super::Client::Mi(xiaomi::Client::new(&xiaomi::Config {
-                client_id: &conf.client_id,
-                client_secret: &conf.client_secret,
-                project_id: &conf.project_id,
+                client_id: conf.client_id.as_ref().ok_or(anyhow!("mi missing `client_id`"))?.as_str(),
+                client_secret: conf.client_secret.as_ref().ok_or(anyhow!("mi missing `client_secret`"))?.as_str(),
+                project_id: conf.project_id.as_ref().ok_or(anyhow!("mi missing `project_id`"))?.as_str(),
             })?),
             #[cfg(feature = "huawei")]
             model::ChannelType::Huawei => super::Client::Huawei(
-                huawei::Client::new(&conf.client_id, &conf.client_secret).await?,
+                huawei::Client::new(
+                    conf.client_id.as_ref().ok_or(anyhow!("mi missing `client_id`"))?.as_str(),
+                    conf.client_secret.as_ref().ok_or(anyhow!("mi missing `client_id`"))?.as_str(),
+                ).await?,
             ),
             #[cfg(feature = "fcm")]
             model::ChannelType::Fcm => super::Client::Fcm(
                 fcm::Client::new(
                     fcm::Config {
-                        key_type: Some(conf.key_type.clone()),
-                        project_id: Some(conf.project_id.to_string()),
-                        private_key_id: Some(conf.private_key_id.clone()),
-                        private_key: (conf.private_key.clone()),
-                        client_email: (conf.client_email.clone()),
-                        client_id: Some(conf.client_id.clone()),
-                        auth_uri: Some(conf.auth_uri.clone()),
-                        token_uri: conf.token_uri.clone(),
-                        auth_provider_x509_cert_url: Some(conf.auth_provider_x509_cert_url.clone()),
-                        client_x509_cert_url: Some(conf.client_x509_cert_url.clone()),
+                        key_type: Some(conf.key_type.clone().ok_or(anyhow!("Fcm missing `key_type`"))?),
+                        project_id: Some(conf.project_id.clone().ok_or(anyhow!("Fcm missing `project_id`"))?),
+                        private_key_id: Some(conf.private_key_id.clone().ok_or(anyhow!("Fcm missing `private_key_id`"))?),
+                        private_key: (conf.private_key.clone().ok_or(anyhow!("Fcm missing `private_key`"))?),
+                        client_email: (conf.client_email.clone().ok_or(anyhow!("Fcm missing `client_email`"))?),
+                        client_id: Some(conf.client_id.clone().ok_or(anyhow!("Fcm missing `client_id`"))?),
+                        auth_uri: Some(conf.auth_uri.clone().ok_or(anyhow!("Fcm missing `auth_uri`"))?),
+                        token_uri: conf.token_uri.clone().ok_or(anyhow!("Fcm missing `token_uri`"))?,
+                        auth_provider_x509_cert_url: Some(conf.auth_provider_x509_cert_url.clone().ok_or(anyhow!("Fcm missing `auth_provider_x509_cert_url`"))?),
+                        client_x509_cert_url: Some(conf.client_x509_cert_url.clone().ok_or(anyhow!("Fcm missing `client_x509_cert_url`"))?),
                     }
                 )
                     .await?,
             ),
             #[cfg(feature = "wecom")]
             model::ChannelType::Wecom => super::Client::Wecom(
-                wecom::Client::new(&conf.client_id, &conf.client_secret, conf.agentid).await?,
+                wecom::Client::new(
+                    conf.client_id.as_ref().ok_or(anyhow!("Wecom missing `client_id`"))?.as_str(),
+                    conf.client_secret.as_ref().ok_or(anyhow!("Wecom missing `client_secret`"))?.as_str(),
+                    conf.agentid.ok_or(anyhow!("Wecom missing `agentid`"))?,
+                ).await?,
             ),
             #[cfg(feature = "apns")]
             model::ChannelType::Apns => {
-                super::Client::Apns(apns::Client::new(&conf.certs, &conf.client_secret)?)
+                super::Client::Apns(apns::Client::new(
+                    conf.certs.as_ref().ok_or(anyhow!("Apns missing `certs`"))?.as_slice(),
+                    conf.client_secret.as_ref().ok_or(anyhow!("Apns missing `client_secret`"))?.as_str(),
+                )?)
+            }
+            #[cfg(feature = "email")]
+            model::ChannelType::Email => {
+                super::Client::Email(email::Client::new(
+                    conf.client_id.as_ref().ok_or(anyhow!("Email missing `client_id`"))?.as_str(),
+                    conf.client_secret.as_ref().ok_or(anyhow!("Email missing `client_secret`"))?.as_str(),
+                    conf.addr.as_ref().ok_or(anyhow!("Email missing `addr`"))?.as_str()).await)
+            }
+            #[cfg(feature = "rtm")]
+            model::ChannelType::Rtm => {
+                super::Client::Rtm(rtm::Client::new(
+                    conf.client_id.as_ref().ok_or(anyhow!("Rtm missing `client_id`"))?.as_str(),
+                    conf.client_secret.as_ref().ok_or(anyhow!("Rtm missing `client_secret`"))?.as_str(),
+                )?)
+            }
+            model::ChannelType::Unknown => {
+                Err(anyhow!("Unknown channel type"))?
             }
         })
     }
 
     pub async fn push_message(&self, msg: Message) -> anyhow::Result<()> {
-        let (groups, chans) = match msg {
-            Message::Transparent(msg) => (msg.groups, msg.chans),
-            Message::Notification(msg) => (msg.groups, msg.chans),
+        let (groups, channels) = match &msg {
+            Message::Transparent(msg) => (msg.groups.as_slice(), msg.channels.as_slice()),
+            Message::Notification(msg) => (msg.groups.as_slice(), msg.channels.as_slice()),
         };
 
         let tokens = match &self.db {
-            Database::Mongo(db) => fetch_tokens(db, &[""], &[""]).await?,
+            #[cfg(feature = "mongo")]
+            Database::Mongo(db) => fetch_tokens(db, &channels, &groups).await?,
         };
 
         let mut token_map: HashMap<&str, Vec<&str>> = HashMap::new();
@@ -115,26 +175,47 @@ impl<'a> App<'a> {
             }
         }
 
-        let push_results = PushResults {
+        let mut push_results = PushResults {
             success: 0,
             failure: 0,
             results: Vec::new(),
         };
+
+        let body = match &msg {
+            Message::Transparent(msg) => {
+                match &msg.body {
+                    Body::Json(_) => {
+                        super::Body::Transparent("")
+                    }
+                    Body::Text(text) => {
+                        super::Body::Transparent(text)
+                    }
+                }
+            }
+            Message::Notification(msg) => {
+                super::Body::Notify {
+                    title: msg.title.as_str(),
+                    body: msg.body.as_str(),
+                }
+            }
+        };
+
         // push message by channel
         for (chan, tokens) in token_map {
-            // let push_res = self
-            //     .svcs
-            //     .retry_batch_push(
-            //         &chan,
-            //         super::Message {
-            //             tokens: &tokens,
-            //             body: todo!(),
-            //             android: todo!(),
-            //             apns: todo!(),
-            //             wecom: todo!(),
-            //         },
-            //     )
-            //     .await?;
+            let push_res = self
+                .service
+                .retry_batch_push(
+                    &chan,
+                    super::Message {
+                        tokens: &tokens,
+                        body: body,
+                        android: None,
+                        apns: None,
+                        wecom: None,
+                    },
+                )
+                .await?;
+            println!("{push_res:?}");
             // push_results.results.push(push_res);
         }
         Ok(())
@@ -148,6 +229,7 @@ impl<'a> App<'a> {
         _override: Option<bool>,
     ) -> anyhow::Result<()> {
         match &self.db {
+            #[cfg(feature = "mongo")]
             Database::Mongo(db) => insert_token(db, ch_id, group, token, _override).await?,
         };
         Ok(())
@@ -158,14 +240,25 @@ impl<'a> App<'a> {
         group: &str,
         ch_id: &str,
         token: &str,
-        _override: Option<bool>,
     ) -> anyhow::Result<()> {
         match &self.db {
-            Database::Mongo(db) => insert_token(db, ch_id, group, token, _override).await?,
+            #[cfg(feature = "mongo")]
+            Database::Mongo(db) => revoke_token(db, ch_id, group, token).await?,
         };
         Ok(())
     }
+
+    pub async fn create_channel(&self, app_id: &str, params: model::PublicChannel) -> anyhow::Result<()> {
+        let channel = match &self.db {
+            #[cfg(feature = "mongo")]
+            Database::Mongo(db) => create_channel(db, app_id, params).await?,
+        };
+        let cli = Self::new_client(&channel).await?;
+        let _ = self.service.register_client(channel.ch_id.as_str(), cli).await;
+        Ok(())
+    }
 }
+
 
 #[cfg(test)]
 mod tests {

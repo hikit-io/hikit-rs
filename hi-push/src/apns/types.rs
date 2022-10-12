@@ -6,7 +6,7 @@ use serde_repr::{Deserialize_repr, Serialize_repr};
 use uuid::Uuid;
 
 /// The reason for a failure returned by the APN api.
-#[derive(Serialize, Deserialize, Clone, Debug)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "PascalCase")]
 pub enum ApiErrorReason {
     BadCollapseId,
@@ -88,7 +88,8 @@ pub static APN_URL_DEV: &'static str = "https://api.sandbox.push.apple.com";
 #[derive(Serialize_repr, Deserialize_repr, PartialEq, Eq, Clone, Copy, Debug)]
 #[repr(u8)]
 pub enum Priority {
-    Low = 1, // 5
+    Low = 1,
+    // 5
     Middle = 5,
     High = 10, // 10
 }
@@ -151,6 +152,7 @@ impl ApnsPushType {
         }
     }
 }
+
 /// Alert content for a notification.
 ///
 /// See the official documentation for details:
@@ -378,8 +380,16 @@ impl<'a> NotificationBuilder<'a> {
 pub struct Response {
     pub reason: ApiErrorReason,
     pub timestamp: Option<i64>,
+    pub token: String,
 
     pub apns_id: String,
     #[serde(skip)]
     pub(crate) status_code: StatusCode,
+}
+
+#[derive(Debug, Default)]
+pub struct BatchResponse {
+    pub success: i64,
+    pub failure: i64,
+    pub responses: Vec<Response>,
 }
