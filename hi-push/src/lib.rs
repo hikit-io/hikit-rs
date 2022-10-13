@@ -1,7 +1,6 @@
-use std::collections::HashMap;
-use thiserror::Error;
-use std::error::Error as StdError;
 use ::http::StatusCode;
+use std::{collections::HashMap, error::Error as StdError};
+use thiserror::Error;
 
 use async_trait::async_trait;
 use flatten_json_object::{ArrayFormatting, Flattener};
@@ -130,11 +129,10 @@ pub enum InnerError {
 impl From<serde_json::Error> for Error {
     fn from(e: serde_json::Error) -> Self {
         Self {
-            inner: InnerError::Serde(Box::new(e))
+            inner: InnerError::Serde(Box::new(e)),
         }
     }
 }
-
 
 impl From<reqwest::Error> for Error {
     fn from(e: reqwest::Error) -> Self {
@@ -213,9 +211,9 @@ pub enum ErrorKind {
 // - msg field
 #[async_trait]
 pub trait Pusher<'b, M, R>
-    where
-        M: Sync,
-        R: Send,
+where
+    M: Sync,
+    R: Send,
 {
     const TOKEN_LIMIT: usize = 500;
 
@@ -232,7 +230,7 @@ pub trait Pusher<'b, M, R>
                 _ => false,
             },
         )
-            .await
+        .await
     }
 
     async fn retry_batch_push(&self, msgs: &'b [M]) -> Result<Vec<R>, Error> {
@@ -290,7 +288,7 @@ impl<'a> TryFrom<Message<'a>> for xiaomi::Message<'a> {
                     }),
                     ..Default::default()
                 }
-                    .into(),
+                .into(),
                 ..Default::default()
             },
         })
@@ -383,7 +381,9 @@ impl<'a> TryFrom<Message<'a>> for huawei::Message<'a> {
                             ticker: extra.map_or(None, |e| Some(e.ticker)),
                             click_action: extra
                                 .map(|e| huawei::ClickAction::new_intent(e.click_action))
-                                .ok_or(InnerError::MissingRequired("missing click action".to_string()))?,
+                                .ok_or(InnerError::MissingRequired(
+                                    "missing click action".to_string(),
+                                ))?,
                             visibility: extra.map_or(None, |e| match e.visibility {
                                 Visibility::Unspecified => Some(""),
                                 Visibility::Private => Some("PRIVATE"),
@@ -402,7 +402,6 @@ impl<'a> TryFrom<Message<'a>> for huawei::Message<'a> {
         }
     }
 }
-
 
 impl<'a> FromMessage<'a> for Vec<huawei::Message<'a>> {}
 
@@ -521,7 +520,6 @@ impl<'a> TryFrom<Message<'a>> for fcm::MulticastMessage<'a> {
     }
 }
 
-
 impl<'a> FromMessage<'a> for Vec<fcm::MulticastMessage<'a>> {}
 
 impl<'a> TryFrom<Message<'a>> for Vec<fcm::MulticastMessage<'a>> {
@@ -555,7 +553,6 @@ impl<'a> TryFrom<Message<'a>> for Vec<fcm::MulticastMessage<'a>> {
         Ok(msgs)
     }
 }
-
 
 #[cfg(feature = "wecom")]
 impl<'a> TryFrom<Message<'a>> for wecom::Message<'a> {
@@ -638,7 +635,6 @@ impl<'a> TryFrom<Message<'a>> for Vec<apns::Notification<'a>> {
     }
 }
 
-
 #[cfg(feature = "email")]
 impl<'a> FromMessage<'a> for email::Message<'a> {}
 
@@ -651,17 +647,14 @@ impl<'a> TryFrom<Message<'a>> for email::Message<'a> {
             Body::Transparent(_) => {
                 Err(InnerError::UnsupportedType("Transparent".to_string()).into())
             }
-            Body::Notify { title, body } => {
-                Ok(Self {
-                    title: title,
-                    body: body,
-                    to: msg.tokens,
-                })
-            }
+            Body::Notify { title, body } => Ok(Self {
+                title: title,
+                body: body,
+                to: msg.tokens,
+            }),
         }
     }
 }
-
 
 #[derive(Debug, Serialize_repr, Deserialize_repr, Clone)]
 #[repr(u8)]
@@ -854,7 +847,12 @@ impl Service {
                 let msg: wecom::Message = msg.try_into()?;
 
                 let resp = client.retry_push(&msg).await?;
-                let invalid_tokens: Vec<String> = resp.invaliduser.unwrap_or_default().split("|").map(|e| e.to_string()).collect();
+                let invalid_tokens: Vec<String> = resp
+                    .invaliduser
+                    .unwrap_or_default()
+                    .split("|")
+                    .map(|e| e.to_string())
+                    .collect();
 
                 let res = PushResult {
                     request_id: resp.msgid,
@@ -905,7 +903,7 @@ impl Service {
             Client::Email(client) => {
                 let mut res = PushResults::default();
                 let msg = msg.try_into()?;
-                match client.retry_push(&msg).await{
+                match client.retry_push(&msg).await {
                     Ok(resp) => {}
                     Err(_) => {}
                 }
@@ -940,29 +938,25 @@ mod tests {
             client_secret: &client_secret,
             project_id: &project_id,
         })
-            .unwrap();
-
+        .unwrap();
 
         let client_id = std::env::var("WECOM_CLIENT_ID").unwrap();
         let client_secret = std::env::var("WECOM_CLIENT_SECRET").unwrap();
-        let agent_id = std::env::var("WECOM_AGENT_ID").unwrap().parse::<i64>().expect("");
+        let agent_id = std::env::var("WECOM_AGENT_ID")
+            .unwrap()
+            .parse::<i64>()
+            .expect("");
 
         #[cfg(feature = "wecom")]
-            let wecom_ = wecom::Client::new(
-            &client_id,
-            &client_secret,
-            agent_id,
-        )
+        let wecom_ = wecom::Client::new(&client_id, &client_secret, agent_id)
             .await
             .unwrap();
-
 
         let client_id = std::env::var("GOOGLE_CLIENT_ID").unwrap();
         let client_email = std::env::var("GOOGLE_CLIENT_EMAIL").unwrap();
         let private_id = std::env::var("GOOGLE_PRIVATE_ID").unwrap();
         let private_key = std::env::var("GOOGLE_PRIVATE_KEY").unwrap();
         let project_id = std::env::var("GOOGLE_PROJECT_ID").unwrap();
-
 
         let mut fcm_ = fcm::Client::new(fcm::Config {
             key_type: "service_account".to_string().into(),
@@ -982,7 +976,8 @@ mod tests {
             addr: "socks5://127.0.0.1:7890",
             user: None,
             pass: None,
-        }).await;
+        })
+        .await;
 
         let apns_ = apns::Client::new(b"", "pass").unwrap();
 
@@ -1035,7 +1030,7 @@ mod tests {
     #[test]
     #[cfg(feature = "huawei")]
     fn test_huawei_msg() {
-        use crate::{Message, huawei, Body};
+        use crate::{huawei, Body, Message};
         let mut tokens = Vec::new();
         for i in 0..1100 {
             tokens.push(i.to_string());
@@ -1063,7 +1058,7 @@ mod tests {
     #[test]
     #[cfg(feature = "fcm")]
     fn test_fcm_msg() {
-        use crate::{Message, fcm, Body};
+        use crate::{fcm, Body, Message};
         let mut tokens = Vec::new();
         for i in 0..1100 {
             tokens.push(i.to_string());
