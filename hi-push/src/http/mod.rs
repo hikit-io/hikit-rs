@@ -1,11 +1,12 @@
 use std::sync::Arc;
 
 use axum::{
+    extract::Query,
     http::{header, Request, StatusCode},
     middleware::{self, Next},
     response,
-    routing::get,
     routing::post,
+    routing::{delete, get},
     Extension, Json, Router,
 };
 
@@ -43,7 +44,7 @@ async fn auth<B>(mut req: Request<B>, next: Next<B>) -> Result<response::Respons
             .expect("missing extension `service::App`");
 
         let _ = app
-            .valid_app(client_id, client_secret)
+            .validate_app(client_id, client_secret)
             .await
             .map_err(|e| StatusCode::UNAUTHORIZED)?;
 
@@ -143,7 +144,7 @@ pub async fn push_transparent(
     Extension(app): Extension<Arc<service::App>>,
     Extension(Auth(client_id, _)): Extension<Auth>,
     Json(params): Json<PushTransparentParams>,
-) -> Json<Response<RevokeTokenResp>> {
+) -> Json<Response> {
     let res = app
         .push_message(&client_id, service::Message::Transparent(params))
         .await;
@@ -163,21 +164,21 @@ pub async fn push_notification(
     Extension(app): Extension<Arc<service::App>>,
     Extension(Auth(client_id, _)): Extension<Auth>,
     Json(params): Json<PushNotificationParams>,
-) -> Json<Response<RevokeTokenResp>> {
-    let res = app
+) -> Json<Response<PushResp>> {
+    let resp = match app
         .push_message(&client_id, service::Message::Notification(params))
-        .await;
+        .await
+    {
+        Ok(res) => Response {
+            data: Some(res),
+            code: Default::default(),
+            msg: Default::default(),
+            errors: Default::default(),
+        },
+        Err(e) => e.into(),
+    };
 
-    let mut resp = ResponseBuilder::default();
-
-    match res {
-        Ok(_) => {}
-        Err(e) => {
-            resp.errors(Some(vec![e.to_string()]));
-        }
-    }
-
-    Json(resp.build().unwrap())
+    Json(resp)
 }
 
 pub async fn ping() -> Json<Response<String>> {
@@ -193,9 +194,50 @@ pub async fn create_channel(
     Extension(Auth(client_id, _)): Extension<Auth>,
     Json(params): Json<PublicChannel>,
 ) -> Json<Response> {
-    let _ = app.create_channel(&client_id, params).await;
-    let resp = ResponseBuilder::default().build().unwrap();
+    let resp = match app.create_channel(&client_id, params).await {
+        Ok(ch_id) => ResponseBuilder::default()
+            .data(Some(ch_id))
+            .build()
+            .unwrap(),
+        Err(e) => e.into(),
+    };
     Json(resp)
+}
+
+pub async fn delete_channel(
+    Extension(app): Extension<Arc<service::App>>,
+    Extension(Auth(client_id, _)): Extension<Auth>,
+    Query(params): Query<DeleteChannelParams>,
+) -> Json<Response> {
+    let resp = match app.delete_channel(&client_id, &params.ch_id).await {
+        Ok(_) => ResponseBuilder::default().build().unwrap(),
+        Err(e) => e.into(),
+    };
+    Json(resp)
+}
+
+pub async fn fetch_channels(
+    Extension(app): Extension<Arc<service::App>>,
+    Extension(Auth(client_id, _)): Extension<Auth>,
+) -> Json<Response<Vec<Channel>>> {
+    let resp = match app.fetch_channels(&client_id).await {
+        Ok(chans) => ResponseBuilder::default()
+            .data(Some(chans))
+            .build()
+            .unwrap(),
+        Err(e) => e.into(),
+    };
+    Json(resp)
+}
+
+pub async fn delete_app(
+    Extension(app): Extension<Arc<service::App>>,
+    Extension(Auth(client_id, client_secret)): Extension<Auth>,
+) -> Json<Response> {
+    match app.delete_app(&client_id, &client_secret).await {
+        Ok(_) => Json(ResponseBuilder::default().build().unwrap()),
+        Err(e) => Json(e.into()),
+    }
 }
 
 pub async fn create_app(
@@ -204,6 +246,15 @@ pub async fn create_app(
 ) -> Json<Response<App>> {
     match app.create_app(&params.name).await {
         Ok(app) => Json(ResponseBuilder::default().data(Some(app)).build().unwrap()),
+        Err(e) => Json(e.into()),
+    }
+}
+
+pub async fn fetch_applications(
+    Extension(app): Extension<Arc<service::App>>,
+) -> Json<Response<Vec<App>>> {
+    match app.fetch_apps().await {
+        Ok(apps) => Json(ResponseBuilder::default().data(Some(apps)).build().unwrap()),
         Err(e) => Json(e.into()),
     }
 }
@@ -222,6 +273,7 @@ pub async fn status(
     Json(resp)
 }
 
+#[inline]
 pub fn api_router() -> axum::Router {
     axum::Router::new()
         .route("/register", post(register_token))
@@ -229,23 +281,28 @@ pub fn api_router() -> axum::Router {
         .route("/transparent", post(push_transparent))
         .route("/notification", post(push_notification))
         .route("/ping", get(ping))
+        .route("/channels", get(fetch_channels))
         .route("/channel", post(create_channel))
-        .route("/appliction", post(create_app))
+        .route("/channel", delete(delete_channel))
+        .route("/applications", get(fetch_applications))
+        .route("/application", post(create_app))
+        .route("/application", delete(delete_app))
         .route("/status", get(status))
 }
 
-//
-//pub struct Addr(pub String);
-//
-//impl ServiceOption for Addr {
-//    fn apply(&self, r: &mut Router) {}
-//}
-//
-//pub struct SelfRoute;
-//
-//impl ServiceOption for SelfRoute {
-//    fn apply(&self, r: &mut Router) {}
-//}
+///Example:
+///
+///pub struct Addr(pub String);
+///
+///impl ServiceOption for Addr {
+///    fn apply(&self, r: &mut Router) {}
+///}
+///
+///pub struct SelfRoute;
+///
+///impl ServiceOption for SelfRoute {
+///    fn apply(&self, r: &mut Router) {}
+///}
 pub trait ServiceOption {
     fn apply(&self, r: &mut Router);
 }

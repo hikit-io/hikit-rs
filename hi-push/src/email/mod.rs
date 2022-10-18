@@ -21,13 +21,11 @@ pub struct PushResult<'a> {
 
 #[derive(Debug, PartialEq)]
 pub struct Response<'a> {
-    results: Vec<PushResult<'a>>,
+    pub results: Vec<PushResult<'a>>,
 }
 
 pub struct Client {
     client_id: String,
-    // client_secret: &'a str,
-    // push_url: &'a str,
     cli: SmtpTransport,
 }
 
@@ -45,8 +43,6 @@ impl Client {
 
         Self {
             client_id: client_id.to_string(),
-            // client_secret,
-            // push_url,
             cli: mailer,
         }
     }
@@ -71,11 +67,7 @@ impl<'b> super::Pusher<'b, Message<'b>, Response<'b>> for Client {
             };
 
             let msg = match lettre::Message::builder()
-                .from(
-                    format!("AgoraVideoCall <{}>", self.client_id)
-                        .parse()
-                        .unwrap(),
-                )
+                .from(format!("<{}>", self.client_id).parse().unwrap())
                 .to(to_mail)
                 .body(msg.body.to_string())
             {
@@ -92,11 +84,21 @@ impl<'b> super::Pusher<'b, Message<'b>, Response<'b>> for Client {
 
             match self.cli.send(&msg) {
                 // @todo handle _resp
-                Ok(_resp) => results.push(PushResult {
-                    email: to,
-                    success: true,
-                    reason: None,
-                }),
+                Ok(resp) => {
+                    if resp.is_positive() {
+                        results.push(PushResult {
+                            email: to,
+                            success: true,
+                            reason: None,
+                        });
+                    } else {
+                        results.push(PushResult {
+                            email: to,
+                            success: false,
+                            reason: Some(resp.code().to_string()),
+                        });
+                    }
+                }
                 Err(e) => results.push(PushResult {
                     email: to,
                     success: false,
@@ -119,10 +121,11 @@ mod tests {
         let client_secret = std::env::var("EMAIL_CLIENT_SECRET").unwrap();
 
         let cli = super::Client::new(&client_id, &client_secret, "smtp.office365.com").await;
+        let to = vec!["public@hikit.io", "1234"];
         let msg = super::Message {
             title: "Hello Email",
             body: "This is test.",
-            to: vec!["public@hikit.io", "1234"],
+            to: to.as_slice(),
         };
         let res = cli.retry_push(&msg).await;
         println!("{:?}", res);

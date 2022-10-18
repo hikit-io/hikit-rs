@@ -62,7 +62,7 @@ pub enum WecomExtra<'a> {
     Text { url: &'a str, btntxt: &'a str },
 }
 
-#[derive(Debug, Default)]
+#[derive(Debug, Default, Serialize)]
 pub struct PushResult {
     pub request_id: String,
     pub code: String,
@@ -72,7 +72,7 @@ pub struct PushResult {
     pub invalid_tokens: Vec<String>,
 }
 
-#[derive(Debug, Default)]
+#[derive(Debug, Default, Serialize)]
 pub struct PushResults {
     pub success: i64,
     pub failure: i64,
@@ -574,6 +574,8 @@ impl<'a> TryFrom<Message<'a>> for wecom::Message<'a> {
                     br.inner(wecom::InnerMesssage::Text { content: body });
                 }
 
+                br.to(wecom::To::Touser(msg.tokens.join("|")));
+
                 if let Some(extra) = extra {
                     match extra {
                         WecomExtra::Markdown(mark) => {
@@ -849,12 +851,16 @@ impl Service {
                 let msg: wecom::Message = msg.try_into()?;
 
                 let resp = client.retry_push(&msg).await?;
-                let invalid_tokens: Vec<String> = resp
-                    .invaliduser
-                    .unwrap_or_default()
-                    .split("|")
-                    .map(|e| e.to_string())
-                    .collect();
+
+                let invalid_tokens = resp.invaliduser.unwrap_or_default();
+                let invalid_tokens = if !invalid_tokens.is_empty() {
+                    invalid_tokens
+                        .split("|")
+                        .map(|e| e.to_string())
+                        .collect::<Vec<String>>()
+                } else {
+                    vec![]
+                };
 
                 let res = PushResult {
                     request_id: resp.msgid,
@@ -866,8 +872,8 @@ impl Service {
                 };
 
                 Ok(PushResults {
-                    success: 0,
-                    failure: 0,
+                    success: res.success,
+                    failure: res.failure,
                     results: vec![res],
                 })
             }
@@ -905,9 +911,23 @@ impl Service {
             Client::Email(client) => {
                 let mut res = PushResults::default();
                 let msg = msg.try_into()?;
-                match client.retry_push(&msg).await {
-                    Ok(resp) => {}
-                    Err(_) => {}
+                let resp = client.retry_push(&msg).await?;
+                for resp in resp.results {
+                    if resp.success {
+                        res.success += 1;
+                        res.results.push(PushResult {
+                            success: 1,
+                            ..Default::default()
+                        });
+                    } else {
+                        res.failure += 1;
+                        res.results.push(PushResult {
+                            failure: 1,
+                            invalid_tokens: vec![resp.email.to_string()],
+                            reason: resp.reason.unwrap_or_default(),
+                            ..Default::default()
+                        });
+                    }
                 }
                 Ok(res)
             }

@@ -55,6 +55,23 @@ pub async fn fetch_all_channels(mongo: &mongodb::Database) -> anyhow::Result<Vec
         .await?)
 }
 
+pub async fn fetch_channels_by_client_id(
+    mongo: &mongodb::Database,
+    client_id: &str,
+) -> anyhow::Result<Vec<Channel>> {
+    Ok(mongo
+        .collection("channel")
+        .find(
+            doc! {
+                "appId":client_id,
+            },
+            None,
+        )
+        .await?
+        .try_collect::<Vec<_>>()
+        .await?)
+}
+
 /// fetch_tokens
 pub async fn fetch_tokens(
     mongo: &mongodb::Database,
@@ -104,7 +121,7 @@ pub async fn valid_client_id_and_ch_ids(
     client_id: &str,
     ch_ids: &[String],
 ) -> anyhow::Result<()> {
-    let mut res = mongo
+    let res = mongo
         .collection::<Channel>("channel")
         .find(
             doc! {
@@ -325,4 +342,62 @@ pub async fn create_app(db: &mongodb::Database, name: &str) -> anyhow::Result<Ap
     };
     db.collection::<App>("app").insert_one(&app, None).await?;
     Ok(app)
+}
+
+pub async fn fetch_apps(db: &mongodb::Database) -> anyhow::Result<Vec<App>> {
+    let apps = db.collection::<App>("app").find(doc! {}, None).await?;
+    Ok(apps.try_collect::<Vec<App>>().await?)
+}
+
+pub async fn delete_app(
+    db: &mongodb::Database,
+    client_id: &str,
+    client_secret: &str,
+) -> anyhow::Result<()> {
+    let _ = db
+        .collection::<App>("app")
+        .delete_one(
+            doc! {
+                "clientId":client_id,
+                "clientSecret":client_secret,
+            },
+            None,
+        )
+        .await?;
+    let _ = delete_channel_by_client_id(db, client_id).await?;
+    Ok(())
+}
+
+async fn delete_channel_by_client_id(
+    db: &mongodb::Database,
+    client_id: &str,
+) -> anyhow::Result<()> {
+    let _ = db
+        .collection::<Channel>("channel")
+        .delete_many(
+            doc! {
+                "appId":client_id,
+            },
+            None,
+        )
+        .await?;
+    Ok(())
+}
+
+pub async fn delete_channel(
+    db: &mongodb::Database,
+    client_id: &str,
+    ch_id: &str,
+) -> anyhow::Result<()> {
+    let _ = db
+        .collection::<Channel>("app")
+        .delete_one(
+            doc! {
+                "clientId":client_id,
+                "chId":ch_id,
+            },
+            None,
+        )
+        .await?;
+    Ok(())
 }

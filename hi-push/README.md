@@ -7,7 +7,7 @@
 | Xiaomi   | 500  | 1000      |              |      |
 | Huawei   | 6000 | 1000      |              | 4kb  |
 | Email    |      |           |              |      |
-| Wecom    |      |           |              |      |
+| Wecom    |      | 1000      |              |      |
 | AgoraRtm |      |           |              |      |
 
 # Arch

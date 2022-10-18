@@ -1,4 +1,4 @@
-use std::{sync::Arc};
+use std::sync::Arc;
 
 use derive_builder::Builder;
 use serde::{Deserialize, Serialize};
@@ -113,11 +113,16 @@ impl<'b> super::Pusher<'b, Message<'b>, Response> for Client {
             return Err(super::RetryError::Auth("token expired or invalid".to_string()).into());
         }
 
+        let text = serde_json::to_string(msg).unwrap();
+
+        let text = text.replace("\"agentid\":0", &format!("\"agentid\":{}", self.agentid));
+
         let resp = self
             .cli
             .post("https://qyapi.weixin.qq.com/cgi-bin/message/send")
             .query(&[("access_token", &token.access_token)])
-            .json(msg)
+            .header("Content-Type", "application/json;encode=utf-8")
+            .body(text)
             .send()
             .await;
 
@@ -203,7 +208,7 @@ impl<'a> MessageBuilder<'a> {
 #[derive(Debug, Serialize, Clone)]
 #[serde(rename_all = "snake_case")]
 pub enum To<'a> {
-    Touser(&'a str),
+    Touser(String),
     Toparty(&'a str),
     Totag(&'a str),
 }
@@ -263,19 +268,17 @@ mod tests {
 
         let client_id = std::env::var("WECOM_CLIENT_ID").unwrap();
         let client_secret = std::env::var("WECOM_CLIENT_SECRET").unwrap();
-        let agent_id = std::env::var("WECOM_AGENT_ID").unwrap().parse::<i64>().expect("");
+        let agent_id = std::env::var("WECOM_AGENT_ID")
+            .unwrap()
+            .parse::<i64>()
+            .expect("");
 
-
-        let cli = Client::new(
-            &client_id,
-            &client_secret,
-            agent_id,
-        )
+        let cli = Client::new(&client_id, &client_secret, agent_id)
             .await
             .unwrap();
 
         let msg = MessageBuilder::default()
-            .to(To::Touser("nieaowei"))
+            .to(To::Touser("nieaowei".to_string()))
             .agentid(cli.agentid())
             .inner(InnerMesssage::Text {
                 content: "hello harmongy",

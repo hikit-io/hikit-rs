@@ -1,9 +1,11 @@
+use std::collections::HashMap;
+
 use derive_builder::Builder;
 use mongodb::bson::oid::ObjectId;
 use serde::{Deserialize, Serialize};
 use serde_repr::{Deserialize_repr, Serialize_repr};
 
-#[derive(Debug, Serialize_repr, Deserialize_repr, Default)]
+#[derive(Debug, Serialize_repr, Deserialize_repr, Default, Clone)]
 #[repr(i32)]
 pub enum ChannelType {
     #[default]
@@ -54,7 +56,7 @@ pub struct App {
     auth_provider_x509_cert_url: todo!(),
     client_x509_cert_url: todo!(),
 */
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct Channel {
     #[cfg(feature = "mongo")]
@@ -131,7 +133,7 @@ impl Default for Channel {
 /*
     Token
 */
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct Token {
     #[cfg(feature = "mongo")]
@@ -333,4 +335,18 @@ pub struct Running {
 #[serde(rename_all = "camelCase")]
 pub struct CreateAppParams {
     pub name: String,
+}
+
+#[derive(Debug, Deserialize, Clone)]
+#[serde(rename_all = "camelCase")]
+pub struct DeleteChannelParams {
+    pub ch_id: String,
+}
+
+#[derive(Debug, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct PushResp {
+    pub success: i64,
+    pub failure: i64,
+    pub results: HashMap<String, crate::PushResults>,
 }

@@ -64,11 +64,13 @@ impl App {
         Ok(())
     }
 
+    /// Channel ids on running
     pub async fn running_ch_ids(&self) -> Vec<String> {
         let pushers = self.service.pushers.read().await;
         pushers.iter().map(|e| e.0.clone()).collect()
     }
 
+    /// Add channel client to memory
     pub async fn register_client(&self, chan: &model::Channel) -> anyhow::Result<()> {
         match Self::new_client(chan).await {
             Ok(cli) => {
@@ -82,6 +84,12 @@ impl App {
         Ok(())
     }
 
+    /// Remove channel client from memory.
+    pub async fn deregister_client(&self, ch_id: &str) {
+        self.service.remove_client(ch_id).await;
+    }
+
+    /// Create a new channel client by config.
     pub async fn new_client(conf: &model::Channel) -> anyhow::Result<super::Client> {
         Ok(match conf._type {
             #[cfg(feature = "xiaomi")]
@@ -228,7 +236,12 @@ impl App {
         })
     }
 
-    pub async fn push_message(&self, client_id: &str, msg: Message) -> anyhow::Result<()> {
+    /// Push message
+    pub async fn push_message(
+        &self,
+        client_id: &str,
+        msg: Message,
+    ) -> anyhow::Result<model::PushResp> {
         let (groups, channels) = match &msg {
             Message::Transparent(msg) => (msg.groups.as_slice(), msg.channels.as_slice()),
             Message::Notification(msg) => (msg.groups.as_slice(), msg.channels.as_slice()),
@@ -255,10 +268,10 @@ impl App {
             }
         }
 
-        let mut push_results = PushResults {
+        let mut push_results = model::PushResp {
             success: 0,
             failure: 0,
-            results: Vec::new(),
+            results: Default::default(),
         };
 
         let body = match &msg {
@@ -287,12 +300,14 @@ impl App {
                     },
                 )
                 .await?;
-            println!("{push_res:?}");
-            // push_results.results.push(push_res);
+            push_results.success += push_res.success;
+            push_results.failure += push_res.failure;
+            push_results.results.insert(chan.to_string(), push_res);
         }
-        Ok(())
+        Ok(push_results)
     }
 
+    /// Register token
     pub async fn register_token(
         &self,
         client_id: &str,
@@ -311,6 +326,7 @@ impl App {
         Ok(())
     }
 
+    /// Revoke token
     pub async fn revoke_token(
         &self,
         client_id: &str,
@@ -328,11 +344,12 @@ impl App {
         Ok(())
     }
 
+    /// Create a channel.
     pub async fn create_channel(
         &self,
         app_id: &str,
         params: model::PublicChannel,
-    ) -> anyhow::Result<()> {
+    ) -> anyhow::Result<String> {
         let channel = match &self.db {
             #[cfg(feature = "mongo")]
             Database::Mongo(db) => create_channel(db, app_id, params).await?,
@@ -342,9 +359,19 @@ impl App {
             .service
             .register_client(channel.ch_id.as_str(), cli)
             .await;
-        Ok(())
+        Ok(channel.ch_id)
     }
 
+    /// Fetch channels from database belong client_id .
+    pub async fn fetch_channels(&self, client_id: &str) -> anyhow::Result<Vec<model::Channel>> {
+        let channels = match &self.db {
+            #[cfg(feature = "mongo")]
+            Database::Mongo(db) => fetch_channels_by_client_id(db, client_id).await?,
+        };
+        Ok(channels)
+    }
+
+    /// Create application.
     pub async fn create_app(&self, name: &str) -> anyhow::Result<model::App> {
         let app = match &self.db {
             #[cfg(feature = "mongo")]
@@ -353,8 +380,37 @@ impl App {
         Ok(app)
     }
 
-    pub async fn valid_app(&self, client_id: &str, client_secret: &str) -> anyhow::Result<()> {
-        let app = match &self.db {
+    /// Fecth applications from database.
+    pub async fn fetch_apps(&self) -> anyhow::Result<Vec<model::App>> {
+        let apps = match &self.db {
+            #[cfg(feature = "mongo")]
+            Database::Mongo(db) => fetch_apps(db).await?,
+        };
+        Ok(apps)
+    }
+
+    /// Delete application from database.
+    pub async fn delete_app(&self, client_id: &str, client_secret: &str) -> anyhow::Result<()> {
+        let _ = match &self.db {
+            #[cfg(feature = "mongo")]
+            Database::Mongo(db) => delete_app(db, client_id, client_secret).await?,
+        };
+        Ok(())
+    }
+
+    /// Delete channel from database.
+    pub async fn delete_channel(&self, client_id: &str, ch_id: &str) -> anyhow::Result<()> {
+        let _ = match &self.db {
+            #[cfg(feature = "mongo")]
+            Database::Mongo(db) => delete_channel(db, client_id, ch_id).await?,
+        };
+        self.deregister_client(ch_id).await;
+        Ok(())
+    }
+
+    /// Validate client_id and client_secret.
+    pub async fn validate_app(&self, client_id: &str, client_secret: &str) -> anyhow::Result<()> {
+        let _ = match &self.db {
             #[cfg(feature = "mongo")]
             Database::Mongo(db) => fetch_app(db, client_id, client_secret).await?,
         };
@@ -363,22 +419,4 @@ impl App {
 }
 
 #[cfg(test)]
-mod tests {
-    // #[derive(Debug)]
-    // struct Context<'a, 'b> {
-    //     name: &'a str,
-    //     vars: Vec<&'b str>,
-    // }
-    //
-    // #[test]
-    // fn test_it() {
-    //     let mut ctx = Context {
-    //         name: "",
-    //         vars: Vec::default(),
-    //     };
-    //     {
-    //         let b = String::from("dd");
-    //         ctx.vars.push(&b);
-    //     }
-    // }
-}
+mod tests {}
