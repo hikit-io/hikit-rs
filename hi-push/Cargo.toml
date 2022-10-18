@@ -52,6 +52,7 @@ lettre = { version = "0.10.1", optional = true }
 uuid = { version = "1.1.2", optional = true, features = ["serde"] }
 # http
 axum = { version = "0.5.16", optional = true, features = ["http2", "headers", "ws"] }
+base64 = {version = "0.13.0",optional = true }
 # grpc
 tonic = { version = "0.8.0", optional = true }
 # xiaomi or huawei or fcm
@@ -83,7 +84,7 @@ wecom = ["flatten-json-object"]
 rtm = []
 
 grpc-api = ["tonic"]
-http-api = ["axum"]
+http-api = ["axum","uuid","base64"]
 
 mongo = ["mongodb", "futures"]
 mysql = ["sea-orm"]

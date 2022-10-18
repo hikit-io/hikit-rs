@@ -27,12 +27,13 @@ pub enum ChannelType {
 /*
     App
 */
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct App {
     #[cfg(feature = "mongo")]
     #[serde(rename = "_id")]
     pub id: ObjectId,
+    pub name: String,
     pub client_id: String,
     pub client_secret: String,
 
@@ -136,6 +137,7 @@ pub struct Token {
     #[cfg(feature = "mongo")]
     #[serde(rename = "_id")]
     pub id: ObjectId,
+    pub app_id: String,
     pub ch_id: String,
     pub group: String,
     pub token: String,
@@ -154,6 +156,7 @@ impl Default for Token {
             create_ts: chrono::Utc::now().timestamp(),
             update_ts: chrono::Utc::now().timestamp(),
             group: Default::default(),
+            app_id: Default::default(),
         }
     }
 }
@@ -179,19 +182,24 @@ pub struct Response<T = String> {
     pub data: Option<T>,
     #[builder(default)]
     pub msg: String,
+    #[builder(default)]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub errors: Option<Vec<String>>,
 }
 
 impl<T> From<anyhow::Error> for Response<T> {
     fn from(e: anyhow::Error) -> Self {
         Self {
             code: Code::Err,
-            data: None,
+            data: Option::<T>::None,
             msg: e.to_string(),
+            errors: None,
         }
     }
 }
 
 #[derive(Serialize, Clone)]
+#[serde(rename_all = "camelCase")]
 pub struct RegisterTokenResp {
     pub(crate) success: u64,
     pub(crate) failure: u64,
@@ -209,25 +217,29 @@ pub struct RegisterTokenParams {
 }
 
 #[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct RevokeTokenParams {
     pub group: String,
     pub token: String,
-    pub chan: String,
+    pub ch_id: String,
 }
 
 #[derive(Serialize, Clone)]
+#[serde(rename_all = "camelCase")]
 pub struct RevokeTokenResp {
-    pub(crate) success: u64,
-    pub(crate) failure: u64,
+    pub success: u64,
+    pub failure: u64,
     pub failure_tokens: Vec<String>,
 }
 
 #[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct Condition {
     pub channels: Vec<String>,
 }
 
 #[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct Options {
     pub condition: Condition,
 }
@@ -249,6 +261,7 @@ pub struct PushTransparentParams {
 }
 
 #[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct PushNotificationParams {
     pub groups: Vec<String>,
     pub channels: Vec<String>,
@@ -259,6 +272,7 @@ pub struct PushNotificationParams {
 }
 
 #[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct PlatformParams {
     pub android: String,
     pub apns: String,
@@ -310,6 +324,13 @@ pub enum PublicChannel {
 }
 
 #[derive(Debug, Serialize, Clone)]
+#[serde(rename_all = "camelCase")]
 pub struct Running {
-    pub(crate) ch_ids: Vec<String>,
+    pub ch_ids: Vec<String>,
+}
+
+#[derive(Debug, Deserialize, Clone)]
+#[serde(rename_all = "camelCase")]
+pub struct CreateAppParams {
+    pub name: String,
 }

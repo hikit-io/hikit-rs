@@ -1,32 +1,87 @@
 use std::sync::Arc;
 
 use axum::{
-    routing::post,
-    Extension,
-    Json,
+    http::{header, Request, StatusCode},
+    middleware::{self, Next},
+    response,
     routing::get,
+    routing::post,
+    Extension, Json, Router,
 };
-
 
 use crate::service::{self, model::*};
 
+#[derive(Clone)]
+pub struct Auth(String, String);
+
+async fn auth<B>(mut req: Request<B>, next: Next<B>) -> Result<response::Response, StatusCode> {
+    let token = req
+        .headers()
+        .get(header::AUTHORIZATION)
+        .and_then(|header| header.to_str().ok())
+        .ok_or(StatusCode::UNAUTHORIZED)?;
+    let mut tokens = token.split(" ").collect::<Vec<_>>();
+
+    let token = if tokens.len() != 2 {
+        return Err(StatusCode::UNAUTHORIZED);
+    } else {
+        tokens.pop().unwrap()
+    };
+
+    let token = String::from_utf8(base64::decode(token).map_err(|e| StatusCode::UNAUTHORIZED)?)
+        .map_err(|e| StatusCode::UNAUTHORIZED)?;
+
+    let user_pass = token.split(":").collect::<Vec<_>>();
+    if user_pass.len() != 2 {
+        return Err(StatusCode::UNAUTHORIZED);
+    }
+
+    if let [client_id, client_secret] = user_pass[..] {
+        let app = req
+            .extensions()
+            .get::<Arc<service::App>>()
+            .expect("missing extension `service::App`");
+
+        let _ = app
+            .valid_app(client_id, client_secret)
+            .await
+            .map_err(|e| StatusCode::UNAUTHORIZED)?;
+
+        req.extensions_mut()
+            .insert(Auth(user_pass[0].to_string(), user_pass[1].to_string()));
+        return Ok(next.run(req).await);
+    }
+
+    Err(StatusCode::UNAUTHORIZED)
+}
+
 pub async fn register_token(
     Extension(app): Extension<Arc<service::App>>,
+    Extension(Auth(client_id, _)): Extension<Auth>,
     Json(params): Json<Vec<RegisterTokenParams>>,
 ) -> Json<Response<RegisterTokenResp>> {
     let mut success = 0;
     let mut failure = 0;
     let mut failure_tokens = Vec::new();
+    let mut errors = Vec::new();
     for params in params {
         match app
-            .register_token(&params.group, &params.ch_id, &params.token, params._override)
-            .await {
+            .register_token(
+                &client_id,
+                &params.group,
+                &params.ch_id,
+                &params.token,
+                params._override,
+            )
+            .await
+        {
             Ok(_) => {
                 success += 1;
             }
             Err(e) => {
                 failure += 1;
                 failure_tokens.push(params.token);
+                errors.push(e.to_string());
             }
         }
     }
@@ -37,33 +92,39 @@ pub async fn register_token(
             failure,
             failure_tokens,
         }))
-        .build().unwrap();
+        .errors(Some(errors))
+        .build()
+        .unwrap();
 
     Json(resp)
 }
 
 pub async fn revoke_token(
     Extension(app): Extension<Arc<service::App>>,
-    Json(params): Json<Vec<RegisterTokenParams>>,
+    Extension(Auth(client_id, _)): Extension<Auth>,
+    Json(params): Json<Vec<RevokeTokenParams>>,
 ) -> Json<Response<RevokeTokenResp>> {
     let mut success = 0;
     let mut failure = 0;
     let mut failure_tokens = Vec::new();
 
+    let mut errors = Vec::new();
+
     for param in params.into_iter() {
         match app
-            .revoke_token(&param.group, &param.ch_id, &param.token)
-            .await {
+            .revoke_token(&client_id, &param.group, &param.ch_id, &param.token)
+            .await
+        {
             Ok(_) => {
                 success += 1;
             }
             Err(e) => {
                 failure += 1;
                 failure_tokens.push(param.token);
+                errors.push(e.to_string());
             }
         }
     }
-
 
     let resp = ResponseBuilder::default()
         .data(Some(RevokeTokenResp {
@@ -71,60 +132,95 @@ pub async fn revoke_token(
             failure,
             failure_tokens,
         }))
-        .build().unwrap();
+        .errors(Some(errors))
+        .build()
+        .unwrap();
 
     Json(resp)
 }
 
 pub async fn push_transparent(
     Extension(app): Extension<Arc<service::App>>,
+    Extension(Auth(client_id, _)): Extension<Auth>,
     Json(params): Json<PushTransparentParams>,
 ) -> Json<Response<RevokeTokenResp>> {
     let res = app
-        .push_message(service::Message::Transparent(params))
+        .push_message(&client_id, service::Message::Transparent(params))
         .await;
 
-    let resp = ResponseBuilder::default().build().unwrap();
-    Json(resp)
+    let mut resp = ResponseBuilder::default();
+    match res {
+        Ok(_) => {}
+        Err(e) => {
+            resp.errors(Some(vec![e.to_string()]));
+        }
+    }
+
+    Json(resp.build().unwrap())
 }
 
 pub async fn push_notification(
     Extension(app): Extension<Arc<service::App>>,
+    Extension(Auth(client_id, _)): Extension<Auth>,
     Json(params): Json<PushNotificationParams>,
 ) -> Json<Response<RevokeTokenResp>> {
     let res = app
-        .push_message(service::Message::Notification(params))
+        .push_message(&client_id, service::Message::Notification(params))
         .await;
 
-    let resp = ResponseBuilder::default().build().unwrap();
-    Json(resp)
+    let mut resp = ResponseBuilder::default();
+
+    match res {
+        Ok(_) => {}
+        Err(e) => {
+            resp.errors(Some(vec![e.to_string()]));
+        }
+    }
+
+    Json(resp.build().unwrap())
 }
 
 pub async fn ping() -> Json<Response<String>> {
-    let resp = ResponseBuilder::<String>::default().msg("PONG".to_string()).build().unwrap();
+    let resp = ResponseBuilder::<String>::default()
+        .msg("PONG".to_string())
+        .build()
+        .unwrap();
     Json(resp)
 }
 
 pub async fn create_channel(
     Extension(app): Extension<Arc<service::App>>,
+    Extension(Auth(client_id, _)): Extension<Auth>,
     Json(params): Json<PublicChannel>,
 ) -> Json<Response> {
-    let _ = app.create_channel("app_id", params).await;
+    let _ = app.create_channel(&client_id, params).await;
     let resp = ResponseBuilder::default().build().unwrap();
     Json(resp)
 }
 
+pub async fn create_app(
+    Extension(app): Extension<Arc<service::App>>,
+    Json(params): Json<CreateAppParams>,
+) -> Json<Response<App>> {
+    match app.create_app(&params.name).await {
+        Ok(app) => Json(ResponseBuilder::default().data(Some(app)).build().unwrap()),
+        Err(e) => Json(e.into()),
+    }
+}
+
 pub async fn status(
     Extension(app): Extension<Arc<service::App>>,
+    Extension(Auth(client_id, _)): Extension<Auth>,
 ) -> Json<Response<Running>> {
     let resp = ResponseBuilder::default()
         .data(Some(Running {
             ch_ids: app.running_ch_ids().await,
         }))
-        .build().unwrap();
+        .msg(client_id)
+        .build()
+        .unwrap();
     Json(resp)
 }
-
 
 pub fn api_router() -> axum::Router {
     axum::Router::new()
@@ -134,15 +230,47 @@ pub fn api_router() -> axum::Router {
         .route("/notification", post(push_notification))
         .route("/ping", get(ping))
         .route("/channel", post(create_channel))
+        .route("/appliction", post(create_app))
         .route("/status", get(status))
 }
 
-pub async fn start(mut app: service::App) -> anyhow::Result<()> {
+//
+//pub struct Addr(pub String);
+//
+//impl ServiceOption for Addr {
+//    fn apply(&self, r: &mut Router) {}
+//}
+//
+//pub struct SelfRoute;
+//
+//impl ServiceOption for SelfRoute {
+//    fn apply(&self, r: &mut Router) {}
+//}
+pub trait ServiceOption {
+    fn apply(&self, r: &mut Router);
+}
+
+pub async fn start(
+    mut app: service::App,
+    addr: impl Into<Option<&str>>,
+    options: Option<Vec<Box<dyn ServiceOption>>>,
+) -> anyhow::Result<()> {
     app.init().await.expect("app init error");
-    let router = axum::Router::new().nest("/api", api_router()).layer(Extension(Arc::new(app)));
-    Ok(axum::Server::bind(&"0.0.0.0:8080".parse().unwrap())
-        .serve(router.into_make_service())
-        .await?)
+    let mut router = axum::Router::new()
+        .nest("/api", api_router())
+        .layer(middleware::from_fn(auth))
+        .layer(Extension(Arc::new(app)));
+
+    for option in options.unwrap_or_default().into_iter() {
+        let option: Box<dyn ServiceOption> = option.into();
+        option.apply(&mut router);
+    }
+
+    Ok(
+        axum::Server::bind(&addr.into().unwrap_or("0.0.0.0:8080").parse().unwrap())
+            .serve(router.into_make_service())
+            .await?,
+    )
 }
 
 #[cfg(test)]

@@ -11,6 +11,8 @@ use tokio::sync::RwLock;
 #[cfg(all(feature = "mysql", feature = "mongo"))]
 compile_error!("mysql and mongo not enable both.");
 
+mod utils;
+
 #[cfg(feature = "apns")]
 pub mod apns;
 #[cfg(feature = "email")]
