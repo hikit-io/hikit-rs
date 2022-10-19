@@ -1,8 +1,81 @@
-use failure::Fail;
+use std::collections::HashMap;
+
 use reqwest::StatusCode;
 use serde::{Deserialize, Serialize};
 use serde_repr::{Deserialize_repr, Serialize_repr};
 use uuid::Uuid;
+
+/// The reason for a failure returned by the APN api.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+#[serde(rename_all = "PascalCase")]
+pub enum ApiErrorReason {
+    BadCollapseId,
+    BadDeviceToken,
+    BadExpirationDate,
+    BadMessageId,
+    BadPriority,
+    BadTopic,
+    DeviceTokenNotForTopic,
+    DuplicateHeaders,
+    IdleTimeout,
+    MissingDeviceToken,
+    MissingTopic,
+    PayloadEmpty,
+    TopicDisallowed,
+    BadCertificate,
+    BadCertificateEnvironment,
+    ExpiredProviderToken,
+    Forbidden,
+    InvalidProviderToken,
+    MissingProviderToken,
+    BadPath,
+    MethodNotAllowed,
+    Unregistered,
+    PayloadTooLarge,
+    TooManyProviderTokenUpdates,
+    TooManyRequests,
+    InternalServerError,
+    ServiceUnavailable,
+    Shutdown,
+    Other(String),
+}
+
+impl ApiErrorReason {
+    fn to_str(&self) -> &str {
+        use self::ApiErrorReason::*;
+        match self {
+            &BadCollapseId => "BadCollapseId",
+            &BadDeviceToken => "BadDeviceToken",
+            &BadExpirationDate => "BadExpirationDate",
+            &BadMessageId => "BadMessageId",
+            &BadPriority => "BadPriority",
+            &BadTopic => "BadTopic",
+            &DeviceTokenNotForTopic => "DeviceTokenNotForTopic",
+            &DuplicateHeaders => "DuplicateHeaders",
+            &IdleTimeout => "IdleTimeout",
+            &MissingDeviceToken => "MissingDeviceToken",
+            &MissingTopic => "MissingTopic",
+            &PayloadEmpty => "PayloadEmpty",
+            &TopicDisallowed => "TopicDisallowed",
+            &BadCertificate => "BadCertificate",
+            &BadCertificateEnvironment => "BadCertificateEnvironment",
+            &ExpiredProviderToken => "ExpiredProviderToken",
+            &Forbidden => "Forbidden",
+            &InvalidProviderToken => "InvalidProviderToken",
+            &MissingProviderToken => "MissingProviderToken",
+            &BadPath => "BadPath",
+            &MethodNotAllowed => "MethodNotAllowed",
+            &Unregistered => "Unregistered",
+            &PayloadTooLarge => "PayloadTooLarge",
+            &TooManyProviderTokenUpdates => "TooManyProviderTokenUpdates",
+            &TooManyRequests => "TooManyRequests",
+            &InternalServerError => "InternalServerError",
+            &ServiceUnavailable => "ServiceUnavailable",
+            &Shutdown => "Shutdown",
+            &Other(ref val) => val,
+        }
+    }
+}
 
 /// APNS production endpoint.
 pub static APN_URL_PRODUCTION: &'static str = "https://api.push.apple.com";
@@ -15,7 +88,8 @@ pub static APN_URL_DEV: &'static str = "https://api.sandbox.push.apple.com";
 #[derive(Serialize_repr, Deserialize_repr, PartialEq, Eq, Clone, Copy, Debug)]
 #[repr(u8)]
 pub enum Priority {
-    Low = 1, // 5
+    Low = 1,
+    // 5
     Middle = 5,
     High = 10, // 10
 }
@@ -27,19 +101,18 @@ impl Priority {
     }
 }
 
-#[derive(Fail, Debug)]
-#[fail(display = "CollapseId too long (must be at most 64 bytes)")]
+#[derive(Debug)]
 pub struct CollapseIdTooLongError;
 
 /// Wrapper type for collapse ids.
 /// It may be an arbitrary string, but is limited in length to at most 63 bytes.
 #[derive(Serialize, Clone, Debug)]
-pub struct CollapseId(String);
+pub struct CollapseId<'a>(&'a str);
 
-impl CollapseId {
+impl<'a> CollapseId<'a> {
     /// Construct a new collapse id.
     /// Returns an error if id exceeds the maximum length of 64 bytes.
-    pub fn new(value: String) -> Result<Self, CollapseIdTooLongError> {
+    pub fn new(value: &'a str) -> Result<Self, CollapseIdTooLongError> {
         // CollapseID must be at most 64 bytes long.
         if value.len() > 64 {
             Err(CollapseIdTooLongError)
@@ -79,6 +152,7 @@ impl ApnsPushType {
         }
     }
 }
+
 /// Alert content for a notification.
 ///
 /// See the official documentation for details:
@@ -150,7 +224,9 @@ pub struct Payload<'a> {
 /// A full json request object for sending a notification to the API.
 #[derive(Serialize, Clone, Debug)]
 pub(crate) struct ApnsRequest<'a> {
-    pub aps: Payload<'a>,
+    pub aps: &'a Payload<'a>,
+    #[serde(flatten)]
+    pub custom: Option<&'a HashMap<&'a str, &'a str>>,
 }
 
 /// A notification struct contains all relevant data for a notification request
@@ -170,8 +246,9 @@ pub struct Notification<'a> {
     pub expiration: Option<u64>,
     /// Priority for the notification.
     pub priority: Option<Priority>,
-    pub collapse_id: Option<CollapseId>,
+    pub collapse_id: Option<CollapseId<'a>>,
     pub apns_push_type: Option<ApnsPushType>,
+    pub custom: Option<HashMap<&'a str, &'a str>>,
 }
 
 impl<'a> Notification<'a> {
@@ -186,6 +263,7 @@ impl<'a> Notification<'a> {
             priority: None,
             collapse_id: None,
             apns_push_type: None,
+            custom: None,
         }
     }
 }
@@ -202,22 +280,22 @@ impl<'a> NotificationBuilder<'a> {
         }
     }
 
-    pub fn push_type(mut self, push_type: ApnsPushType) -> Self {
+    pub fn push_type(&mut self, push_type: ApnsPushType) -> &mut Self {
         self.notification.apns_push_type = push_type.into();
         self
     }
 
-    pub fn payload(mut self, payload: Payload<'a>) -> Self {
+    pub fn payload(&mut self, payload: Payload<'a>) -> &mut Self {
         self.notification.payload = payload;
         self
     }
 
-    pub fn alert(mut self, alert: &'a str) -> Self {
+    pub fn alert(&mut self, alert: &'a str) -> &mut Self {
         self.notification.payload.alert = Some(Alert::Simple(alert.into()));
         self
     }
 
-    pub fn title(mut self, title: &'a str) -> Self {
+    pub fn title(&mut self, title: &'a str) -> &mut Self {
         let payload = match self.notification.payload.alert.take() {
             None => AlertPayload::new(Some(title), None),
             Some(Alert::Simple(_)) => AlertPayload::new(Some(title), None),
@@ -230,7 +308,7 @@ impl<'a> NotificationBuilder<'a> {
         self
     }
 
-    pub fn body(mut self, body: &'a str) -> Self {
+    pub fn body(&mut self, body: &'a str) -> &mut Self {
         let payload = match self.notification.payload.alert.take() {
             None => AlertPayload::new(None, Some(body)),
             Some(Alert::Simple(title)) => AlertPayload::new(Some(title), Some(body)),
@@ -243,48 +321,53 @@ impl<'a> NotificationBuilder<'a> {
         self
     }
 
-    pub fn badge(mut self, number: u32) -> Self {
+    pub fn badge(&mut self, number: u32) -> &mut Self {
         self.notification.payload.badge = Some(number);
         self
     }
 
-    pub fn sound(mut self, sound: &'a str) -> Self {
+    pub fn sound(&mut self, sound: &'a str) -> &mut Self {
         self.notification.payload.sound = Some(sound.into());
         self
     }
 
-    pub fn content_available(mut self) -> Self {
+    pub fn content_available(&mut self) -> &mut Self {
         self.notification.payload.content_available = Some(true);
         self
     }
 
-    pub fn category(mut self, category: &'a str) -> Self {
+    pub fn category(&mut self, category: &'a str) -> &mut Self {
         self.notification.payload.category = Some(category);
         self
     }
 
-    pub fn thread_id(mut self, thread_id: &'a str) -> Self {
+    pub fn thread_id(&mut self, thread_id: &'a str) -> &mut Self {
         self.notification.payload.thread_id = Some(thread_id);
         self
     }
 
-    pub fn id(mut self, id: Uuid) -> Self {
+    pub fn id(&mut self, id: Uuid) -> &mut Self {
         self.notification.id = Some(id);
         self
     }
 
-    pub fn expiration(mut self, expiration: u64) -> Self {
+    pub fn expiration(&mut self, expiration: u64) -> &mut Self {
         self.notification.expiration = Some(expiration);
         self
     }
 
-    pub fn priority(mut self, priority: Priority) -> Self {
+    pub fn priority(&mut self, priority: Priority) -> &mut Self {
         self.notification.priority = Some(priority);
         self
     }
 
-    pub fn collapse_id(mut self, id: CollapseId) -> Self {
+    pub fn collapse_id(&mut self, id: CollapseId<'a>) -> &mut Self {
         self.notification.collapse_id = Some(id);
+        self
+    }
+
+    pub fn custom(&mut self, custom: HashMap<&'a str, &'a str>) -> &mut Self {
+        self.notification.custom = Some(custom);
         self
     }
 
@@ -295,16 +378,18 @@ impl<'a> NotificationBuilder<'a> {
 
 #[derive(Debug, Deserialize)]
 pub struct Response {
-    pub reason: String,
+    pub reason: ApiErrorReason,
     pub timestamp: Option<i64>,
+    pub token: String,
 
     pub apns_id: String,
     #[serde(skip)]
     pub(crate) status_code: StatusCode,
 }
 
-// impl Response {
-//     fn is_ok(&self) -> bool {
-//         self.status_code.is_success()
-//     }
-// }
+#[derive(Debug, Default)]
+pub struct BatchResponse {
+    pub success: i64,
+    pub failure: i64,
+    pub responses: Vec<Response>,
+}

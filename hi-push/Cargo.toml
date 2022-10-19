@@ -1,8 +1,92 @@
 [package]
 name = "hi-push"
-version = "0.1.0"
+version = "0.0.1"
 edition = "2021"
+description = "Third-party push service integration library. Include apns,fcm,xiaomi,huawei,wecom and email."
+license = "MIT"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[[example]]
+name = "simple"
 
 [dependencies]
+reqwest = { version = "0.11.12", features = ["json", "socks", "multipart", "native-tls", "stream"] }
+tokio = "1.20.1"
+
+tracing = "0.1.36"
+tracing-subscriber = { version = "0.3.15", features = ["json"] }
+
+serde = "1.0.144"
+serde_repr = "0.1.9"
+serde_json = "1.0.85"
+
+openssl = { version = "^0.10", features = ["vendored"] }
+async-trait = "0.1.57"
+derive_builder = "0.11.2"
+governor = "0.5"
+chrono = "0.4.22"
+tokio-retry = "0.3.0"
+
+hyper-socks2 = { version = "0.7.0", features = ["tls"], default-features = false }
+hyper-tls = "0.5.0"
+
+anyhow = { version = "1.0.65" }
+thiserror = { version = "1.0.37" }
+
+# mongo
+mongodb = { version = "2.3.0", optional = true }
+futures = { version = "0.3.24", optional = true }
+# mysql
+sea-orm = { version = "0.9.2", optional = true, features = ["sqlx-mysql", "runtime-tokio-native-tls", "macros"] }
+# fcm
+hyper = { version = "0.14.20", optional = true, features = ["client"] }
+hi-hyper-multipart = { version = "0.0.2", optional = true }
+multer = { version = "2.0.4", optional = true }
+http = { version = "0.2.8", optional = true }
+yup-oauth2 = { version = "7.0.1", optional = true }
+httpcodec = { version = "0.2.3", optional = true }
+bytecodec = { version = "0.4.15", optional = true }
+# email
+lettre = { version = "0.10.1", optional = true }
+# apn
+uuid = { version = "1.1.2", optional = true, features = ["serde"] }
+# http
+axum = { version = "0.5.16", optional = true, features = ["http2", "headers", "ws"] }
+base64 = {version = "0.13.0",optional = true }
+# grpc
+tonic = { version = "0.8.0", optional = true }
+# xiaomi or huawei or fcm
+flatten-json-object = { version = "0.6.1", optional = true }
+# huawei
+oauth2 = { version = "4.2.3", optional = true }
+
+[features]
+default = ["fcm", "email", "huawei", "apns", "xiaomi", "wecom", "rtm", "grpc-api", "http-api", "mongo"]
+full = ["fcm", "email", "huawei", "apns", "xiaomi", "wecom", "rtm", "grpc-api", "http-api", "mongo"]
+fcm = [
+    "http",
+    "yup-oauth2",
+    "httpcodec",
+    "hi-hyper-multipart",
+    "flatten-json-object",
+    "bytecodec",
+    "multer",
+    "uuid",
+    "hyper",
+]
+email = [
+    "lettre"
+]
+huawei = ["oauth2"]
+apns = ["uuid"]
+xiaomi = ["flatten-json-object"]
+wecom = ["flatten-json-object"]
+rtm = []
+
+grpc-api = ["tonic"]
+http-api = ["axum","uuid","base64"]
+
+mongo = ["mongodb", "futures"]
+mysql = ["sea-orm"]
+
+cache = []
