@@ -5,6 +5,8 @@ use mongodb::bson::oid::ObjectId;
 use serde::{Deserialize, Serialize};
 use serde_repr::{Deserialize_repr, Serialize_repr};
 
+use crate::apns;
+
 #[derive(Debug, Serialize_repr, Deserialize_repr, Default, Clone)]
 #[repr(i32)]
 pub enum ChannelType {
@@ -270,27 +272,75 @@ pub struct PushNotificationParams {
     pub title: String,
     pub body: String,
     #[serde(flatten)]
-    pub platform_extra: Option<PlatformParams>,
+    pub platform_extra: PlatformParams,
+}
+
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub enum WecomExtra {
+    Markdown(bool),
+    Text { url: String, btntxt: String },
+}
+#[derive(Debug, Clone, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ApnsExtra {
+    pub topic: String,
+    pub push_type: apns::ApnsPushType,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct AndroidExtra {
+    pub collapse_key: Option<i64>,
+    pub priority: Option<crate::Priority>,
+    pub ttl: Option<i64>,
+    pub title: Option<String>,
+    pub body: Option<String>,
+    pub icon: Option<String>,
+    pub color: Option<String>,
+    pub sound: Option<String>,
+    pub tag: Option<String>,
+
+    // huawei required
+    pub click_action: Option<String>,
+    pub body_loc_key: Option<String>,
+    pub body_loc_args: Option<Vec<String>>,
+    pub title_loc_key: Option<String>,
+    pub title_loc_args: Option<Vec<String>>,
+    pub channel_id: Option<String>,
+    pub image: Option<String>,
+    pub ticker: Option<String>,
+    pub visibility: Option<crate::Visibility>,
+    // xiaomi required
+    pub package_name: Option<String>,
+    // huawei
+    pub auto_clear: Option<i8>,
+    // huawei and xiaomi
+    pub foreground_show: Option<bool>,
+    // xiaomi
+    pub notify_id: Option<i32>,
 }
 
 #[derive(Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct PlatformParams {
-    pub android: String,
-    pub apns: String,
-    pub wecom: String,
-    pub rtm: String,
+    pub android: Option<AndroidExtra>,
+    pub apns: Option<ApnsExtra>,
+    pub wecom: Option<WecomExtra>,
+    pub rtm: Option<String>,
 }
 
 #[derive(Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub enum PublicChannel {
+    #[cfg(feature = "wecom")]
     #[serde(rename_all = "camelCase")]
     Wecom {
         client_id: String,
         client_secret: String,
         agentid: i64,
     },
+    #[cfg(feature = "fcm")]
     #[serde(rename_all = "camelCase")]
     Fcm {
         key_type: String,
@@ -302,24 +352,34 @@ pub enum PublicChannel {
         auth_provider_x509_cert_url: String,
         client_x509_cert_url: String,
     },
+    #[cfg(feature = "email")]
     #[serde(rename_all = "camelCase")]
     Email {
         client_id: String,
         client_secret: String,
         addr: String,
     },
+    #[cfg(feature = "xiaomi")]
     #[serde(rename_all = "camelCase")]
     Xiaomi {
         client_id: String,
         client_secret: String,
     },
+    #[cfg(feature = "apns")]
     #[serde(rename_all = "camelCase")]
     Apns {
         client_id: String,
         client_secret: String,
     },
+    #[cfg(feature = "huawei")]
     #[serde(rename_all = "camelCase")]
     Huawei {
+        client_id: String,
+        client_secret: String,
+    },
+    #[cfg(feature = "rtm")]
+    #[serde(rename_all = "camelCase")]
+    AgoraRtm {
         client_id: String,
         client_secret: String,
     },

@@ -2,7 +2,7 @@ use futures::TryStreamExt;
 use mongodb::bson::doc;
 use mongodb::options;
 
-use crate::utils::{self, now_ts};
+use crate::utils::now_ts;
 
 use super::model::*;
 
@@ -239,6 +239,7 @@ pub async fn create_channel(
     pc: PublicChannel,
 ) -> anyhow::Result<Channel> {
     let channel = match pc {
+        #[cfg(feature = "wecom")]
         PublicChannel::Wecom {
             client_id,
             client_secret,
@@ -251,6 +252,7 @@ pub async fn create_channel(
             agentid: Some(agentid),
             ..Default::default()
         },
+        #[cfg(feature = "fcm")]
         PublicChannel::Fcm {
             key_type,
             private_key_id,
@@ -274,6 +276,7 @@ pub async fn create_channel(
             client_x509_cert_url: Some(client_x509_cert_url),
             ..Default::default()
         },
+        #[cfg(feature = "email")]
         PublicChannel::Email {
             client_id,
             client_secret,
@@ -287,6 +290,7 @@ pub async fn create_channel(
             addr: Some(addr),
             ..Default::default()
         },
+        #[cfg(feature = "xiaomi")]
         PublicChannel::Xiaomi {
             client_id,
             client_secret,
@@ -298,6 +302,7 @@ pub async fn create_channel(
             client_secret: Some(client_secret),
             ..Default::default()
         },
+        #[cfg(feature = "apns")]
         PublicChannel::Apns {
             client_id,
             client_secret,
@@ -309,12 +314,25 @@ pub async fn create_channel(
             client_secret: Some(client_secret),
             ..Default::default()
         },
+        #[cfg(feature = "huawei")]
         PublicChannel::Huawei {
             client_id,
             client_secret,
         } => Channel {
             app_id: app_id.to_string(),
             _type: ChannelType::Huawei,
+
+            client_id: Some(client_id),
+            client_secret: Some(client_secret),
+            ..Default::default()
+        },
+        #[cfg(feature = "rtm")]
+        PublicChannel::AgoraRtm {
+            client_id,
+            client_secret,
+        } => Channel {
+            app_id: app_id.to_string(),
+            _type: ChannelType::Rtm,
 
             client_id: Some(client_id),
             client_secret: Some(client_secret),

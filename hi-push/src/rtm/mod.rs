@@ -7,7 +7,7 @@ pub struct Client {
     client_secret: String,
 }
 
-#[derive(Serialize)]
+#[derive(Debug, Serialize)]
 pub struct Msg<'a> {
     destination: &'a str,
     enable_offline_messaging: Option<bool>, // under 1.5
@@ -18,9 +18,7 @@ pub struct Msg<'a> {
 impl Client {
     const PUSH_URL: &'static str = "";
     pub fn new(client_id: &str, client_secret: &str) -> Result<Self, super::Error> {
-        let cli = reqwest::Client::builder()
-            .build()
-            .unwrap();
+        let cli = reqwest::Client::builder().build().unwrap();
         Ok(Self {
             cli,
             client_id: client_id.to_string(),
@@ -31,8 +29,9 @@ impl Client {
 
 #[async_trait]
 impl<'b> super::Pusher<'b, Msg<'b>, ()> for Client {
-    async fn push(&self, msg: &'b Msg) -> Result<(), super::Error> {
-        let req = self.cli
+    async fn push(&self, _msg: &'b Msg) -> Result<(), super::Error> {
+        let _req = self
+            .cli
             .post(Client::PUSH_URL)
             .basic_auth(&self.client_id, Some(&self.client_secret))
             .send();

@@ -1,32 +1,37 @@
 mod model;
 
-
 use std::str::FromStr;
 
 use async_trait::async_trait;
 use bytecodec::{
     bytes::{BytesEncoder, RemainingBytesDecoder},
-    Encode,
     io::{IoDecodeExt, IoEncodeExt},
+    Encode,
 };
-use http::Uri;
-use httpcodec::{BodyDecoder, BodyEncoder, HeaderField, HttpVersion, Method, RequestEncoder, RequestTarget, ResponseDecoder};
-use yup_oauth2 as oauth2;
-use hyper_tls::HttpsConnector;
-use hyper_socks2::SocksConnector;
 use hi_hyper_multipart as multipart;
+use http::Uri;
+use httpcodec::{
+    BodyDecoder, BodyEncoder, HeaderField, HttpVersion, Method, RequestEncoder, RequestTarget,
+    ResponseDecoder,
+};
 use hyper::client::connect::dns::GaiResolver;
 use hyper::client::HttpConnector;
+use hyper_socks2::SocksConnector;
+use hyper_tls::HttpsConnector;
 use reqwest::Proxy;
 use serde::Deserialize;
+use yup_oauth2 as oauth2;
 use yup_oauth2::AccessToken;
 
 pub use model::*;
 
 pub type Config = yup_oauth2::ServiceAccountKey;
 
-type ProxyAuthClient = oauth2::authenticator::Authenticator<HttpsConnector<SocksConnector<HttpConnector<GaiResolver>>>>;
-type CommonAuthClient = oauth2::authenticator::Authenticator<HttpsConnector<HttpConnector<GaiResolver>>>;
+type ProxyAuthClient = oauth2::authenticator::Authenticator<
+    HttpsConnector<SocksConnector<HttpConnector<GaiResolver>>>,
+>;
+type CommonAuthClient =
+    oauth2::authenticator::Authenticator<HttpsConnector<HttpConnector<GaiResolver>>>;
 
 enum InnerAuthClient {
     Common(CommonAuthClient),
@@ -47,9 +52,7 @@ pub struct ProxyConfig<'a> {
 }
 
 impl Client {
-    pub async fn new<'a>(
-        conf: Config,
-    ) -> Result<Self, super::Error> {
+    pub async fn new<'a>(conf: Config) -> Result<Self, super::Error> {
         let project_id = conf.project_id.clone().unwrap();
 
         let mut connector = HttpConnector::new();
@@ -77,15 +80,15 @@ impl Client {
     const DEFAULT_BATCH_ENDPOINT: &'static str = "https://fcm.googleapis.com/batch";
 
     #[inline]
-    fn build_parent(&self) -> String {
-        format!("projects/{}", self.project_id)
-    }
-
-    #[inline]
     fn build_single_url(&self) -> String {
-        format!("{}/projects/{}/messages:send", Self::DEFAULT_MESSAGING_ENDPOINT, self.project_id)
+        format!(
+            "{}/projects/{}/messages:send",
+            Self::DEFAULT_MESSAGING_ENDPOINT,
+            self.project_id
+        )
     }
 
+    /// Returns the build batch url of this [`Client`].
     #[inline]
     fn build_batch_url(&self) -> String {
         format!("{}", Self::DEFAULT_BATCH_ENDPOINT)
@@ -103,14 +106,15 @@ impl Client {
             auth,
             connector,
         }
-            .with_tls()
-            .unwrap();
+        .with_tls()
+        .unwrap();
         let cli = hyper::Client::builder().build(conn);
         let auth = oauth2::ServiceAccountAuthenticator::builder(self.conf.clone())
             .hyper_client(cli.clone())
             .build()
             .await
-            .map_err(|e| super::RetryError::Auth(e.to_string())).unwrap();
+            .map_err(|e| super::RetryError::Auth(e.to_string()))
+            .unwrap();
 
         let mut proxy = Proxy::all(config.addr).unwrap();
         if let Some(user) = config.user {
@@ -122,7 +126,10 @@ impl Client {
         self
     }
 
-    pub async fn multicast_send<'b>(&self, msg: &MulticastMessage<'b>) -> Result<BatchResponse, super::Error> {
+    pub async fn multicast_send<'b>(
+        &self,
+        msg: &MulticastMessage<'b>,
+    ) -> Result<BatchResponse, super::Error> {
         let mut form = multipart::Form::new();
 
         for (index, &token) in msg.tokens.iter().enumerate() {
@@ -142,16 +149,21 @@ impl Client {
                     webpush: msg.webpush.clone(),
                 }),
                 validate_only: None,
-            }).unwrap();
+            })
+            .unwrap();
 
             let mut buf = Vec::new();
             let mut req = httpcodec::Request::new(
                 Method::new("POST").unwrap(),
                 RequestTarget::new(&*self.build_single_url()).unwrap(),
-                HttpVersion::V1_1, text);
+                HttpVersion::V1_1,
+                text,
+            );
 
-            req.header_mut().add_field(HeaderField::new("Content-Type", "application/json").unwrap());
-            req.header_mut().add_field(HeaderField::new("User-Agent", "").unwrap());
+            req.header_mut()
+                .add_field(HeaderField::new("Content-Type", "application/json").unwrap());
+            req.header_mut()
+                .add_field(HeaderField::new("User-Agent", "").unwrap());
 
             encoder.start_encoding(req).unwrap();
 
@@ -177,8 +189,13 @@ impl Client {
 
         let url = self.build_batch_url();
 
-        let mut resp = self.http.post(url)
-            .header("Content-Type", format!("multipart/mixed; boundary={}", boundary))
+        let mut resp = self
+            .http
+            .post(url)
+            .header(
+                "Content-Type",
+                format!("multipart/mixed; boundary={}", boundary),
+            )
             .bearer_auth(token.as_str())
             .body(form.stream())
             .send()
@@ -186,13 +203,15 @@ impl Client {
             .unwrap();
         let headers = std::mem::take(resp.headers_mut());
 
-        let ct = headers.get("Content-Type").clone().map_or("", |e| e.to_str().unwrap());
+        let ct = headers
+            .get("Content-Type")
+            .clone()
+            .map_or("", |e| e.to_str().unwrap());
         let boundary = ct.split("=").collect::<Vec<_>>().pop().unwrap_or_default();
 
         let mut mr = multer::Multipart::new(resp.bytes_stream(), boundary);
 
-        let mut decoder =
-            ResponseDecoder::<BodyDecoder<RemainingBytesDecoder>>::default();
+        let mut decoder = ResponseDecoder::<BodyDecoder<RemainingBytesDecoder>>::default();
 
         let mut return_resp = BatchResponse {
             success_count: 0,
@@ -204,14 +223,16 @@ impl Client {
             let text = field.text().await.unwrap();
             let res = decoder.decode_exact(text.as_bytes()).unwrap();
 
-            let (res, body) = res.take_body();
+            let (_res, body) = res.take_body();
 
             let resp = serde_json::from_slice::<FcmResponse>(body.as_slice()).unwrap();
 
             match resp {
                 FcmResponse::Ok { name } => {
                     return_resp.success_count += 1;
-                    return_resp.responses.push(SendResponse::Ok { message_id: name });
+                    return_resp
+                        .responses
+                        .push(SendResponse::Ok { message_id: name });
                 }
                 FcmResponse::Error { mut error } => {
                     return_resp.failure_count += 1;
@@ -228,25 +249,22 @@ impl Client {
 
     async fn get_token(&self) -> Result<AccessToken, super::Error> {
         match &self.auth {
-            InnerAuthClient::Common(cli) => {
-                cli.token(&["https://www.googleapis.com/auth/firebase.messaging"]).await.map_err(|e| super::RetryError::Auth(e.to_string()).into())
-            }
-            InnerAuthClient::Proxy(cli) => {
-                cli.token(&["https://www.googleapis.com/auth/firebase.messaging"]).await.map_err(|e| super::RetryError::Auth(e.to_string()).into())
-            }
+            InnerAuthClient::Common(cli) => cli
+                .token(&["https://www.googleapis.com/auth/firebase.messaging"])
+                .await
+                .map_err(|e| super::RetryError::Auth(e.to_string()).into()),
+            InnerAuthClient::Proxy(cli) => cli
+                .token(&["https://www.googleapis.com/auth/firebase.messaging"])
+                .await
+                .map_err(|e| super::RetryError::Auth(e.to_string()).into()),
         }
     }
 }
 
 #[derive(Deserialize)]
 pub enum SendResponse {
-    Ok {
-        message_id: String,
-    },
-    Error {
-        token: String,
-        error: String,
-    },
+    Ok { message_id: String },
+    Error { token: String, error: String },
 }
 
 #[derive(Deserialize)]
@@ -259,12 +277,8 @@ pub struct BatchResponse {
 #[derive(Deserialize, Debug)]
 #[serde(untagged)]
 enum FcmResponse {
-    Ok {
-        name: String,
-    },
-    Error {
-        error: FcmError,
-    },
+    Ok { name: String },
+    Error { error: FcmError },
 }
 
 #[derive(Deserialize, Debug)]
@@ -280,10 +294,8 @@ struct FcmError {
     details: Vec<FcmErrorItem>,
 }
 
-
 #[async_trait]
 impl<'b> super::Pusher<'b, MulticastMessage<'b>, BatchResponse> for Client {
-
     const TOKEN_LIMIT: usize = 1000;
 
     async fn push(&self, msg: &'b MulticastMessage) -> Result<BatchResponse, crate::Error> {
@@ -320,8 +332,12 @@ mod test {
         })
             .await.unwrap();
 
-        fcm.with_proxy(ProxyConfig { addr: "socks5://127.0.0.1:7890", user: None, pass: None }).await;
-
+        fcm.with_proxy(ProxyConfig {
+            addr: "socks5://127.0.0.1:7890",
+            user: None,
+            pass: None,
+        })
+        .await;
 
         let res = fcm
             .multicast_send(&MulticastMessage {
@@ -334,5 +350,6 @@ mod test {
             })
             .await
             .unwrap();
+        println!("{:?}", res.success_count);
     }
 }

@@ -1,7 +1,7 @@
 mod types;
 
-use async_trait::async_trait;
 pub use self::types::*;
+use async_trait::async_trait;
 
 use super::Error;
 
@@ -99,28 +99,28 @@ impl Client {
         Ok(resp)
     }
 
-    pub async fn push<'b>(
-        &self,
-        notification: &'b [Notification<'_>],
-    ) -> Result<BatchResponse, Error> {
-        let mut resps = BatchResponse::default();
-
-        for notify in notification {
-            let resp = self._push(notify).await;
-            match resp {
-                Ok(res) => {
-                    if res.reason == ApiErrorReason::BadDeviceToken {
-                        resps.responses.push(res);
-                    }
-                }
-                Err(err) => {
-                    resps.failure += 1
-                }
-            }
-        }
-        resps.failure = (notification.len() as i64 - resps.success) as i64;
-        Ok(resps)
-    }
+    //    pub async fn push<'b>(
+    //        &self,
+    //        notification: &'b [Notification<'_>],
+    //    ) -> Result<BatchResponse, Error> {
+    //        let mut resps = BatchResponse::default();
+    //
+    //        for notify in notification {
+    //            let resp = self._push(notify).await;
+    //            match resp {
+    //                Ok(res) => {
+    //                    if res.reason == ApiErrorReason::BadDeviceToken {
+    //                        resps.responses.push(res);
+    //                    }
+    //                }
+    //                Err(err) => {
+    //                    resps.failure += 1
+    //                }
+    //            }
+    //        }
+    //        resps.failure = (notification.len() as i64 - resps.success) as i64;
+    //        Ok(resps)
+    //    }
 
     fn build_url(&self, device_token: &str) -> String {
         let root = if self.production {
@@ -142,7 +142,5 @@ impl<'a> super::Pusher<'a, Notification<'a>, Response> for Client {
 #[cfg(test)]
 mod test {
     #[test]
-    fn test_cert() {
-
-    }
+    fn test_cert() {}
 }

@@ -9,8 +9,7 @@ use std::collections::HashMap;
 #[cfg(feature = "mongo")]
 pub use mongo::*;
 
-use crate::service::model::Body;
-use crate::{apns, email, fcm, huawei, rtm, xiaomi, PushResults};
+use crate::{apns, email, fcm, huawei, rtm, service::model::Body, xiaomi};
 
 #[cfg(feature = "wecom")]
 use crate::wecom;
@@ -285,6 +284,91 @@ impl App {
             },
         };
 
+        let wecom = match &msg {
+            Message::Transparent(msg) => msg.platform_extra.wecom.as_ref(),
+            Message::Notification(msg) => msg.platform_extra.wecom.as_ref(),
+        }
+        .map_or(None, |wecom| {
+            match wecom {
+                model::WecomExtra::Markdown(ok) => crate::WecomExtra::Markdown(*ok),
+                model::WecomExtra::Text { url, btntxt } => crate::WecomExtra::Text {
+                    url: &url,
+                    btntxt: &btntxt,
+                },
+            }
+            .into()
+        });
+
+        let apns = match &msg {
+            Message::Transparent(msg) => msg.platform_extra.apns.as_ref(),
+            Message::Notification(msg) => msg.platform_extra.apns.as_ref(),
+        }
+        .map_or(None, |model::ApnsExtra { topic, push_type }| {
+            crate::ApnsExtra {
+                topic: topic,
+                push_type: push_type,
+            }
+            .into()
+        });
+
+        let android = match &msg {
+            Message::Transparent(msg) => msg.platform_extra.android.as_ref(),
+            Message::Notification(msg) => msg.platform_extra.android.as_ref(),
+        }
+        .map_or(
+            None,
+            |model::AndroidExtra {
+                 collapse_key,
+                 priority,
+                 ttl,
+                 title,
+                 body,
+                 icon,
+                 color,
+                 sound,
+                 tag,
+                 click_action,
+                 body_loc_key,
+                 body_loc_args,
+                 title_loc_key,
+                 title_loc_args,
+                 channel_id,
+                 image,
+                 ticker,
+                 visibility,
+                 package_name,
+                 auto_clear,
+                 foreground_show,
+                 notify_id,
+             }| {
+                crate::AndroidExtra {
+                    collapse_key: collapse_key.clone(),
+                    priority: priority.clone(),
+                    ttl: ttl.clone(),
+                    title: title.as_deref(),
+                    body: body.as_deref(),
+                    icon: icon.as_deref(),
+                    color: color.as_deref(),
+                    sound: sound.as_deref(),
+                    tag: tag.as_deref(),
+                    click_action: click_action.as_deref(),
+                    body_loc_key: body_loc_key.as_deref(),
+                    body_loc_args: body_loc_args.as_deref(),
+                    title_loc_key: title_loc_key.as_deref(),
+                    title_loc_args: title_loc_args.as_deref(),
+                    channel_id: channel_id.as_deref(),
+                    image: image.as_deref(),
+                    ticker: ticker.as_deref(),
+                    visibility: visibility.clone(),
+                    package_name: package_name.as_deref(),
+                    auto_clear: auto_clear.clone(),
+                    foreground_show: foreground_show.clone(),
+                    notify_id: notify_id.clone(),
+                }
+                .into()
+            },
+        );
+
         // push message by channel
         for (chan, tokens) in token_map {
             let push_res = self
@@ -294,9 +378,9 @@ impl App {
                     super::Message {
                         tokens: &tokens,
                         body: body,
-                        android: None,
-                        apns: None,
-                        wecom: None,
+                        android: android.as_ref(),
+                        apns: apns.as_ref(),
+                        wecom: wecom.as_ref(),
                     },
                 )
                 .await?;

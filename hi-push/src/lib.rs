@@ -53,7 +53,7 @@ pub enum Body<'a> {
 #[derive(Debug, Clone)]
 pub struct ApnsExtra<'a> {
     pub topic: &'a str,
-    pub push_type: apns::ApnsPushType,
+    pub push_type: &'a apns::ApnsPushType,
 }
 
 #[derive(Debug, Clone)]
@@ -83,9 +83,9 @@ pub struct PushResults {
 pub struct Message<'a> {
     pub tokens: &'a [&'a str],
     pub body: Body<'a>,
-    pub android: Option<AndroidExtra<'a>>,
-    pub apns: Option<ApnsExtra<'a>>,
-    pub wecom: Option<WecomExtra<'a>>,
+    pub android: Option<&'a AndroidExtra<'a>>,
+    pub apns: Option<&'a ApnsExtra<'a>>,
+    pub wecom: Option<&'a WecomExtra<'a>>,
 }
 
 #[derive(Debug, Error)]
@@ -214,7 +214,7 @@ pub enum ErrorKind {
 #[async_trait]
 pub trait Pusher<'b, M, R>
 where
-    M: Sync,
+    M: Sync + std::fmt::Debug,
     R: Send,
 {
     const TOKEN_LIMIT: usize = 500;
@@ -222,6 +222,8 @@ where
     async fn push(&self, msg: &'b M) -> Result<R, Error>;
 
     async fn retry_push(&self, msg: &'b M) -> Result<R, Error> {
+        tracing::info!("[retry_push] message:{:?}", msg);
+
         tokio_retry::RetryIf::spawn(
             tokio_retry::strategy::ExponentialBackoff::from_millis(2)
                 .factor(1000)
@@ -264,28 +266,27 @@ impl<'a> TryFrom<Message<'a>> for xiaomi::Message<'a> {
                 description: body,
                 registration_id: Some(msg.tokens.join(",")),
                 pass_through: xiaomi::Passtrough::Notice,
-                restricted_package_name: extra.map_or("", |v| v.package_name),
+                restricted_package_name: extra.map_or("", |v| v.package_name.unwrap_or("")),
                 extra: xiaomi::Extra {
                     notify_foreground: extra.map_or(None, |v| v.foreground_show.map(|v| v.into())),
-                    notify_effect: extra.map_or(None, |v| {
-                        if !v.click_action.is_empty() {
-                            Some(xiaomi::NotifyEffect::Intent)
-                        } else {
-                            None
+                    notify_effect: extra.map_or(None, |v| match v.click_action {
+                        None => None,
+                        Some(click_action) => {
+                            if click_action.is_empty() {
+                                None
+                            } else {
+                                Some(xiaomi::NotifyEffect::Intent)
+                            }
                         }
                     }),
-                    intent_uri: extra.map_or(None, |v| {
-                        if !v.click_action.is_empty() {
-                            Some(v.click_action)
-                        } else {
-                            None
-                        }
-                    }),
-                    job_key: extra.map_or(None, |v| {
-                        if !v.click_action.is_empty() {
-                            Some(v.click_action)
-                        } else {
-                            None
+                    intent_uri: extra.map_or(None, |v| match v.click_action {
+                        None => None,
+                        Some(click_action) => {
+                            if click_action.is_empty() {
+                                None
+                            } else {
+                                Some(click_action)
+                            }
                         }
                     }),
                     ..Default::default()
@@ -372,25 +373,28 @@ impl<'a> TryFrom<Message<'a>> for huawei::Message<'a> {
                         notification: Some(huawei::AndroidNotification {
                             sound: extra.map_or(None, |e| e.sound),
                             icon: extra.map_or(None, |e| e.icon),
-                            image: extra.map_or(None, |e| Some(e.image)),
+                            image: extra.map_or(None, |e| e.image),
                             tag: extra.map_or(None, |e| e.tag),
-                            body_loc_key: extra.map_or(None, |e| Some(e.body_loc_key)),
+                            body_loc_key: extra.map_or(None, |e| e.body_loc_key),
                             body_loc_args: extra.map_or(Default::default(), |e| e.body_loc_args),
-                            title_loc_key: extra
-                                .map_or(Default::default(), |e| Some(e.title_loc_key)),
+                            title_loc_key: extra.map_or(Default::default(), |e| e.title_loc_key),
                             title_loc_args: extra.map_or(Default::default(), |e| e.title_loc_args),
-                            channel_id: extra.map_or(None, |e| Some(e.channel_id)),
-                            ticker: extra.map_or(None, |e| Some(e.ticker)),
+                            channel_id: extra.map_or(None, |e| e.channel_id),
+                            ticker: extra.map_or(None, |e| e.ticker),
                             click_action: extra
-                                .map(|e| huawei::ClickAction::new_intent(e.click_action))
+                                .map_or(None, |e| {
+                                    e.click_action.map(|e| huawei::ClickAction::new_intent(e))
+                                })
                                 .ok_or(InnerError::MissingRequired(
                                     "missing click action".to_string(),
                                 ))?,
-                            visibility: extra.map_or(None, |e| match e.visibility {
-                                Visibility::Unspecified => Some(""),
-                                Visibility::Private => Some("PRIVATE"),
-                                Visibility::Public => Some("PUBLIC"),
-                                Visibility::Secret => Some("SECRET"),
+                            visibility: extra.map_or(None, |e| {
+                                match e.visibility.as_ref().unwrap_or(&Visibility::Unspecified) {
+                                    &Visibility::Unspecified => Some(""),
+                                    &Visibility::Private => Some("PRIVATE"),
+                                    &Visibility::Public => Some("PUBLIC"),
+                                    &Visibility::Secret => Some("SECRET"),
+                                }
                             }),
                             auto_clear: extra.map_or(None, |e| e.auto_clear),
                             foreground_show: extra.map_or(None, |e| e.foreground_show),
@@ -488,29 +492,47 @@ impl<'a> TryFrom<Message<'a>> for fcm::MulticastMessage<'a> {
                         sound: extra
                             .map_or(None, |e| e.sound.map_or(None, |e| Some(e.to_string()))),
                         icon: extra.map_or(None, |e| e.icon.map_or(None, |e| Some(e.to_string()))),
-                        image: extra.map_or(None, |e| Some(e.image.to_string())),
+                        image: extra.map_or(None, |e| match e.image {
+                            None => None,
+                            Some(e) => Some(e.to_string()),
+                        }),
                         tag: extra.map_or(None, |e| e.tag.map_or(None, |e| Some(e.to_string()))),
-                        body_loc_key: extra.map_or(None, |e| Some(e.body_loc_key.to_string())),
-                        body_loc_args: extra.map_or(None, |e| {
-                            Some(e.body_loc_args.iter().map(|e| e.to_string()).collect::<_>())
+                        body_loc_key: extra.map_or(None, |e| match e.body_loc_key {
+                            None => None,
+                            Some(e) => Some(e.to_string()),
                         }),
-                        title_loc_key: extra.map_or(None, |e| Some(e.title_loc_key.to_string())),
-                        title_loc_args: extra.map_or(None, |e| {
-                            Some(
-                                e.title_loc_args
-                                    .iter()
-                                    .map(|e| e.to_string())
-                                    .collect::<_>(),
-                            )
+                        body_loc_args: extra.map_or(None, |e| match e.body_loc_args {
+                            None => None,
+                            Some(e) => Some(e.to_vec()),
                         }),
-                        channel_id: extra.map_or(None, |e| Some(e.channel_id.to_string())),
-                        ticker: extra.map_or(None, |e| Some(e.ticker.to_string())),
-                        click_action: extra.map_or(None, |e| Some(e.click_action.to_string())),
-                        visibility: extra.map_or(None, |e| match e.visibility {
-                            Visibility::Unspecified => Some("".to_string()),
-                            Visibility::Private => Some("PRIVATE".to_string()),
-                            Visibility::Public => Some("PUBLIC".to_string()),
-                            Visibility::Secret => Some("SECRET".to_string()),
+                        title_loc_key: extra.map_or(None, |e| match e.title_loc_key {
+                            None => None,
+                            Some(e) => Some(e.to_string()),
+                        }),
+                        title_loc_args: extra.map_or(None, |e| match e.title_loc_args {
+                            None => None,
+                            Some(e) => Some(e.to_vec()),
+                        }),
+                        channel_id: extra.map_or(None, |e| match e.channel_id {
+                            None => None,
+                            Some(e) => Some(e.to_string()),
+                        }),
+                        ticker: extra.map_or(None, |e| match e.ticker {
+                            None => None,
+                            Some(e) => Some(e.to_string()),
+                        }),
+                        click_action: extra.map_or(None, |e| match e.click_action {
+                            None => None,
+                            Some(e) => Some(e.to_string()),
+                        }),
+                        visibility: extra.map_or(None, |e| match &e.visibility {
+                            None => Some("".to_string()),
+                            Some(e) => match e {
+                                &Visibility::Unspecified => Some("".to_string()),
+                                &Visibility::Private => Some("PRIVATE".to_string()),
+                                &Visibility::Public => Some("PUBLIC".to_string()),
+                                &Visibility::Secret => Some("SECRET".to_string()),
+                            },
                         }),
                         ..Default::default()
                     }),
@@ -689,17 +711,17 @@ pub struct AndroidExtra<'a> {
     pub tag: Option<&'a str>,
 
     // huawei required
-    pub click_action: &'a str,
-    pub body_loc_key: &'a str,
-    pub body_loc_args: &'a [&'a str],
-    pub title_loc_key: &'a str,
-    pub title_loc_args: &'a [&'a str],
-    pub channel_id: &'a str,
-    pub image: &'a str,
-    pub ticker: &'a str,
-    pub visibility: Visibility,
+    pub click_action: Option<&'a str>,
+    pub body_loc_key: Option<&'a str>,
+    pub body_loc_args: Option<&'a [String]>,
+    pub title_loc_key: Option<&'a str>,
+    pub title_loc_args: Option<&'a [String]>,
+    pub channel_id: Option<&'a str>,
+    pub image: Option<&'a str>,
+    pub ticker: Option<&'a str>,
+    pub visibility: Option<Visibility>,
     // xiaomi required
-    pub package_name: &'a str,
+    pub package_name: Option<&'a str>,
     // huawei
     pub auto_clear: Option<i8>,
     // huawei and xiaomi
@@ -887,7 +909,7 @@ impl Service {
                         res.results.push(PushResult {
                             request_id: resp.apns_id,
                             code: resp.status_code.to_string(),
-                            reason: serde_json::to_string(&resp.reason).unwrap(),
+                            reason: resp.reason.to_str().to_string(),
                             success: 1,
                             failure: 0,
                             invalid_tokens: vec![],
@@ -897,7 +919,7 @@ impl Service {
                         res.results.push(PushResult {
                             request_id: resp.apns_id,
                             code: resp.status_code.to_string(),
-                            reason: serde_json::to_string(&resp.reason).unwrap(),
+                            reason: resp.reason.to_str().to_string(),
                             success: 0,
                             failure: 1,
                             invalid_tokens: vec![resp.token],
@@ -932,8 +954,8 @@ impl Service {
                 Ok(res)
             }
             #[cfg(feature = "rtm")]
-            Client::Rtm(client) => {
-                let mut res = PushResults::default();
+            Client::Rtm(_client) => {
+                let res = PushResults::default();
                 Ok(res)
             }
         }

@@ -6,6 +6,7 @@ use lettre::{
     SmtpTransport, Transport,
 };
 
+#[derive(Debug)]
 pub struct Message<'a> {
     pub title: &'a str,
     pub body: &'a str,

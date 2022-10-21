@@ -29,8 +29,14 @@ async fn auth<B>(mut req: Request<B>, next: Next<B>) -> Result<response::Respons
         tokens.pop().unwrap()
     };
 
-    let token = String::from_utf8(base64::decode(token).map_err(|e| StatusCode::UNAUTHORIZED)?)
-        .map_err(|e| StatusCode::UNAUTHORIZED)?;
+    let token = String::from_utf8(base64::decode(token).map_err(|e| {
+        tracing::error!("[auth] decode base64 token:`{}`", e);
+        StatusCode::UNAUTHORIZED
+    })?)
+    .map_err(|e| {
+        tracing::error!("[auth] decode base64 token to str:`{}`", e);
+        StatusCode::UNAUTHORIZED
+    })?;
 
     let user_pass = token.split(":").collect::<Vec<_>>();
     if user_pass.len() != 2 {
@@ -46,7 +52,10 @@ async fn auth<B>(mut req: Request<B>, next: Next<B>) -> Result<response::Respons
         let _ = app
             .validate_app(client_id, client_secret)
             .await
-            .map_err(|e| StatusCode::UNAUTHORIZED)?;
+            .map_err(|e| {
+                tracing::error!("[auth] validate client_id and client_secret:`{}`", e);
+                StatusCode::UNAUTHORIZED
+            })?;
 
         req.extensions_mut()
             .insert(Auth(user_pass[0].to_string(), user_pass[1].to_string()));

@@ -24,7 +24,6 @@ pub struct Response {
 }
 
 impl Client {
-    const MAX_TOKEN: i32 = 1000;
 
     pub async fn new(
         client_id: &str,
@@ -240,7 +239,6 @@ pub enum InnerMesssage<'a> {
 }
 
 mod tests {
-    use crate::Pusher;
 
     #[test]
     fn test_msg_builder() {
@@ -265,6 +263,7 @@ mod tests {
     #[tokio::test]
     async fn test_client() {
         use super::*;
+        use crate::Pusher;
 
         let client_id = std::env::var("WECOM_CLIENT_ID").unwrap();
         let client_secret = std::env::var("WECOM_CLIENT_SECRET").unwrap();

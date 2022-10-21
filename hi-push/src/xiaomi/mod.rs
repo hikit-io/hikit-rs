@@ -13,7 +13,6 @@ pub struct Config<'a> {
 
 pub struct Client {
     cli: reqwest::Client,
-    client_secret: String,
 }
 
 #[derive(Debug, Serialize_repr, Deserialize_repr, Default, Clone)]
@@ -172,7 +171,6 @@ pub struct Response {
 }
 
 impl<'a> Client {
-    const TOKEN_LIMIT: i32 = 1000;
 
     const PUSH_URL: &'static str = "https://api.xmpush.xiaomi.com/v4/message/regid";
 
@@ -192,7 +190,9 @@ impl<'a> Client {
             .build()
             .map_err(|e| super::InnerError::Http(e.to_string()))?;
 
-        Ok(Client { cli, client_secret: conf.client_secret.to_string() })
+        Ok(Client {
+            cli,
+        })
     }
 }
 
@@ -239,19 +239,20 @@ mod tests {
             client_secret: &client_secret,
             project_id: &project_id,
         })
-            .unwrap();
+        .unwrap();
 
         let mut msg = Message::default();
-        msg.registration_id = Some("8whvC7gdG2QzNRZHUUPDQQ01laI9ZavQ/HbDTvEbHG2/XrY2Jj02nOAgZZx3T2Xw,12341".to_string());
+        msg.registration_id = Some(
+            "8whvC7gdG2QzNRZHUUPDQQ01laI9ZavQ/HbDTvEbHG2/XrY2Jj02nOAgZZx3T2Xw,12341".to_string(),
+        );
         msg.payload = Some("a=123");
         msg.extra = Extra {
             callback: "https://callback".into(),
             notify_foreground: Bool::True.into(),
             ..Default::default()
         }
-            .into();
+        .into();
         let resp = cli.push(&msg).await;
-
 
         println!("{resp:?}");
     }

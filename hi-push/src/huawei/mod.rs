@@ -1,5 +1,5 @@
-use std::{sync::Arc, time::Duration};
 use http::StatusCode;
+use std::{sync::Arc, time::Duration};
 
 use serde::{Deserialize, Serialize};
 use serde_repr::Serialize_repr;
@@ -13,7 +13,6 @@ use oauth2::{
 };
 use oauth2::{AuthUrl, ClientId, ClientSecret, TokenUrl};
 use tokio::sync::RwLock;
-use crate::InnerError;
 
 type Token = StandardTokenResponse<EmptyExtraTokenFields, BasicTokenType>;
 
@@ -28,7 +27,6 @@ type AuthClient = oauth2::Client<
 
 pub struct Client {
     client_id: String,
-    client_secret: String,
     auth: AuthClient,
     token: Arc<RwLock<Option<Token>>>,
     cli: reqwest::Client,
@@ -124,9 +122,9 @@ pub struct AndroidNotification<'a> {
     pub importance: Option<Importance>,
     pub click_action: ClickAction<'a>,
     pub body_loc_key: Option<&'a str>,
-    pub body_loc_args: &'a [&'a str],
+    pub body_loc_args: Option<&'a [String]>,
     pub title_loc_key: Option<&'a str>,
-    pub title_loc_args: &'a [&'a str],
+    pub title_loc_args: Option<&'a [String]>,
     pub channel_id: Option<&'a str>,
     pub notify_summary: Option<&'a str>,
     pub style: Option<Style>,
@@ -138,12 +136,12 @@ pub struct AndroidNotification<'a> {
     pub foreground_show: Option<bool>,
     pub ticker: Option<&'a str>,
     pub when: Option<&'a str>,
-    pub local_only: bool,
-    pub use_default_vibrate: bool,
-    pub use_default_light: bool,
+    pub local_only: Option<bool>,
+    pub use_default_vibrate: Option<bool>,
+    pub use_default_light: Option<bool>,
     pub visibility: Option<&'a str>,
-    pub vibrate_config: Vec<&'a str>,
-    pub light_settings: LightSettings<'a>,
+    pub vibrate_config: Option<&'a [String]>,
+    pub light_settings: Option<LightSettings<'a>>,
     pub auto_clear: Option<i8>,
 }
 
@@ -262,8 +260,7 @@ pub struct InvalidMsg {
 
 impl SendResponse {
     pub fn get_invalid_tokens(&self) -> Option<InvalidMsg> {
-        serde_json::from_str::<InvalidMsg>(self.msg.as_str())
-            .ok()
+        serde_json::from_str::<InvalidMsg>(self.msg.as_str()).ok()
     }
 
     pub fn is_part_failed_err(&self) -> bool {
@@ -273,19 +270,15 @@ impl SendResponse {
     pub fn take_invalid_tokens(&self) -> (Option<InvalidMsg>, bool) {
         (
             serde_json::from_str::<InvalidMsg>(self.msg.as_str()).ok(),
-            self.is_part_failed_err()
+            self.is_part_failed_err(),
         )
     }
 }
 
 impl Client {
     const TOKEN_URL: &'static str = "https://oauth-login.cloud.huawei.com/oauth2/v3/token";
-    const PUSH_URL: &'static str = "https://push-api.cloud.huawei.com/v2/{}/messages:send";
 
-    pub async fn new(
-        client_id: &str,
-        client_secret: &str,
-    ) -> Result<Client, super::Error> {
+    pub async fn new(client_id: &str, client_secret: &str) -> Result<Client, super::Error> {
         let auth = BasicClient::new(
             ClientId::new(client_id.to_string()),
             Some(ClientSecret::new(client_secret.to_string())),
@@ -306,7 +299,6 @@ impl Client {
         let res = Client {
             auth,
             client_id: client_id.to_string(),
-            client_secret: client_secret.to_string(),
             token: Default::default(),
             cli,
         };
@@ -354,7 +346,10 @@ impl Client {
 
     #[inline]
     fn build_push_url(&self) -> String {
-        format!("https://push-api.cloud.huawei.com/v1/{}/messages:send", self.client_id)
+        format!(
+            "https://push-api.cloud.huawei.com/v1/{}/messages:send",
+            self.client_id
+        )
     }
 }
 
@@ -403,9 +398,12 @@ impl<'b> super::Pusher<'b, Message<'b>, Response> for Client {
                 match resp.code {
                     Code::Success => {}
                     Code::PartFailedErr => {
-                        res.success = invalid.as_ref().map_or(msg.message.token.len() as i64, |e| e.success);
+                        res.success = invalid
+                            .as_ref()
+                            .map_or(msg.message.token.len() as i64, |e| e.success);
                         res.failure = invalid.as_ref().map_or(0, |e| e.failure);
-                        res.illegal_tokens = invalid.map_or(Default::default(), |e| e.illegal_tokens);
+                        res.illegal_tokens =
+                            invalid.map_or(Default::default(), |e| e.illegal_tokens);
                     }
                     Code::ParameterError
                     | Code::TokenMustOne
@@ -418,7 +416,8 @@ impl<'b> super::Pusher<'b, Message<'b>, Response> for Client {
                     }
                     Code::TokenInvalid => {
                         res.failure = msg.message.token.len() as i64;
-                        res.illegal_tokens = msg.message.token.iter().map(|e| e.to_string()).collect();
+                        res.illegal_tokens =
+                            msg.message.token.iter().map(|e| e.to_string()).collect();
                     }
                     Code::Other(_) | Code::Common => {
                         return Err(super::InnerError::Unknown(format!("{:?}", resp)).into());
@@ -428,8 +427,8 @@ impl<'b> super::Pusher<'b, Message<'b>, Response> for Client {
             }
             _ => match resp.error_for_status() {
                 Ok(_) => unreachable!(""),
-                Err(e) => Err(e)?
-            }
+                Err(e) => Err(e)?,
+            },
         }
     }
 }
@@ -445,12 +444,7 @@ mod tests {
         let client_id = std::env::var("HW_CLIENT_ID").unwrap();
         let client_secret = std::env::var("HW_CLIENT_SECRET").unwrap();
 
-        let hw = Client::new(
-            &client_id,
-            &client_secret,
-        )
-            .await
-            .unwrap();
+        let hw = Client::new(&client_id, &client_secret).await.unwrap();
         let msg = Message {
             validate_only: false,
             message: InnerMessage {
