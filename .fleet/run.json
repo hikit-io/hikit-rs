@@ -1,0 +1,12 @@
+{
+    "configurations": [
+        {
+            "type": "cargo",
+            "name": "simple",
+            "environment":{
+                "MONGO_URI":"mongodb://root:gWfyKn^DBl^xqBfGIFm62gsi@dds-uf658efda426ad941347-pub.mongodb.rds.aliyuncs.com:3717,dds-uf658efda426ad942210-pub.mongodb.rds.aliyuncs.com:3717/admin?replicaSet=mgset-54457786"
+            },
+            "cargoArgs": ["run","--example","simple"],
+        },
+    ]
+}

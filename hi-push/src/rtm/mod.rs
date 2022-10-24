@@ -9,10 +9,10 @@ pub struct Client {
 
 #[derive(Debug, Serialize)]
 pub struct Msg<'a> {
-    destination: &'a str,
-    enable_offline_messaging: Option<bool>, // under 1.5
-    enable_historical_messaging: Option<bool>,
-    payload: &'a str,
+    pub destination: &'a str,
+    pub enable_offline_messaging: Option<bool>, // under 1.5
+    pub enable_historical_messaging: Option<bool>,
+    pub payload: &'a str,
 }
 
 impl Client {
