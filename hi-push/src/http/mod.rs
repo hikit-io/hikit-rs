@@ -15,7 +15,7 @@ use crate::service::{self, model::*};
 #[derive(Clone)]
 pub struct Auth(String, String);
 
-async fn auth<B>(mut req: Request<B>, next: Next<B>) -> Result<response::Response, StatusCode> {
+async fn api_auth<B>(mut req: Request<B>, next: Next<B>) -> Result<response::Response, StatusCode> {
     let token = req
         .headers()
         .get(header::AUTHORIZATION)
@@ -293,6 +293,11 @@ pub fn api_router() -> axum::Router {
         .route("/channels", get(fetch_channels))
         .route("/channel", post(create_channel))
         .route("/channel", delete(delete_channel))
+}
+
+#[inline]
+pub fn admin_route() -> axum::Router {
+    axum::Router::new()
         .route("/applications", get(fetch_applications))
         .route("/application", post(create_app))
         .route("/application", delete(delete_app))
@@ -322,19 +327,25 @@ pub async fn start(
     options: Option<Vec<Box<dyn ServiceOption>>>,
 ) -> anyhow::Result<()> {
     app.init().await.expect("app init error");
-    let mut router = axum::Router::new()
-        .nest("/api", api_router())
-        .layer(middleware::from_fn(auth))
-        .layer(Extension(Arc::new(app)));
+    let app = Arc::new(app);
+
+    let mut api_router = axum::Router::new()
+        .nest(
+            "/api",
+            api_router()
+                .layer(middleware::from_fn(api_auth))
+                .layer(Extension(app.clone())),
+        )
+        .nest("/admin", admin_route().layer(Extension(app)));
 
     for option in options.unwrap_or_default().into_iter() {
         let option: Box<dyn ServiceOption> = option.into();
-        option.apply(&mut router);
+        option.apply(&mut api_router);
     }
 
     Ok(
         axum::Server::bind(&addr.into().unwrap_or("0.0.0.0:8080").parse().unwrap())
-            .serve(router.into_make_service())
+            .serve(api_router.into_make_service())
             .await?,
     )
 }

@@ -11,7 +11,7 @@ async fn main() {
     let db = mongodb::Client::with_uri_str(mongo_uri)
         .await
         .expect("db error")
-        .database("kuafu_next");
+        .database("hi_push");
 
     let app = service::App::new(db).await;
 

@@ -354,7 +354,7 @@ pub async fn create_app(db: &mongodb::Database, name: &str) -> anyhow::Result<Ap
         id: Default::default(),
         name: name.to_string(),
         client_id,
-        client_secret: client_secret,
+        client_secret,
         create_ts: now_ts(),
         update_ts: now_ts(),
     };
