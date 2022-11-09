@@ -306,14 +306,17 @@ pub async fn create_channel(
         PublicChannel::Apns {
             client_id,
             client_secret,
-        } => Channel {
-            app_id: app_id.to_string(),
-            _type: ChannelType::Apns,
+        } => {
+            let certs = base64::decode(client_secret)?;
+            Channel {
+                app_id: app_id.to_string(),
+                _type: ChannelType::Apns,
 
-            client_id: Some(client_id),
-            client_secret: Some(client_secret),
-            ..Default::default()
-        },
+                client_id: Some(client_id),
+                certs: Some(certs),
+                ..Default::default()
+            }
+        }
         #[cfg(feature = "huawei")]
         PublicChannel::Huawei {
             client_id,
