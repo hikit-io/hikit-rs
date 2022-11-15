@@ -9,7 +9,7 @@ use std::collections::HashMap;
 #[cfg(feature = "mongo")]
 pub use mongo::*;
 
-use crate::{apns, email, fcm, huawei, rtm, service::model::Body, xiaomi};
+use crate::{apns, email, fcm, huawei, service::model::Body, xiaomi};
 
 #[cfg(feature = "wecom")]
 use crate::wecom;
@@ -220,17 +220,6 @@ impl App {
                 )
                 .await,
             ),
-            #[cfg(feature = "rtm")]
-            model::ChannelType::Rtm => super::Client::Rtm(rtm::Client::new(
-                conf.client_id
-                    .as_ref()
-                    .ok_or(anyhow!("Rtm missing `client_id`"))?
-                    .as_str(),
-                conf.client_secret
-                    .as_ref()
-                    .ok_or(anyhow!("Rtm missing `client_secret`"))?
-                    .as_str(),
-            )?),
             model::ChannelType::Unknown => Err(anyhow!("Unknown channel type"))?,
         })
     }

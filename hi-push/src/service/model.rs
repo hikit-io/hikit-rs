@@ -24,8 +24,6 @@ pub enum ChannelType {
     Apns = 5,
     #[cfg(feature = "email")]
     Email = 6,
-    #[cfg(feature = "rtm")]
-    Rtm = 7,
 }
 
 /*
@@ -327,7 +325,6 @@ pub struct PlatformParams {
     pub android: Option<AndroidExtra>,
     pub apns: Option<ApnsExtra>,
     pub wecom: Option<WecomExtra>,
-    pub rtm: Option<String>,
 }
 
 #[derive(Deserialize)]
@@ -374,12 +371,6 @@ pub enum PublicChannel {
     #[cfg(feature = "huawei")]
     #[serde(rename_all = "camelCase")]
     Huawei {
-        client_id: String,
-        client_secret: String,
-    },
-    #[cfg(feature = "rtm")]
-    #[serde(rename_all = "camelCase")]
-    AgoraRtm {
         client_id: String,
         client_secret: String,
     },

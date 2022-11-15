@@ -61,8 +61,8 @@ flatten-json-object = { version = "0.6.1", optional = true }
 oauth2 = { version = "4.2.3", optional = true }
 
 [features]
-default = ["fcm", "email", "huawei", "apns", "xiaomi", "wecom", "rtm", "grpc-api", "http-api", "mongo"]
-full = ["fcm", "email", "huawei", "apns", "xiaomi", "wecom", "rtm", "grpc-api", "http-api", "mongo"]
+default = ["fcm", "email", "huawei", "apns", "xiaomi", "wecom",  "grpc-api", "http-api", "mongo"]
+full = ["fcm", "email", "huawei", "apns", "xiaomi", "wecom", "grpc-api", "http-api", "mongo"]
 fcm = [
     "http",
     "yup-oauth2",
@@ -81,8 +81,6 @@ huawei = ["oauth2"]
 apns = ["uuid"]
 xiaomi = ["flatten-json-object"]
 wecom = ["flatten-json-object"]
-rtm = []
-
 grpc-api = ["tonic"]
 http-api = ["axum","uuid","base64"]
 

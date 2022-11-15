@@ -329,18 +329,7 @@ pub async fn create_channel(
             client_secret: Some(client_secret),
             ..Default::default()
         },
-        #[cfg(feature = "rtm")]
-        PublicChannel::AgoraRtm {
-            client_id,
-            client_secret,
-        } => Channel {
-            app_id: app_id.to_string(),
-            _type: ChannelType::Rtm,
-
-            client_id: Some(client_id),
-            client_secret: Some(client_secret),
-            ..Default::default()
-        },
+       
     };
     let _ = db
         .collection::<Channel>("channel")

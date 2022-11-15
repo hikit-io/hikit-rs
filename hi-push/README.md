@@ -8,7 +8,6 @@
 | Huawei   | 6000 | 1000      |              | 4kb  |
 | Email    |      |           |              |      |
 | Wecom    |      | 1000      |              |      |
-| AgoraRtm |      |           |              |      |
 
 # Getting start
 
@@ -60,7 +59,7 @@ interface: http, grpc, graphql
 |-----------------------------------------------------------------------
 | platform |
 |       ------------------------------------------------------
-|       | fcm | apns | email | wecom | xiaomi | huawei | rtm |
+|       | fcm | apns | email | wecom | xiaomi | huawei |
 |       ------------------------------------------------------
 |
 |
@@ -73,7 +72,7 @@ interface: http, grpc, graphql
 | service    |              | init            |
 | db_service | insert_token | delete_token    | insert_chan |
 | lib        | push_message | register_client |
-| fcm        | apns         | email           | xiaomi      | huawei | wecom | agora-rtm |
+| fcm        | apns         | email           | xiaomi      | huawei | wecom | |
 
 
 ```

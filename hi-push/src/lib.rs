@@ -21,8 +21,6 @@ pub mod email;
 pub mod fcm;
 #[cfg(feature = "huawei")]
 pub mod huawei;
-#[cfg(feature = "rtm")]
-pub mod rtm;
 #[cfg(feature = "wecom")]
 pub mod wecom;
 #[cfg(feature = "xiaomi")]
@@ -756,8 +754,6 @@ pub enum Client {
     Apns(apns::Client),
     #[cfg(feature = "email")]
     Email(email::Client),
-    #[cfg(feature = "rtm")]
-    Rtm(rtm::Client),
 }
 
 struct Service {
@@ -951,11 +947,6 @@ impl Service {
                         });
                     }
                 }
-                Ok(res)
-            }
-            #[cfg(feature = "rtm")]
-            Client::Rtm(_client) => {
-                let res = PushResults::default();
                 Ok(res)
             }
         }
