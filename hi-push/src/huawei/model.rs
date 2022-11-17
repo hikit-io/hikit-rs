@@ -1,5 +1,5 @@
-use serde::{Serialize, Deserialize};
-use serde_repr::{Serialize_repr};
+use serde::{Deserialize, Serialize};
+use serde_repr::Serialize_repr;
 
 #[derive(Default, Debug, Serialize, Clone)]
 pub struct Message<'a> {

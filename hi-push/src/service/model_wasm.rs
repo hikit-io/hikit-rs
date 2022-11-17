@@ -1,7 +1,7 @@
-use serde::{Serialize, Deserialize};
-use wasm_bindgen::prelude::wasm_bindgen;
 #[cfg(feature = "apns-model")]
 use crate::apns;
+use serde::{Deserialize, Serialize};
+use wasm_bindgen::prelude::wasm_bindgen;
 
 #[wasm_bindgen]
 #[derive(Deserialize)]
@@ -20,10 +20,12 @@ impl RegisterTokenResp {
     }
     #[wasm_bindgen(getter, js_name = failureTokens)]
     pub fn failure_tokens(&self) -> Vec<js_sys::JsString> {
-        self.failure_tokens.iter().map(|e| js_sys::JsString::from(e.as_str())).collect()
+        self.failure_tokens
+            .iter()
+            .map(|e| js_sys::JsString::from(e.as_str()))
+            .collect()
     }
 }
-
 
 #[wasm_bindgen]
 #[derive(Serialize)]
@@ -85,7 +87,6 @@ impl RegisterTokenParams {
     }
 }
 
-
 #[wasm_bindgen]
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -134,7 +135,6 @@ impl RevokeTokenParams {
     }
 }
 
-
 #[wasm_bindgen]
 #[derive(Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -152,10 +152,12 @@ impl RevokeTokenResp {
     }
     #[wasm_bindgen(getter, js_name = "failureTokens")]
     pub fn failure_tokens(&self) -> Vec<js_sys::JsString> {
-        self.failure_tokens.iter().map(|e| js_sys::JsString::from(e.as_str())).collect()
+        self.failure_tokens
+            .iter()
+            .map(|e| js_sys::JsString::from(e.as_str()))
+            .collect()
     }
 }
-
 
 #[derive(Serialize, Clone)]
 #[serde(rename_all = "camelCase")]
@@ -172,10 +174,12 @@ impl Condition {
     }
     #[wasm_bindgen(getter, js_name = "channels")]
     pub fn channels(&self) -> Vec<js_sys::JsString> {
-        self.channels.iter().map(|e| js_sys::JsString::from(e.as_str())).collect()
+        self.channels
+            .iter()
+            .map(|e| js_sys::JsString::from(e.as_str()))
+            .collect()
     }
 }
-
 
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -196,7 +200,6 @@ impl Options {
     }
 }
 
-
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
 #[wasm_bindgen]
@@ -204,7 +207,6 @@ pub struct Body {
     json: Option<serde_json::Map<String, serde_json::Value>>,
     text: Option<String>,
 }
-
 
 #[wasm_bindgen]
 impl Body {
@@ -225,7 +227,6 @@ impl Body {
     }
 }
 
-
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
 #[wasm_bindgen]
@@ -237,7 +238,6 @@ pub struct PushTransparentParams {
     #[serde(flatten)]
     platform_extra: PlatformParams,
 }
-
 
 #[cfg(feature = "client")]
 #[derive(Debug, Clone, Serialize)]
@@ -261,7 +261,6 @@ pub struct ApnsExtra {
     topic: String,
     push_type: apns::ApnsPushType,
 }
-
 
 #[wasm_bindgen]
 #[derive(Serialize)]
@@ -300,16 +299,15 @@ pub struct AndroidExtra {
 #[wasm_bindgen]
 impl AndroidExtra {}
 
-
 #[wasm_bindgen]
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct PlatformParams {
     #[cfg(any(
-    feature = "fcm",
-    feature = "xiaomi",
-    feature = "huawei",
-    feature = "client"
+        feature = "fcm",
+        feature = "xiaomi",
+        feature = "huawei",
+        feature = "client"
     ))]
     android: Option<AndroidExtra>,
     #[cfg(any(feature = "apns", feature = "client"))]
@@ -317,7 +315,6 @@ pub struct PlatformParams {
     #[cfg(any(feature = "wecom", feature = "client"))]
     wecom: Option<WecomExtra>,
 }
-
 
 #[cfg_attr(feature = "client", wasm_bindgen)]
 pub struct WecomChannelConfig {

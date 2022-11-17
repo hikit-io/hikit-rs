@@ -225,7 +225,6 @@ impl<T> From<anyhow::Error> for Response<T> {
     }
 }
 
-
 #[cfg_attr(feature = "client", derive(Deserialize))]
 #[cfg_attr(not(feature = "client"), derive(Serialize))]
 #[serde(rename_all = "camelCase")]
@@ -234,7 +233,6 @@ pub struct RegisterTokenResp {
     pub failure: u64,
     pub failure_tokens: Vec<String>,
 }
-
 
 #[cfg_attr(feature = "client", derive(Serialize))]
 #[cfg_attr(not(feature = "client"), derive(Deserialize))]
@@ -247,7 +245,6 @@ pub struct RegisterTokenParams {
     pub _override: Option<bool>,
 }
 
-
 #[cfg_attr(feature = "client", derive(Serialize))]
 #[cfg_attr(not(feature = "client"), derive(Deserialize))]
 #[serde(rename_all = "camelCase")]
@@ -256,7 +253,6 @@ pub struct RevokeTokenParams {
     pub token: String,
     pub ch_id: String,
 }
-
 
 #[cfg_attr(feature = "client", derive(Deserialize))]
 #[cfg_attr(not(feature = "client"), derive(Serialize))]
@@ -267,14 +263,12 @@ pub struct RevokeTokenResp {
     pub failure_tokens: Vec<String>,
 }
 
-
 #[cfg_attr(feature = "client", derive(Serialize))]
 #[cfg_attr(not(feature = "client"), derive(Deserialize))]
 #[serde(rename_all = "camelCase")]
 pub struct Condition {
     pub channels: Vec<String>,
 }
-
 
 #[cfg_attr(feature = "client", derive(Serialize))]
 #[cfg_attr(not(feature = "client"), derive(Deserialize))]
@@ -283,7 +277,6 @@ pub struct Options {
     pub condition: Condition,
 }
 
-
 #[cfg_attr(feature = "client", derive(Serialize))]
 #[cfg_attr(not(feature = "client"), derive(Deserialize))]
 #[serde(rename_all = "camelCase")]
@@ -291,7 +284,6 @@ pub enum Body {
     Json(serde_json::Map<String, serde_json::Value>),
     Text(String),
 }
-
 
 #[cfg_attr(feature = "client", derive(Serialize))]
 #[cfg_attr(not(feature = "client"), derive(Deserialize))]
@@ -305,7 +297,6 @@ pub struct PushTransparentParams {
     pub platform_extra: PlatformParams,
 }
 
-
 #[cfg_attr(feature = "client", derive(Serialize))]
 #[cfg_attr(not(feature = "client"), derive(Deserialize))]
 #[serde(rename_all = "camelCase")]
@@ -318,7 +309,6 @@ pub struct PushNotificationParams {
     pub platform_extra: PlatformParams,
 }
 
-
 #[cfg_attr(feature = "client", derive(Serialize))]
 #[cfg_attr(not(feature = "client"), derive(Deserialize))]
 #[serde(rename_all = "camelCase")]
@@ -326,7 +316,6 @@ pub enum WecomExtra {
     Markdown(bool),
     Text { url: String, btntxt: String },
 }
-
 
 #[cfg_attr(feature = "client", derive(Serialize))]
 #[cfg_attr(not(feature = "client"), derive(Deserialize))]
@@ -336,19 +325,15 @@ pub struct ApnsExtra {
     pub push_type: apns::ApnsPushType,
 }
 
-
 #[cfg(all(
-any(
-feature = "fcm",
-feature = "xiaomi",
-feature = "huawei",
-feature = "client",
-),
-not(
-all(feature = "client", target_arch = "wasm32")
-)
-)
-)]
+    any(
+        feature = "fcm",
+        feature = "xiaomi",
+        feature = "huawei",
+        feature = "client",
+    ),
+    not(all(feature = "client", target_arch = "wasm32"))
+))]
 #[cfg_attr(feature = "client", derive(Serialize))]
 #[cfg_attr(not(feature = "client"), derive(Deserialize))]
 #[serde(rename_all = "camelCase")]
@@ -383,16 +368,15 @@ pub struct AndroidExtra {
     pub notify_id: Option<i32>,
 }
 
-
 #[cfg_attr(feature = "client", derive(Serialize))]
 #[cfg_attr(not(feature = "client"), derive(Deserialize))]
 #[serde(rename_all = "camelCase")]
 pub struct PlatformParams {
     #[cfg(any(
-    feature = "fcm",
-    feature = "xiaomi",
-    feature = "huawei",
-    feature = "client"
+        feature = "fcm",
+        feature = "xiaomi",
+        feature = "huawei",
+        feature = "client"
     ))]
     pub android: Option<AndroidExtra>,
     #[cfg(any(feature = "apns", feature = "client"))]
@@ -400,7 +384,6 @@ pub struct PlatformParams {
     #[cfg(any(feature = "wecom", feature = "client"))]
     pub wecom: Option<WecomExtra>,
 }
-
 
 #[cfg_attr(feature = "client", derive(Serialize))]
 #[cfg_attr(not(feature = "client"), derive(Deserialize))]
@@ -452,13 +435,11 @@ pub enum PublicChannel {
     },
 }
 
-
 #[derive(Debug, Serialize, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct Running {
     pub ch_ids: Vec<String>,
 }
-
 
 #[cfg_attr(feature = "client", derive(Serialize))]
 #[cfg_attr(not(feature = "client"), derive(Deserialize))]
@@ -467,14 +448,12 @@ pub struct CreateAppParams {
     pub name: String,
 }
 
-
 #[cfg_attr(feature = "client", derive(Serialize))]
 #[cfg_attr(not(feature = "client"), derive(Deserialize))]
 #[serde(rename_all = "camelCase")]
 pub struct DeleteChannelParams {
     pub ch_id: String,
 }
-
 
 #[cfg_attr(feature = "client", derive(Deserialize))]
 #[cfg_attr(not(feature = "client"), derive(Serialize))]
@@ -484,7 +463,6 @@ pub struct PushResp {
     pub failure: i64,
     pub results: HashMap<String, crate::PushResults>,
 }
-
 
 #[cfg_attr(feature = "client", derive(Serialize))]
 #[cfg_attr(not(feature = "client"), derive(Deserialize))]

@@ -25,6 +25,4 @@ impl Client {
     pub fn register_token(&self, msg: RegisterTokenParams) -> String {
         serde_json::to_string(&msg).unwrap()
     }
-
-
 }

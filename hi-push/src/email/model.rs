@@ -1,4 +1,3 @@
-
 #[derive(Debug)]
 pub struct Message<'a> {
     pub title: &'a str,

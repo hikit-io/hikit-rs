@@ -1,6 +1,5 @@
-use serde_repr::{Serialize_repr, Deserialize_repr};
-use serde::{Serialize, Deserialize};
-
+use serde::{Deserialize, Serialize};
+use serde_repr::{Deserialize_repr, Serialize_repr};
 
 #[derive(Debug, Serialize_repr, Deserialize_repr, Default, Clone)]
 #[repr(u8)]
@@ -124,14 +123,14 @@ pub struct Extra<'a> {
     pub ticker: Option<&'a str>,
     // 可选项，开启通知消息在状态栏滚动显示。
     #[serde(
-    rename = "extra.notify_foreground",
-    skip_serializing_if = "Option::is_none"
+        rename = "extra.notify_foreground",
+        skip_serializing_if = "Option::is_none"
     )]
     pub notify_foreground: Option<Bool>,
     // 可选项，开启/关闭app在前台时的通知弹出。当extra.notify_foreground值为”1″时，app会弹出通知栏消息；当extra.notify_foreground值为”0″时，app不会弹出通知栏消息。注：默认情况下会弹出通知栏消息。（请参见《服务端Java SDK文档》中的“控制App前台通知弹出”一节。）
     #[serde(
-    rename = "extra.notify_effect",
-    skip_serializing_if = "Option::is_none"
+        rename = "extra.notify_effect",
+        skip_serializing_if = "Option::is_none"
     )]
     pub notify_effect: Option<NotifyEffect>,
     // 可选项，预定义通知栏消息的点击行为。通过设置extra.notify_effect的值以得到不同的预定义点击行为。“1″：通知栏点击后打开app的Launcher Activity。“2″：通知栏点击后打开app的任一Activity（开发者还需要传入extra.intent_uri）。“3″：通知栏点击后打开网页（开发者还需要传入extra.web_uri）。（请参见《服务端Java SDK文档》中的“预定义通知栏通知的点击行为”一节。）
@@ -145,27 +144,27 @@ pub struct Extra<'a> {
     pub flow_control: Option<&'a str>,
     // 可选项，控制是否需要进行平缓发送。默认不支持。value代表平滑推送的速度。注：服务端支持最低3000/s的qps。也就是说，如果将平滑推送设置为1000，那么真实的推送速度是3000/s。
     #[serde(
-    rename = "extra.caljob_keylback",
-    skip_serializing_if = "Option::is_none"
+        rename = "extra.caljob_keylback",
+        skip_serializing_if = "Option::is_none"
     )]
     pub job_key: Option<&'a str>,
     // 可选项，使用推送批次（JobKey）功能聚合消息。客户端会按照jobkey去重，即相同jobkey的消息只展示第一条，其他的消息会被忽略。合法的jobkey由数字（[0-9]），大小写字母（[a-zA-Z]），下划线（_）和中划线（-）组成，长度不大于20个字符，且不能以下划线(_)开头。
     #[serde(
-    rename = "extra.only_send_once",
-    skip_serializing_if = "Option::is_none"
+        rename = "extra.only_send_once",
+        skip_serializing_if = "Option::is_none"
     )]
     pub only_send_once: Option<&'a str>,
     //可选项，extra.only_send_once的值设置为1，表示该消息仅在设备在线时发送一次，不缓存离线消息进行多次下发。
     #[serde(rename = "extra.callback", skip_serializing_if = "Option::is_none")]
     pub callback: Option<&'a str>,
     #[serde(
-    rename = "extra.callback.param",
-    skip_serializing_if = "Option::is_none"
+        rename = "extra.callback.param",
+        skip_serializing_if = "Option::is_none"
     )]
     pub callback_param: Option<&'a str>,
     #[serde(
-    rename = "extra.callback.type",
-    skip_serializing_if = "Option::is_none"
+        rename = "extra.callback.type",
+        skip_serializing_if = "Option::is_none"
     )]
     pub callback_type: Option<CallbackType>,
 }

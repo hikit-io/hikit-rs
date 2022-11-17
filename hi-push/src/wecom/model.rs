@@ -15,7 +15,6 @@ pub struct Response {
     pub response_code: Option<String>,
 }
 
-
 #[derive(Debug, Deserialize, Clone)]
 pub struct TokenResponse {
     pub errcode: i32,

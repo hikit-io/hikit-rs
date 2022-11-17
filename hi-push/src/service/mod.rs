@@ -1,4 +1,7 @@
-#[cfg(all(any(feature = "http-api", feature = "grpc-api", feature = "client"), not(target_arch = "wasm32")))]
+#[cfg(all(
+    any(feature = "http-api", feature = "grpc-api", feature = "client"),
+    not(target_arch = "wasm32")
+))]
 pub mod model;
 
 #[cfg(all(feature = "client", target_arch = "wasm32"))]

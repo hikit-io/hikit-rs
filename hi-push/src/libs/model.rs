@@ -1,15 +1,20 @@
 #[cfg(any(feature = "apns", feature = "client"))]
 use crate::apns;
 
-use serde::{Serialize, Deserialize};
-use serde_repr::{Serialize_repr, Deserialize_repr};
+use serde::{Deserialize, Serialize};
+use serde_repr::{Deserialize_repr, Serialize_repr};
 
 #[cfg(all(feature = "client", target_arch = "wasm32"))]
 use wasm_bindgen::prelude::wasm_bindgen;
 
 #[derive(Debug, Serialize_repr, Deserialize_repr, Clone, Copy)]
 #[repr(u8)]
-#[cfg(any(feature = "xiaomi", feature = "huawei", feature = "fcm", feature = "client"))]
+#[cfg(any(
+    feature = "xiaomi",
+    feature = "huawei",
+    feature = "fcm",
+    feature = "client"
+))]
 #[cfg_attr(all(feature = "client", target_arch = "wasm32"), wasm_bindgen)]
 pub enum Visibility {
     Unspecified = 0,
@@ -20,7 +25,12 @@ pub enum Visibility {
 
 #[derive(Debug, Serialize, Deserialize, Clone, Copy)]
 #[serde(rename_all = "UPPERCASE")]
-#[cfg(any(feature = "xiaomi", feature = "huawei", feature = "fcm", feature = "client"))]
+#[cfg(any(
+    feature = "xiaomi",
+    feature = "huawei",
+    feature = "fcm",
+    feature = "client"
+))]
 #[cfg_attr(all(feature = "client", target_arch = "wasm32"), wasm_bindgen)]
 pub enum Priority {
     High,
@@ -28,7 +38,12 @@ pub enum Priority {
 }
 
 #[derive(Debug, Clone)]
-#[cfg(any(feature = "xiaomi", feature = "huawei", feature = "fcm", feature = "client"))]
+#[cfg(any(
+    feature = "xiaomi",
+    feature = "huawei",
+    feature = "fcm",
+    feature = "client"
+))]
 pub struct AndroidExtra<'a> {
     pub collapse_key: Option<i64>,
     pub priority: Option<Priority>,
@@ -75,7 +90,6 @@ pub struct IosExtra<'a> {
     pub topic: &'a str,
 }
 
-
 pub enum Transparent<'a> {
     Text(&'a str),
     Json(serde_json::Map<String, serde_json::Value>),
@@ -100,7 +114,6 @@ pub enum WecomExtra<'a> {
     Markdown(bool),
     Text { url: &'a str, btntxt: &'a str },
 }
-
 
 #[derive(Debug, Default, Serialize, Deserialize)]
 pub struct PushResult {
