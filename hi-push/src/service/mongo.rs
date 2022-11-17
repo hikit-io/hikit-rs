@@ -329,7 +329,6 @@ pub async fn create_channel(
             client_secret: Some(client_secret),
             ..Default::default()
         },
-       
     };
     let _ = db
         .collection::<Channel>("channel")
@@ -359,17 +358,12 @@ pub async fn fetch_apps(db: &mongodb::Database) -> anyhow::Result<Vec<App>> {
     Ok(apps.try_collect::<Vec<App>>().await?)
 }
 
-pub async fn delete_app(
-    db: &mongodb::Database,
-    client_id: &str,
-    client_secret: &str,
-) -> anyhow::Result<()> {
+pub async fn delete_app(db: &mongodb::Database, client_id: &str) -> anyhow::Result<()> {
     let _ = db
         .collection::<App>("app")
         .delete_one(
             doc! {
                 "clientId":client_id,
-                "clientSecret":client_secret,
             },
             None,
         )
@@ -410,4 +404,21 @@ pub async fn delete_channel(
         )
         .await?;
     Ok(())
+}
+
+pub async fn fetch_admin(
+    db: &mongodb::Database,
+    username: &str,
+    password: &str,
+) -> anyhow::Result<Admin> {
+    db.collection::<Admin>("app")
+        .find_one(
+            doc! {
+                "username":username,
+                "password":password,
+            },
+            None,
+        )
+        .await?
+        .ok_or(anyhow::anyhow!("not found admin. username: {}", username))
 }

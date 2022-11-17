@@ -5,33 +5,31 @@ edition = "2021"
 description = "Third-party push service integration library. Include apns,fcm,xiaomi,huawei,wecom and email."
 license = "MIT"
 
+[lib]
+crate-type = ["cdylib", "rlib"]
+
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [[example]]
 name = "simple"
 
 [dependencies]
-reqwest = { version = "0.11.12", features = ["json", "socks", "multipart", "native-tls", "stream"] }
-tokio = "1.20.1"
+tokio = { version = "1.20.1", optional = true }
+reqwest = { version = "0.11.12", features = ["json", "native-tls"], optional = true }
 
-tracing = "0.1.36"
-tracing-subscriber = { version = "0.3.15", features = ["json"] }
+openssl = { version = "^0.10", features = ["vendored"], optional = true }
+chrono = { version = "0.4.22", optional = true }
 
-serde = "1.0.144"
-serde_repr = "0.1.9"
-serde_json = "1.0.85"
-
-openssl = { version = "^0.10", features = ["vendored"] }
-async-trait = "0.1.57"
-derive_builder = "0.11.2"
-governor = "0.5"
-chrono = "0.4.22"
-tokio-retry = "0.3.0"
-
-hyper-socks2 = { version = "0.7.0", features = ["tls"], default-features = false }
-hyper-tls = "0.5.0"
-
-anyhow = { version = "1.0.65" }
-thiserror = { version = "1.0.37" }
+#lib
+async-trait = { version = "0.1.57", optional = true }
+derive_builder = { version = "0.11.2", optional = true }
+tokio-retry = { version = "0.3.0", optional = true }
+serde = { version = "1.0.144", optional = true }
+serde_repr = { version = "0.1.9", optional = true }
+serde_json = { version = "1.0.85", optional = true }
+tracing = { version = "0.1.36", optional = true }
+tracing-subscriber = { version = "0.3.15", features = ["json"], optional = true }
+anyhow = { version = "1.0.65", optional = true }
+thiserror = { version = "1.0.37", optional = true }
 
 # mongo
 mongodb = { version = "2.3.0", optional = true }
@@ -46,13 +44,15 @@ http = { version = "0.2.8", optional = true }
 yup-oauth2 = { version = "7.0.1", optional = true }
 httpcodec = { version = "0.2.3", optional = true }
 bytecodec = { version = "0.4.15", optional = true }
+hyper-socks2 = { version = "0.7.0", features = ["tls"], default-features = false, optional = true }
+hyper-tls = { version = "0.5.0", optional = true }
 # email
 lettre = { version = "0.10.1", optional = true }
 # apn
 uuid = { version = "1.1.2", optional = true, features = ["serde"] }
 # http
 axum = { version = "0.5.16", optional = true, features = ["http2", "headers", "ws"] }
-base64 = {version = "0.13.0",optional = true }
+base64 = { version = "0.13.0", optional = true }
 # grpc
 tonic = { version = "0.8.0", optional = true }
 # xiaomi or huawei or fcm
@@ -60,11 +60,42 @@ flatten-json-object = { version = "0.6.1", optional = true }
 # huawei
 oauth2 = { version = "4.2.3", optional = true }
 
+# client
+
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+wasm-bindgen = { version = "0.2.83", optional = true }
+wasm-bindgen-futures = { version = "0.4.33", optional = true }
+console_error_panic_hook = { version = "0.1.6", optional = true }
+wee_alloc = { version = "0.4.5", optional = true }
+js-sys = { version = "0.3.60", optional = true }
+
 [features]
-default = ["fcm", "email", "huawei", "apns", "xiaomi", "wecom",  "grpc-api", "http-api", "mongo"]
-full = ["fcm", "email", "huawei", "apns", "xiaomi", "wecom", "grpc-api", "http-api", "mongo"]
-fcm = [
+libs = [
+    "chrono",
+    "async-trait",
+    "thiserror",
+    "anyhow",
+    "serde/derive",
+    "serde_repr",
+    "serde_json",
+    "reqwest",
+    "tokio/sync",
+    "tokio/test-util",
     "http",
+    "tokio-retry",
+    "tracing",
+    "openssl",
+    "libs-model",
+]
+
+#default = ["fcm", "email", "huawei", "apns", "xiaomi", "wecom", "grpc-api", "http-api", "mongo"]
+full = ["fcm", "email", "huawei", "apns", "xiaomi", "wecom", "grpc-api", "http-api", "mongo", "tokio"]
+fcm = [
+    "reqwest/socks",
+    "reqwest/stream",
+    "reqwest/multipart",
+    "libs",
     "yup-oauth2",
     "httpcodec",
     "hi-hyper-multipart",
@@ -73,18 +104,105 @@ fcm = [
     "multer",
     "uuid",
     "hyper",
+    "hyper-socks2",
+    "hyper-tls",
+    "fcm-model",
 ]
 email = [
-    "lettre"
+    "libs",
+    "lettre",
+    "email-model",
 ]
-huawei = ["oauth2"]
-apns = ["uuid"]
-xiaomi = ["flatten-json-object"]
-wecom = ["flatten-json-object"]
+huawei = [
+    "libs",
+    "oauth2",
+    "flatten-json-object",
+    "derive_builder",
+    "huawei-model",
+]
+apns = [
+    "libs",
+    "uuid",
+    "apns-model"
+]
+xiaomi = [
+    "libs",
+    "flatten-json-object",
+    "reqwest",
+    "xiaomi-model"
+]
+wecom = [
+    "libs",
+    "derive_builder",
+    "flatten-json-object",
+    "reqwest",
+    "wecom-model"
+]
+
 grpc-api = ["tonic"]
-http-api = ["axum","uuid","base64"]
+http-api = [
+    "libs",
+    "tracing",
+    "axum",
+    "uuid",
+    "base64",
+    "derive_builder",
+]
 
 mongo = ["mongodb", "futures"]
 mysql = ["sea-orm"]
 
 cache = []
+
+wecom-model = [
+    "serde/derive",
+    "serde_repr",
+]
+fcm-model = [
+    "serde/derive",
+    "serde_repr",
+]
+xiaomi-model = [
+    "serde/derive",
+    "serde_repr",
+]
+huawei-model = [
+    "serde/derive",
+    "serde_repr",
+]
+apns-model = [
+    "serde/derive",
+    "serde_repr",
+    "reqwest",
+    "uuid"
+]
+email-model = []
+
+libs-model = [
+    "serde/derive",
+]
+
+model = [
+    "libs-model",
+    "email-model",
+    "fcm-model",
+    "xiaomi-model",
+    "huawei-model",
+    "wecom-model",
+    "apns-model"
+]
+
+client = [
+    "model",
+    "reqwest",
+    "serde_repr",
+    "serde_json",
+    "serde/derive",
+    "derive_builder",
+    "js-sys",
+    "wasm-bindgen",
+    "wasm-bindgen-futures",
+    "console_error_panic_hook",
+    "wee_alloc",
+]
+
