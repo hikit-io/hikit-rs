@@ -110,8 +110,7 @@ mod lib {
 }
 
 
-#[cfg(feature = "email")]
-#[cfg(test)]
+#[cfg(all(test, feature = "email"))]
 mod tests {
     use crate::Pusher;
 

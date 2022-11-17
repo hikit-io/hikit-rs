@@ -12,7 +12,7 @@ compile_error!("mysql and mongo not enable both.");
         feature = "xiaomi"
     ))
 ))]
-compile_error!("enable one of mysql and mongo");
+compile_error!("must be enable one of wecom,fcm,email,apns,huawei and xiaomi");
 
 #[cfg(all(feature = "http-api", not(any(feature = "mysql", feature = "mongo"))))]
 compile_error!("enable one of mysql and mongo");

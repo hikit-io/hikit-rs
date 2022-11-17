@@ -11,6 +11,8 @@ pub use model_wasm as model;
 
 #[cfg(any(feature = "http-api", feature = "grpc-api"))]
 pub mod service;
+#[cfg(any(feature = "http-api", feature = "grpc-api"))]
+pub use service::*;
 
 #[cfg(feature = "mongo")]
 pub mod mongo;

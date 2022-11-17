@@ -2,6 +2,8 @@ use anyhow::anyhow;
 use std::{any, collections::HashMap};
 use crate::{service::model::Body};
 
+use crate::service::model;
+
 #[cfg(feature = "mongo")]
 pub use super::mongo::*;
 
@@ -34,7 +36,7 @@ pub enum Message {
 }
 
 pub struct App {
-    service: super::Service,
+    service: crate::Service,
     #[cfg(feature = "mongo")]
     db: Database,
     channels: Vec<model::Channel>,
@@ -43,7 +45,7 @@ pub struct App {
 impl App {
     #[cfg(feature = "mysql")]
     pub async fn new(db: sea_orm::Database) -> App {
-        let svcs = super::Service::new();
+        let svcs = crate::Service::new();
         Self {
             service: svcs,
             db,
@@ -53,7 +55,7 @@ impl App {
 
     #[cfg(feature = "mongo")]
     pub async fn new(mongodb: mongodb::Database) -> App {
-        let svcs = super::Service::new();
+        let svcs = crate::Service::new();
         Self {
             service: svcs,
             db: Database::Mongo(mongodb),
@@ -98,10 +100,10 @@ impl App {
     }
 
     /// Create a new channel client by config.
-    pub async fn new_client(conf: &model::Channel) -> anyhow::Result<super::Client> {
+    pub async fn new_client(conf: &model::Channel) -> anyhow::Result<crate::Client> {
         Ok(match conf._type {
             #[cfg(feature = "xiaomi")]
-            model::ChannelType::Mi => super::Client::Mi(xiaomi::Client::new(&xiaomi::Config {
+            model::ChannelType::Mi => crate::Client::Mi(xiaomi::Client::new(&xiaomi::Config {
                 client_id: conf
                     .client_id
                     .as_ref()
@@ -119,7 +121,7 @@ impl App {
                     .as_str(),
             })?),
             #[cfg(feature = "huawei")]
-            model::ChannelType::Huawei => super::Client::Huawei(
+            model::ChannelType::Huawei => crate::Client::Huawei(
                 huawei::Client::new(
                     conf.client_id
                         .as_ref()
@@ -133,7 +135,7 @@ impl App {
                     .await?,
             ),
             #[cfg(feature = "fcm")]
-            model::ChannelType::Fcm => super::Client::Fcm(
+            model::ChannelType::Fcm => crate::Client::Fcm(
                 fcm::Client::new(fcm::Config {
                     key_type: Some(
                         conf.key_type
@@ -186,7 +188,7 @@ impl App {
                     .await?,
             ),
             #[cfg(feature = "wecom")]
-            model::ChannelType::Wecom => super::Client::Wecom(
+            model::ChannelType::Wecom => crate::Client::Wecom(
                 wecom::Client::new(
                     conf.client_id
                         .as_ref()
@@ -201,7 +203,7 @@ impl App {
                     .await?,
             ),
             #[cfg(feature = "apns")]
-            model::ChannelType::Apns => super::Client::Apns(apns::Client::new(
+            model::ChannelType::Apns => crate::Client::Apns(apns::Client::new(
                 conf.certs
                     .as_ref()
                     .ok_or(anyhow!("Apns missing `certs`"))?
@@ -212,7 +214,7 @@ impl App {
                     .as_str(),
             )?),
             #[cfg(feature = "email")]
-            model::ChannelType::Email => super::Client::Email(
+            model::ChannelType::Email => crate::Client::Email(
                 email::Client::new(
                     conf.client_id
                         .as_ref()
@@ -273,10 +275,10 @@ impl App {
 
         let body = match &msg {
             Message::Transparent(msg) => match &msg.body {
-                Body::Json(_) => super::Body::Transparent(""),
-                Body::Text(text) => super::Body::Transparent(text),
+                Body::Json(_) => crate::Body::Transparent(""),
+                Body::Text(text) => crate::Body::Transparent(text),
             },
-            Message::Notification(msg) => super::Body::Notify {
+            Message::Notification(msg) => crate::Body::Notify {
                 title: msg.title.as_str(),
                 body: msg.body.as_str(),
             },
@@ -376,7 +378,7 @@ impl App {
                 .service
                 .retry_batch_push(
                     &chan,
-                    super::Message {
+                    crate::Message {
                         tokens: &tokens,
                         body: body,
                         #[cfg(any(feature = "xiaomi", feature = "fcm", feature = "huawei"))]

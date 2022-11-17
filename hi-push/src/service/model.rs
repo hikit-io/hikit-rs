@@ -226,7 +226,7 @@ impl<T> From<anyhow::Error> for Response<T> {
 }
 
 #[cfg_attr(feature = "client", derive(Deserialize))]
-#[cfg_attr(not(feature = "client"), derive(Serialize))]
+#[cfg_attr(not(feature = "client"), derive(Serialize, Clone))]
 #[serde(rename_all = "camelCase")]
 pub struct RegisterTokenResp {
     pub success: u64,
@@ -255,7 +255,7 @@ pub struct RevokeTokenParams {
 }
 
 #[cfg_attr(feature = "client", derive(Deserialize))]
-#[cfg_attr(not(feature = "client"), derive(Serialize))]
+#[cfg_attr(not(feature = "client"), derive(Serialize, Clone))]
 #[serde(rename_all = "camelCase")]
 pub struct RevokeTokenResp {
     pub success: u64,
@@ -309,6 +309,7 @@ pub struct PushNotificationParams {
     pub platform_extra: PlatformParams,
 }
 
+#[cfg(any(feature = "wecom", feature = "client"))]
 #[cfg_attr(feature = "client", derive(Serialize))]
 #[cfg_attr(not(feature = "client"), derive(Deserialize))]
 #[serde(rename_all = "camelCase")]
@@ -317,6 +318,7 @@ pub enum WecomExtra {
     Text { url: String, btntxt: String },
 }
 
+#[cfg(any(feature = "apns", feature = "client"))]
 #[cfg_attr(feature = "client", derive(Serialize))]
 #[cfg_attr(not(feature = "client"), derive(Deserialize))]
 #[serde(rename_all = "camelCase")]
@@ -326,13 +328,13 @@ pub struct ApnsExtra {
 }
 
 #[cfg(all(
-    any(
-        feature = "fcm",
-        feature = "xiaomi",
-        feature = "huawei",
-        feature = "client",
-    ),
-    not(all(feature = "client", target_arch = "wasm32"))
+any(
+feature = "fcm",
+feature = "xiaomi",
+feature = "huawei",
+feature = "client",
+),
+not(all(feature = "client", target_arch = "wasm32"))
 ))]
 #[cfg_attr(feature = "client", derive(Serialize))]
 #[cfg_attr(not(feature = "client"), derive(Deserialize))]
@@ -373,10 +375,10 @@ pub struct AndroidExtra {
 #[serde(rename_all = "camelCase")]
 pub struct PlatformParams {
     #[cfg(any(
-        feature = "fcm",
-        feature = "xiaomi",
-        feature = "huawei",
-        feature = "client"
+    feature = "fcm",
+    feature = "xiaomi",
+    feature = "huawei",
+    feature = "client"
     ))]
     pub android: Option<AndroidExtra>,
     #[cfg(any(feature = "apns", feature = "client"))]

@@ -313,14 +313,13 @@ mod lib {
 #[cfg(feature = "fcm")]
 pub use lib::*;
 
-#[cfg(feature = "fcm")]
-#[cfg_attr(feature = "fcm", test)]
+#[cfg(all(feature = "fcm", test))]
 mod test {
     use std::collections::HashMap;
+    use super::*;
 
     #[tokio::test]
     async fn test_fcm() {
-        use crate::*;
         let client_id = std::env::var("GOOGLE_CLIENT_ID").unwrap();
         let client_email = std::env::var("GOOGLE_CLIENT_EMAIL").unwrap();
         let private_id = std::env::var("GOOGLE_PRIVATE_ID").unwrap();
