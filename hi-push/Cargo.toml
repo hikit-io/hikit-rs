@@ -4,6 +4,7 @@ version = "0.0.1"
 edition = "2021"
 description = "Third-party push service integration library. Include apns,fcm,xiaomi,huawei,wecom and email."
 license = "MIT"
+repository = "https://github.com/hikit-io/hikit-rs/tree/main/hi-push"
 
 [lib]
 crate-type = ["cdylib", "rlib"]

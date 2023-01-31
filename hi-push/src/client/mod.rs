@@ -22,7 +22,19 @@ impl Client {
         }
     }
     #[cfg_attr(target_arch = "wasm32", wasm_bindgen(js_name = "registerToken"))]
-    pub fn register_token(&self, msg: RegisterTokenParams) -> String {
-        serde_json::to_string(&msg).unwrap()
+    pub fn register_token(&self, msg: RegisterTokenParams) -> RegisterTokenResp {
+        serde_json::from_str("").unwrap()
+    }
+    #[cfg_attr(target_arch = "wasm32", wasm_bindgen(js_name = "revokeToken"))]
+    pub fn revoke_token(&self, msg: RevokeTokenParams) -> RevokeTokenResp {
+        serde_json::from_str("").unwrap()
+    }
+    #[cfg_attr(target_arch = "wasm32", wasm_bindgen(js_name = "pushTransparentMessage"))]
+    pub fn push_transparent_message(&self, msg: PushTransparentParams) -> String {
+        "".to_string()
+    }
+    #[cfg_attr(target_arch = "wasm32", wasm_bindgen(js_name = "pushNotificationMessage"))]
+    pub fn push_notification_message(&self, msg: PushNotificationParams) -> String {
+        "".to_string()
     }
 }

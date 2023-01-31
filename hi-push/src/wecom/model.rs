@@ -1,5 +1,3 @@
-use std::sync::Arc;
-
 use derive_builder::Builder;
 use serde::{Deserialize, Serialize};
 use serde_repr::Serialize_repr;

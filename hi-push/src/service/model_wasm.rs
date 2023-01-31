@@ -1,7 +1,9 @@
 #[cfg(feature = "apns-model")]
 use crate::apns;
+
 use serde::{Deserialize, Serialize};
 use wasm_bindgen::prelude::wasm_bindgen;
+use js_sys::JsString;
 
 #[wasm_bindgen]
 #[derive(Deserialize)]
@@ -27,113 +29,113 @@ impl RegisterTokenResp {
     }
 }
 
-#[wasm_bindgen]
-#[derive(Serialize)]
-#[serde(rename_all = "camelCase")]
-pub struct RegisterTokenParams {
-    group: String,
-    token: String,
-    ch_id: String,
-    #[serde(rename = "override")]
-    _override: Option<bool>,
-}
+// #[wasm_bindgen]
+// #[derive(Serialize)]
+// #[serde(rename_all = "camelCase")]
+// pub struct RegisterTokenParams {
+//     group: String,
+//     token: String,
+//     ch_id: String,
+//     #[serde(rename = "override")]
+//     _override: Option<bool>,
+// }
+//
+// #[wasm_bindgen]
+// impl RegisterTokenParams {
+//     #[wasm_bindgen(constructor)]
+//     pub fn new(group: String, token: String, ch_id: String, _override: Option<bool>) -> Self {
+//         Self {
+//             group,
+//             token,
+//             ch_id,
+//             _override,
+//         }
+//     }
+//
+//     #[wasm_bindgen(setter)]
+//     pub fn set_group(&mut self, group: String) {
+//         self.group = group;
+//     }
+//     #[wasm_bindgen(getter)]
+//     pub fn group(&mut self) -> String {
+//         self.group.clone()
+//     }
+//
+//     #[wasm_bindgen(getter, js_name = "chId")]
+//     pub fn ch_id(&mut self) -> String {
+//         self.ch_id.clone()
+//     }
+//     #[wasm_bindgen(setter, js_name = "chId")]
+//     pub fn set_ch_id(&mut self, ch_id: js_sys::JsString) {
+//         self.ch_id = ch_id.into();
+//     }
+//
+//     #[wasm_bindgen(getter)]
+//     pub fn token(&mut self) -> String {
+//         self.token.clone()
+//     }
+//     #[wasm_bindgen(setter)]
+//     pub fn set_token(&mut self, token: js_sys::JsString) {
+//         self.token = token.into();
+//     }
+//
+//     #[wasm_bindgen(setter, js_name = "override")]
+//     pub fn set_override(&mut self, _override: Option<bool>) {
+//         self._override = _override;
+//     }
+//     #[wasm_bindgen(getter, js_name = "override")]
+//     pub fn _override(&self) -> Option<bool> {
+//         self._override
+//     }
+// }
 
-#[wasm_bindgen]
-impl RegisterTokenParams {
-    #[wasm_bindgen(constructor)]
-    pub fn new(group: String, token: String, ch_id: String, _override: Option<bool>) -> Self {
-        Self {
-            group,
-            token,
-            ch_id,
-            _override,
-        }
-    }
-
-    #[wasm_bindgen(setter)]
-    pub fn set_group(&mut self, group: String) {
-        self.group = group;
-    }
-    #[wasm_bindgen(getter)]
-    pub fn group(&mut self) -> String {
-        self.group.clone()
-    }
-
-    #[wasm_bindgen(getter, js_name = "chId")]
-    pub fn ch_id(&mut self) -> String {
-        self.ch_id.clone()
-    }
-    #[wasm_bindgen(setter, js_name = "chId")]
-    pub fn set_ch_id(&mut self, ch_id: js_sys::JsString) {
-        self.ch_id = ch_id.into();
-    }
-
-    #[wasm_bindgen(getter)]
-    pub fn token(&mut self) -> String {
-        self.token.clone()
-    }
-    #[wasm_bindgen(setter)]
-    pub fn set_token(&mut self, token: js_sys::JsString) {
-        self.token = token.into();
-    }
-
-    #[wasm_bindgen(setter, js_name = "override")]
-    pub fn set_override(&mut self, _override: Option<bool>) {
-        self._override = _override;
-    }
-    #[wasm_bindgen(getter, js_name = "override")]
-    pub fn _override(&self) -> Option<bool> {
-        self._override
-    }
-}
-
-#[wasm_bindgen]
-#[derive(Serialize)]
-#[serde(rename_all = "camelCase")]
-pub struct RevokeTokenParams {
-    group: String,
-    token: String,
-    ch_id: String,
-}
-
-#[wasm_bindgen]
-impl RevokeTokenParams {
-    #[wasm_bindgen(constructor)]
-    pub fn new(group: String, token: String, ch_id: String) -> Self {
-        Self {
-            group,
-            token,
-            ch_id,
-        }
-    }
-
-    #[wasm_bindgen(setter)]
-    pub fn set_group(&mut self, group: String) {
-        self.group = group;
-    }
-    #[wasm_bindgen(getter)]
-    pub fn group(&mut self) -> String {
-        self.group.clone()
-    }
-
-    #[wasm_bindgen(getter, js_name = "chId")]
-    pub fn ch_id(&mut self) -> String {
-        self.ch_id.clone()
-    }
-    #[wasm_bindgen(setter, js_name = "chId")]
-    pub fn set_ch_id(&mut self, ch_id: String) {
-        self.ch_id = ch_id;
-    }
-
-    #[wasm_bindgen(getter)]
-    pub fn token(&mut self) -> String {
-        self.token.clone()
-    }
-    #[wasm_bindgen(setter)]
-    pub fn set_token(&mut self, token: String) {
-        self.token = token;
-    }
-}
+// #[wasm_bindgen]
+// #[derive(Serialize)]
+// #[serde(rename_all = "camelCase")]
+// pub struct RevokeTokenParams {
+//     group: String,
+//     token: String,
+//     ch_id: String,
+// }
+//
+// #[wasm_bindgen]
+// impl RevokeTokenParams {
+//     #[wasm_bindgen(constructor)]
+//     pub fn new(group: String, token: String, ch_id: String) -> Self {
+//         Self {
+//             group,
+//             token,
+//             ch_id,
+//         }
+//     }
+//
+//     #[wasm_bindgen(setter)]
+//     pub fn set_group(&mut self, group: String) {
+//         self.group = group;
+//     }
+//     #[wasm_bindgen(getter)]
+//     pub fn group(&mut self) -> String {
+//         self.group.clone()
+//     }
+//
+//     #[wasm_bindgen(getter, js_name = "chId")]
+//     pub fn ch_id(&mut self) -> String {
+//         self.ch_id.clone()
+//     }
+//     #[wasm_bindgen(setter, js_name = "chId")]
+//     pub fn set_ch_id(&mut self, ch_id: String) {
+//         self.ch_id = ch_id;
+//     }
+//
+//     #[wasm_bindgen(getter)]
+//     pub fn token(&mut self) -> String {
+//         self.token.clone()
+//     }
+//     #[wasm_bindgen(setter)]
+//     pub fn set_token(&mut self, token: String) {
+//         self.token = token;
+//     }
+// }
 
 #[wasm_bindgen]
 #[derive(Deserialize)]
@@ -239,18 +241,67 @@ pub struct PushTransparentParams {
     platform_extra: PlatformParams,
 }
 
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+#[wasm_bindgen]
+pub struct PushNotificationParams {
+    groups: Vec<String>,
+    channels: Vec<String>,
+    #[wasm_bindgen(getter_with_clone)]
+    pub title: String,
+    #[wasm_bindgen(getter_with_clone)]
+    pub body: String,
+    wecom: WecomExtra,
+}
+
+#[wasm_bindgen]
+impl PushNotificationParams {
+    #[wasm_bindgen(setter)]
+    pub fn set_groups(&mut self, groups: Vec<JsString>) {
+        self.groups = groups.iter().map(|e| e.into()).collect();
+    }
+    #[wasm_bindgen(getter)]
+    pub fn groups(&self) -> Vec<JsString> {
+        self.groups
+            .iter()
+            .map(|e| JsString::from(e.as_str()))
+            .collect()
+    }
+
+    #[wasm_bindgen(setter)]
+    pub fn set_channels(&mut self, channels: Vec<JsString>) {
+        self.channels = channels.iter().map(|e| e.into()).collect();
+    }
+    #[wasm_bindgen(getter)]
+    pub fn channels(&self) -> Vec<JsString> {
+        self.channels
+            .iter()
+            .map(|e| JsString::from(e.as_str()))
+            .collect()
+    }
+
+    #[wasm_bindgen(setter)]
+    pub fn set_wecom(&mut self, wecom: WecomExtra) {
+        self.wecom = wecom
+    }
+    #[wasm_bindgen(getter)]
+    pub fn wecom(&self) -> WecomExtra {
+        self.wecom.clone()
+    }
+}
+
 #[cfg(feature = "client")]
 #[derive(Debug, Clone, Serialize)]
-#[cfg_attr(feature = "client", wasm_bindgen)]
+#[cfg_attr(feature = "client", wasm_bindgen(getter_with_clone))]
 pub struct WecomExtraText {
-    url: String,
-    btntxt: String,
+    pub url: String,
+    pub btntxt: String,
 }
 
 #[derive(Debug, Clone, Serialize)]
 #[cfg_attr(feature = "client", wasm_bindgen)]
 pub struct WecomExtra {
-    markdown: bool,
+    pub markdown: bool,
     text: WecomExtraText,
 }
 
@@ -304,10 +355,10 @@ impl AndroidExtra {}
 #[serde(rename_all = "camelCase")]
 pub struct PlatformParams {
     #[cfg(any(
-        feature = "fcm",
-        feature = "xiaomi",
-        feature = "huawei",
-        feature = "client"
+    feature = "fcm",
+    feature = "xiaomi",
+    feature = "huawei",
+    feature = "client"
     ))]
     android: Option<AndroidExtra>,
     #[cfg(any(feature = "apns", feature = "client"))]

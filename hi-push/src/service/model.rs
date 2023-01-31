@@ -1,8 +1,13 @@
 use std::collections::HashMap;
 
-use derive_builder::Builder;
 use serde::{Deserialize, Serialize};
-use serde_repr::{Deserialize_repr, Serialize_repr};
+use serde_repr::{Serialize_repr};
+
+#[cfg(all(feature = "client", target_arch = "wasm32"))]
+pub use super::model_wasm::*;
+
+#[cfg(all(feature = "client", target_arch = "wasm32"))]
+use wasm_bindgen::prelude::wasm_bindgen;
 
 #[cfg(feature = "mongo")]
 use mongodb::bson::oid::ObjectId;
@@ -225,6 +230,7 @@ impl<T> From<anyhow::Error> for Response<T> {
     }
 }
 
+#[cfg(not(target_arch = "wasm32"))]
 #[cfg_attr(feature = "client", derive(Deserialize))]
 #[cfg_attr(not(feature = "client"), derive(Serialize, Clone))]
 #[serde(rename_all = "camelCase")]
@@ -237,6 +243,7 @@ pub struct RegisterTokenResp {
 #[cfg_attr(feature = "client", derive(Serialize))]
 #[cfg_attr(not(feature = "client"), derive(Deserialize))]
 #[serde(rename_all = "camelCase")]
+#[cfg_attr(all(target_arch = "wasm32", feature = "client"), wasm_bindgen(getter_with_clone))]
 pub struct RegisterTokenParams {
     pub group: String,
     pub token: String,
@@ -248,12 +255,14 @@ pub struct RegisterTokenParams {
 #[cfg_attr(feature = "client", derive(Serialize))]
 #[cfg_attr(not(feature = "client"), derive(Deserialize))]
 #[serde(rename_all = "camelCase")]
+#[cfg_attr(all(target_arch = "wasm32", feature = "client"), wasm_bindgen(getter_with_clone))]
 pub struct RevokeTokenParams {
     pub group: String,
     pub token: String,
     pub ch_id: String,
 }
 
+#[cfg(not(target_arch = "wasm32"))]
 #[cfg_attr(feature = "client", derive(Deserialize))]
 #[cfg_attr(not(feature = "client"), derive(Serialize, Clone))]
 #[serde(rename_all = "camelCase")]
@@ -263,6 +272,7 @@ pub struct RevokeTokenResp {
     pub failure_tokens: Vec<String>,
 }
 
+#[cfg(not(target_arch = "wasm32"))]
 #[cfg_attr(feature = "client", derive(Serialize))]
 #[cfg_attr(not(feature = "client"), derive(Deserialize))]
 #[serde(rename_all = "camelCase")]
@@ -285,6 +295,7 @@ pub enum Body {
     Text(String),
 }
 
+#[cfg(not(target_arch = "wasm32"))]
 #[cfg_attr(feature = "client", derive(Serialize))]
 #[cfg_attr(not(feature = "client"), derive(Deserialize))]
 #[serde(rename_all = "camelCase")]
@@ -297,6 +308,7 @@ pub struct PushTransparentParams {
     pub platform_extra: PlatformParams,
 }
 
+#[cfg(not(target_arch = "wasm32"))]
 #[cfg_attr(feature = "client", derive(Serialize))]
 #[cfg_attr(not(feature = "client"), derive(Deserialize))]
 #[serde(rename_all = "camelCase")]
