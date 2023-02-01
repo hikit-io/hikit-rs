@@ -1,23 +1,13 @@
+pub use super::common_model::*;
 #[allow(non_snake_case)]
 #[cfg(feature = "apns-model")]
 use crate::apns;
 
-use js_sys::{JsString};
+use js_sys::JsString;
 use reqwest::Error;
 use serde::{Deserialize, Serialize};
 use serde_repr::{Deserialize_repr, Serialize_repr};
-use wasm_bindgen::prelude::{wasm_bindgen};
-
-#[wasm_bindgen]
-#[derive(Debug, Serialize_repr, Deserialize_repr, Clone, Copy, Default, Eq, PartialEq)]
-#[repr(u8)]
-pub enum Code {
-    #[default]
-    Ok,
-    Err,
-    System,
-    Unknown,
-}
+use wasm_bindgen::prelude::wasm_bindgen;
 
 #[derive(Debug, Serialize, Deserialize, Clone, Default)]
 pub struct Response<T = String> {
@@ -37,8 +27,8 @@ impl<T> From<Response<T>> for ResponseError {
     }
 }
 
-#[wasm_bindgen]
 #[derive(Debug, Default)]
+#[wasm_bindgen]
 pub struct ResponseError {
     pub code: Code,
     #[wasm_bindgen(getter_with_clone)]
@@ -53,7 +43,10 @@ impl ResponseError {
 
     #[wasm_bindgen(getter)]
     pub fn errors(&self) -> Vec<JsString> {
-        self.errors.iter().map(|e| e.clone().into()).collect::<Vec<_>>()
+        self.errors
+            .iter()
+            .map(|e| e.clone().into())
+            .collect::<Vec<_>>()
     }
 
     pub fn unknown(msg: &str) -> Self {
@@ -74,7 +67,6 @@ impl From<reqwest::Error> for ResponseError {
         }
     }
 }
-
 
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -386,10 +378,10 @@ impl AndroidExtra {
 #[wasm_bindgen(getter_with_clone)]
 pub struct PlatformParams {
     #[cfg(any(
-    feature = "fcm",
-    feature = "xiaomi",
-    feature = "huawei",
-    feature = "client"
+        feature = "fcm",
+        feature = "xiaomi",
+        feature = "huawei",
+        feature = "client"
     ))]
     pub android: Option<AndroidExtra>,
     #[cfg(any(feature = "apns", feature = "client"))]
@@ -397,7 +389,6 @@ pub struct PlatformParams {
     #[cfg(any(feature = "wecom", feature = "client"))]
     pub wecom: Option<WecomExtra>,
 }
-
 
 #[derive(Debug, Serialize, Clone)]
 #[cfg_attr(feature = "client", wasm_bindgen(getter_with_clone))]

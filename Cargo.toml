@@ -7,4 +7,12 @@ members = [
 
     "hi-jira2",
     "hi-push",
+
+    "example"
 ]
+
+[profile.release]
+lto = true
+
+[profile.release.package.hi-push]
+opt-level = 'z'

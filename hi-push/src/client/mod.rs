@@ -3,6 +3,10 @@ use wasm_bindgen::prelude::*;
 
 use crate::service::model::*;
 
+#[cfg(all(target_arch = "wasm32", feature = "client"))]
+#[global_allocator]
+static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
+
 
 #[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
 pub struct Client {
@@ -15,13 +19,13 @@ pub struct Client {
 #[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
 impl Client {
     #[cfg_attr(target_arch = "wasm32", wasm_bindgen(constructor))]
-    pub fn new(endpoint: String, client_id: String, client_secret: String) -> Self {
+    pub fn new(endpoint: &str, client_id: &str, client_secret: &str) -> Self {
         let cli = reqwest::Client::new();
         Self {
             cli,
-            client_id,
-            client_secret,
-            endpoint,
+            client_id: client_id.to_string(),
+            client_secret: client_secret.to_string(),
+            endpoint: endpoint.to_string(),
         }
     }
 
@@ -64,8 +68,8 @@ impl Client {
             .unwrap()
     }
     #[cfg_attr(
-        target_arch = "wasm32",
-        wasm_bindgen(js_name = "pushTransparentMessage")
+    target_arch = "wasm32",
+    wasm_bindgen(js_name = "pushTransparentMessage")
     )]
     pub async fn push_transparent_message(&self, params: PushTransparentParams) -> String {
         self.cli
@@ -80,8 +84,8 @@ impl Client {
             .unwrap()
     }
     #[cfg_attr(
-        target_arch = "wasm32",
-        wasm_bindgen(js_name = "pushNotificationMessage")
+    target_arch = "wasm32",
+    wasm_bindgen(js_name = "pushNotificationMessage")
     )]
     pub async fn push_notification_message(&self, params: PushNotificationParams) -> String {
         self.cli

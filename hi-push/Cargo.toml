@@ -20,6 +20,13 @@ test = true
 path = "tests/email-test.rs"
 required-features = ["email"]
 
+
+[[test]]
+name = "feature-client"
+test = true
+path = "tests/client-test.rs"
+required-features = ["client"]
+
 [dev-dependencies]
 tokio = { version = "1.21.2", features = ["test-util","macros"] }
 
