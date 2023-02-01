@@ -10,8 +10,6 @@
 
 /// SystemAvatars : List of system avatars.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct SystemAvatars {
     /// A list of avatar details.
@@ -22,10 +20,6 @@ pub struct SystemAvatars {
 impl SystemAvatars {
     /// List of system avatars.
     pub fn new() -> SystemAvatars {
-        SystemAvatars {
-            system: None,
-        }
+        SystemAvatars { system: None }
     }
 }
-
-

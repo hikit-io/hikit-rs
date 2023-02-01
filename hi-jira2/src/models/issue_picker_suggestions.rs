@@ -10,8 +10,6 @@
 
 /// IssuePickerSuggestions : A list of issues suggested for use in auto-completion.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct IssuePickerSuggestions {
     /// A list of issues for an issue type suggested for use in auto-completion.
@@ -22,10 +20,6 @@ pub struct IssuePickerSuggestions {
 impl IssuePickerSuggestions {
     /// A list of issues suggested for use in auto-completion.
     pub fn new() -> IssuePickerSuggestions {
-        IssuePickerSuggestions {
-            sections: None,
-        }
+        IssuePickerSuggestions { sections: None }
     }
 }
-
-

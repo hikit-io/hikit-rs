@@ -10,8 +10,6 @@
 
 /// RuleConfiguration : A rule configuration.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct RuleConfiguration {
     /// Configuration of the rule, as it is stored by the Connect app on the rule configuration page.
@@ -35,5 +33,3 @@ impl RuleConfiguration {
         }
     }
 }
-
-

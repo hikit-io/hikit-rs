@@ -10,8 +10,6 @@
 
 /// VersionIssueCounts : Various counts of issues within a version.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct VersionIssueCounts {
     /// The URL of these count details.
@@ -21,10 +19,16 @@ pub struct VersionIssueCounts {
     #[serde(rename = "issuesFixedCount", skip_serializing_if = "Option::is_none")]
     pub issues_fixed_count: Option<i64>,
     /// Count of issues where the `affectedVersion` is set to the version.
-    #[serde(rename = "issuesAffectedCount", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "issuesAffectedCount",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub issues_affected_count: Option<i64>,
     /// Count of issues where a version custom field is set to the version.
-    #[serde(rename = "issueCountWithCustomFieldsShowingVersion", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "issueCountWithCustomFieldsShowingVersion",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub issue_count_with_custom_fields_showing_version: Option<i64>,
     /// List of custom fields using the version.
     #[serde(rename = "customFieldUsage", skip_serializing_if = "Option::is_none")]
@@ -43,5 +47,3 @@ impl VersionIssueCounts {
         }
     }
 }
-
-

@@ -10,8 +10,6 @@
 
 /// CustomFieldContextDefaultValueMultipleVersionPicker : The default value for a multiple version picker custom field.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct CustomFieldContextDefaultValueMultipleVersionPicker {
     /// The IDs of the default versions.
@@ -26,7 +24,10 @@ pub struct CustomFieldContextDefaultValueMultipleVersionPicker {
 
 impl CustomFieldContextDefaultValueMultipleVersionPicker {
     /// The default value for a multiple version picker custom field.
-    pub fn new(version_ids: Vec<String>, _type: String) -> CustomFieldContextDefaultValueMultipleVersionPicker {
+    pub fn new(
+        version_ids: Vec<String>,
+        _type: String,
+    ) -> CustomFieldContextDefaultValueMultipleVersionPicker {
         CustomFieldContextDefaultValueMultipleVersionPicker {
             version_ids,
             version_order: None,
@@ -34,5 +35,3 @@ impl CustomFieldContextDefaultValueMultipleVersionPicker {
         }
     }
 }
-
-

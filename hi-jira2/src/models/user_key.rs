@@ -10,8 +10,6 @@
 
 /// UserKey : List of user account IDs.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct UserKey {
     /// This property is no longer available and will be removed from the documentation soon. See the [deprecation notice](https://developer.atlassian.com/cloud/jira/platform/deprecation-notice-user-privacy-api-migration-guide/) for details.
@@ -31,5 +29,3 @@ impl UserKey {
         }
     }
 }
-
-

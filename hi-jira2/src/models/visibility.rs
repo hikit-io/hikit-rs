@@ -10,8 +10,6 @@
 
 /// Visibility : The group or role to which this item is visible.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct Visibility {
     /// Whether visibility of this item is restricted to a group or role.
@@ -50,4 +48,3 @@ impl Default for Type {
         Self::Group
     }
 }
-

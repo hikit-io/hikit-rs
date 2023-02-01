@@ -10,8 +10,6 @@
 
 /// License : Details about a license for the Jira instance.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct License {
     /// The applications under this license.
@@ -22,10 +20,6 @@ pub struct License {
 impl License {
     /// Details about a license for the Jira instance.
     pub fn new(applications: Vec<crate::models::LicensedApplication>) -> License {
-        License {
-            applications,
-        }
+        License { applications }
     }
 }
-
-

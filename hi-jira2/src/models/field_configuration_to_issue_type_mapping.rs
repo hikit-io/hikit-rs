@@ -10,8 +10,6 @@
 
 /// FieldConfigurationToIssueTypeMapping : The field configuration to issue type mapping.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct FieldConfigurationToIssueTypeMapping {
     /// The ID of the issue type or *default*. When set to *default* this field configuration issue type item applies to all issue types without a field configuration. An issue type can be included only once in a request.
@@ -24,12 +22,13 @@ pub struct FieldConfigurationToIssueTypeMapping {
 
 impl FieldConfigurationToIssueTypeMapping {
     /// The field configuration to issue type mapping.
-    pub fn new(issue_type_id: String, field_configuration_id: String) -> FieldConfigurationToIssueTypeMapping {
+    pub fn new(
+        issue_type_id: String,
+        field_configuration_id: String,
+    ) -> FieldConfigurationToIssueTypeMapping {
         FieldConfigurationToIssueTypeMapping {
             issue_type_id,
             field_configuration_id,
         }
     }
 }
-
-

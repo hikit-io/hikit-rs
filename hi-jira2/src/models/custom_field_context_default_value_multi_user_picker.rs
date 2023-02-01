@@ -10,8 +10,6 @@
 
 /// CustomFieldContextDefaultValueMultiUserPicker : The default value for a User Picker (multiple) custom field.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct CustomFieldContextDefaultValueMultiUserPicker {
     /// The ID of the context.
@@ -26,7 +24,11 @@ pub struct CustomFieldContextDefaultValueMultiUserPicker {
 
 impl CustomFieldContextDefaultValueMultiUserPicker {
     /// The default value for a User Picker (multiple) custom field.
-    pub fn new(context_id: String, account_ids: Vec<String>, _type: String) -> CustomFieldContextDefaultValueMultiUserPicker {
+    pub fn new(
+        context_id: String,
+        account_ids: Vec<String>,
+        _type: String,
+    ) -> CustomFieldContextDefaultValueMultiUserPicker {
         CustomFieldContextDefaultValueMultiUserPicker {
             context_id,
             account_ids,
@@ -34,5 +36,3 @@ impl CustomFieldContextDefaultValueMultiUserPicker {
         }
     }
 }
-
-

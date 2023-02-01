@@ -10,8 +10,6 @@
 
 /// CompoundClause : A JQL query clause that consists of nested clauses. For example, `(labels in (urgent, blocker) OR lastCommentedBy = currentUser()). Note that, where nesting is not defined, the parser nests JQL clauses based on the operator precedence. For example, \"A OR B AND C\" is parsed as \"(A OR B) AND C\". See Setting the precedence of operators for more information about precedence in JQL queries.`
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct CompoundClause {
     /// The list of nested clauses.
@@ -25,10 +23,7 @@ pub struct CompoundClause {
 impl CompoundClause {
     /// A JQL query clause that consists of nested clauses. For example, `(labels in (urgent, blocker) OR lastCommentedBy = currentUser()). Note that, where nesting is not defined, the parser nests JQL clauses based on the operator precedence. For example, \"A OR B AND C\" is parsed as \"(A OR B) AND C\". See Setting the precedence of operators for more information about precedence in JQL queries.`
     pub fn new(clauses: Vec<crate::models::JqlQueryClause>, operator: Operator) -> CompoundClause {
-        CompoundClause {
-            clauses,
-            operator,
-        }
+        CompoundClause { clauses, operator }
     }
 }
 
@@ -48,4 +43,3 @@ impl Default for Operator {
         Self::And
     }
 }
-

@@ -10,8 +10,6 @@
 
 /// SuggestedIssue : An issue suggested for use in the issue picker auto-completion.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct SuggestedIssue {
     /// The ID of the issue.
@@ -47,5 +45,3 @@ impl SuggestedIssue {
         }
     }
 }
-
-

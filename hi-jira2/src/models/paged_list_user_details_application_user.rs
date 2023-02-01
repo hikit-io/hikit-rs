@@ -10,8 +10,6 @@
 
 /// PagedListUserDetailsApplicationUser : A paged list. To access additional details append `[start-index:end-index]` to the expand request. For example, `?expand=sharedUsers[10:40]` returns a list starting at item 10 and finishing at item 40.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct PagedListUserDetailsApplicationUser {
     /// The number of items on the page.
@@ -43,5 +41,3 @@ impl PagedListUserDetailsApplicationUser {
         }
     }
 }
-
-

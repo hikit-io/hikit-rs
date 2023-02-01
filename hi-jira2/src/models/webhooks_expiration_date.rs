@@ -10,8 +10,6 @@
 
 /// WebhooksExpirationDate : The date the refreshed webhooks expire.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct WebhooksExpirationDate {
     /// The expiration date of all the refreshed webhooks.
@@ -22,10 +20,6 @@ pub struct WebhooksExpirationDate {
 impl WebhooksExpirationDate {
     /// The date the refreshed webhooks expire.
     pub fn new(expiration_date: i64) -> WebhooksExpirationDate {
-        WebhooksExpirationDate {
-            expiration_date,
-        }
+        WebhooksExpirationDate { expiration_date }
     }
 }
-
-

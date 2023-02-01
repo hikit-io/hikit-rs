@@ -10,8 +10,6 @@
 
 /// Watchers : The details of watchers on an issue.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct Watchers {
     /// The URL of these issue watcher details.
@@ -39,5 +37,3 @@ impl Watchers {
         }
     }
 }
-
-

@@ -10,8 +10,6 @@
 
 /// IssueLink : Details of a link between issues.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct IssueLink {
     /// The ID of the issue link.
@@ -33,7 +31,11 @@ pub struct IssueLink {
 
 impl IssueLink {
     /// Details of a link between issues.
-    pub fn new(_type: Option<crate::models::IssueLinkType>, inward_issue: Option<crate::models::LinkedIssue>, outward_issue: Option<crate::models::LinkedIssue>) -> IssueLink {
+    pub fn new(
+        _type: Option<crate::models::IssueLinkType>,
+        inward_issue: Option<crate::models::LinkedIssue>,
+        outward_issue: Option<crate::models::LinkedIssue>,
+    ) -> IssueLink {
         IssueLink {
             id: None,
             _self: None,
@@ -43,5 +45,3 @@ impl IssueLink {
         }
     }
 }
-
-

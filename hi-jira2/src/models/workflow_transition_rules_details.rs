@@ -10,8 +10,6 @@
 
 /// WorkflowTransitionRulesDetails : Details about a workflow configuration update request.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct WorkflowTransitionRulesDetails {
     #[serde(rename = "workflowId")]
@@ -23,12 +21,13 @@ pub struct WorkflowTransitionRulesDetails {
 
 impl WorkflowTransitionRulesDetails {
     /// Details about a workflow configuration update request.
-    pub fn new(workflow_id: crate::models::WorkflowId, workflow_rule_ids: Vec<String>) -> WorkflowTransitionRulesDetails {
+    pub fn new(
+        workflow_id: crate::models::WorkflowId,
+        workflow_rule_ids: Vec<String>,
+    ) -> WorkflowTransitionRulesDetails {
         WorkflowTransitionRulesDetails {
             workflow_id: workflow_id,
             workflow_rule_ids,
         }
     }
 }
-
-

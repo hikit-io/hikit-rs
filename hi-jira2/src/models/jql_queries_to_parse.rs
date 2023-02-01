@@ -10,8 +10,6 @@
 
 /// JqlQueriesToParse : A list of JQL queries to parse.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct JqlQueriesToParse {
     /// A list of queries to parse.
@@ -22,10 +20,6 @@ pub struct JqlQueriesToParse {
 impl JqlQueriesToParse {
     /// A list of JQL queries to parse.
     pub fn new(queries: Vec<String>) -> JqlQueriesToParse {
-        JqlQueriesToParse {
-            queries,
-        }
+        JqlQueriesToParse { queries }
     }
 }
-
-

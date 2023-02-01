@@ -10,8 +10,6 @@
 
 /// JqlQueryOrderByClauseElement : An element of the order-by JQL clause.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct JqlQueryOrderByClauseElement {
     #[serde(rename = "field")]
@@ -45,4 +43,3 @@ impl Default for Direction {
         Self::Asc
     }
 }
-

@@ -10,8 +10,6 @@
 
 /// IssueContextVariable : An [issue](https://developer.atlassian.com/cloud/jira/platform/jira-expressions-type-reference#issue) specified by ID or key. All the fields of the issue object are available in the Jira expression.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct IssueContextVariable {
     /// Type of custom context variable.
@@ -35,5 +33,3 @@ impl IssueContextVariable {
         }
     }
 }
-
-

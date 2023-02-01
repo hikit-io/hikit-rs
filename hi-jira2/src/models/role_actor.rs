@@ -10,8 +10,6 @@
 
 /// RoleActor : Details about a user assigned to a project role.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct RoleActor {
     /// The ID of the role actor.
@@ -64,4 +62,3 @@ impl Default for Type {
         Self::GroupRoleActor
     }
 }
-

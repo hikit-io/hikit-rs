@@ -88,17 +88,17 @@ impl Form {
     ///     .text("password", "secret");
     /// ```
     pub fn text<T, U>(self, name: T, value: U) -> Form
-        where
-            T: Into<Cow<'static, str>>,
-            U: Into<Cow<'static, str>>,
+    where
+        T: Into<Cow<'static, str>>,
+        U: Into<Cow<'static, str>>,
     {
         self.part(name, Part::text(value))
     }
 
     /// Adds a customized Part.
     pub fn part<T>(self, name: T, part: Part) -> Form
-        where
-            T: Into<Cow<'static, str>>,
+    where
+        T: Into<Cow<'static, str>>,
     {
         self.with_inner(move |inner| inner.part(name, part))
     }
@@ -127,14 +127,14 @@ impl Form {
         // create initial part to init reduce chain
         let (name, part) = self.inner.fields.remove(0);
         let start = Box::pin(self.part_stream(name, part))
-            as Pin<Box<dyn Stream<Item=crate::Result<Bytes>> + Send + Sync>>;
+            as Pin<Box<dyn Stream<Item = crate::Result<Bytes>> + Send + Sync>>;
 
         let fields = self.inner.take_fields();
         // for each field, chain an additional stream
         let stream = fields.into_iter().fold(start, |memo, (name, part)| {
             let part_stream = self.part_stream(name, part);
             Box::pin(memo.chain(part_stream))
-                as Pin<Box<dyn Stream<Item=crate::Result<Bytes>> + Send + Sync>>
+                as Pin<Box<dyn Stream<Item = crate::Result<Bytes>> + Send + Sync>>
         });
         // append special ending boundary
         let last = stream::once(future::ready(Ok(
@@ -148,9 +148,9 @@ impl Form {
         &mut self,
         name: T,
         part: Part,
-    ) -> impl Stream<Item=Result<Bytes, crate::Error>>
-        where
-            T: Into<Cow<'static, str>>,
+    ) -> impl Stream<Item = Result<Bytes, crate::Error>>
+    where
+        T: Into<Cow<'static, str>>,
     {
         // start with boundary
         let boundary = stream::once(future::ready(Ok(
@@ -177,8 +177,8 @@ impl Form {
     }
 
     fn with_inner<F>(self, func: F) -> Self
-        where
-            F: FnOnce(FormParts<Part>) -> FormParts<Part>,
+    where
+        F: FnOnce(FormParts<Part>) -> FormParts<Part>,
     {
         Form {
             inner: func(self.inner),
@@ -197,8 +197,8 @@ impl fmt::Debug for Form {
 impl Part {
     /// Makes a text parameter.
     pub fn text<T>(value: T) -> Part
-        where
-            T: Into<Cow<'static, str>>,
+    where
+        T: Into<Cow<'static, str>>,
     {
         let body = match value.into() {
             Cow::Borrowed(slice) => Body::from(slice),
@@ -209,8 +209,8 @@ impl Part {
 
     /// Makes a new parameter from arbitrary bytes.
     pub fn bytes<T>(value: T) -> Part
-        where
-            T: Into<Cow<'static, [u8]>>,
+    where
+        T: Into<Cow<'static, [u8]>>,
     {
         let (body, len) = match value.into() {
             Cow::Borrowed(slice) => (Body::from(slice), slice.len()),
@@ -254,15 +254,15 @@ impl Part {
 
     /// Sets the filename, builder style.
     pub fn file_name<T>(self, filename: T) -> Part
-        where
-            T: Into<Cow<'static, str>>,
+    where
+        T: Into<Cow<'static, str>>,
     {
         self.with_inner(move |inner| inner.file_name(filename))
     }
 
     fn with_inner<F>(self, func: F) -> Self
-        where
-            F: FnOnce(PartMetadata) -> PartMetadata,
+    where
+        F: FnOnce(PartMetadata) -> PartMetadata,
     {
         Part {
             meta: func(self.meta),
@@ -322,8 +322,8 @@ impl<P: PartProps> FormParts<P> {
 
     /// Adds a customized Part.
     pub(crate) fn part<T>(mut self, name: T, part: P) -> Self
-        where
-            T: Into<Cow<'static, str>>,
+    where
+        T: Into<Cow<'static, str>>,
     {
         self.fields.push((name.into(), part));
         self
@@ -414,8 +414,8 @@ impl PartMetadata {
     }
 
     pub(crate) fn file_name<T>(mut self, filename: T) -> Self
-        where
-            T: Into<Cow<'static, str>>,
+    where
+        T: Into<Cow<'static, str>>,
     {
         self.file_name = Some(filename.into());
         self
@@ -559,7 +559,7 @@ mod tests {
                 Part::stream(Body::wrap_stream(stream::once(future::ready::<
                     Result<String, crate::Error>,
                 >(Ok(
-                    "part1".to_owned()
+                    "part1".to_owned(),
                 ))))),
             )
             .part("key1", Part::text("value1"))
@@ -569,7 +569,7 @@ mod tests {
                 Part::stream(Body::wrap_stream(stream::once(future::ready::<
                     Result<String, crate::Error>,
                 >(Ok(
-                    "part2".to_owned()
+                    "part2".to_owned(),
                 ))))),
             )
             .part("key3", Part::text("value3").file_name("filename"));
@@ -650,7 +650,8 @@ mod tests {
         let bytes_data = b"some bytes data".to_vec();
         let bytes_len = bytes_data.len();
 
-        let stream_part = Part::stream_with_length(Body::wrap_stream(the_stream), stream_len as u64);
+        let stream_part =
+            Part::stream_with_length(Body::wrap_stream(the_stream), stream_len as u64);
         let body_part = Part::bytes(bytes_data);
 
         // A simple check to make sure we get the configured body length
@@ -676,16 +677,20 @@ mod tests {
         );
     }
     #[tokio::test]
-    async fn reqwest(){
+    async fn reqwest() {
         let form = Form::new();
         let mut form = form.text("name", "value");
         let mut part = Part::text("part");
         part.headers_mut().insert("test", "test".parse().unwrap());
 
-        form = form.part("part",part);
+        form = form.part("part", part);
 
         let cli = reqwest::Client::builder().build().expect("");
-        let resp = cli.post("http://localhost:9090/").body(form.stream()).send().await;
+        let resp = cli
+            .post("http://localhost:9090/")
+            .body(form.stream())
+            .send()
+            .await;
         println!("{resp:?}");
     }
 }

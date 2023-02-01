@@ -10,8 +10,6 @@
 
 /// TransitionScreenDetails : The details of a transition screen.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct TransitionScreenDetails {
     /// The ID of the screen.
@@ -25,11 +23,6 @@ pub struct TransitionScreenDetails {
 impl TransitionScreenDetails {
     /// The details of a transition screen.
     pub fn new(id: String) -> TransitionScreenDetails {
-        TransitionScreenDetails {
-            id,
-            name: None,
-        }
+        TransitionScreenDetails { id, name: None }
     }
 }
-
-

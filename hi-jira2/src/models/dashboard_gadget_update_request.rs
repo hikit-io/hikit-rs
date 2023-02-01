@@ -10,8 +10,6 @@
 
 /// DashboardGadgetUpdateRequest : The details of the gadget to update.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct DashboardGadgetUpdateRequest {
     /// The title of the gadget.
@@ -35,5 +33,3 @@ impl DashboardGadgetUpdateRequest {
         }
     }
 }
-
-

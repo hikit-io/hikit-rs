@@ -10,8 +10,6 @@
 
 /// ContainerForWebhookIds : Container for a list of webhook IDs.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct ContainerForWebhookIds {
     /// A list of webhook IDs.
@@ -22,10 +20,6 @@ pub struct ContainerForWebhookIds {
 impl ContainerForWebhookIds {
     /// Container for a list of webhook IDs.
     pub fn new(webhook_ids: Vec<i64>) -> ContainerForWebhookIds {
-        ContainerForWebhookIds {
-            webhook_ids,
-        }
+        ContainerForWebhookIds { webhook_ids }
     }
 }
-
-

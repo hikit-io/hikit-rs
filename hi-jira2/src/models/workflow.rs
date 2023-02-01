@@ -10,8 +10,6 @@
 
 /// Workflow : Details about a workflow.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct Workflow {
     #[serde(rename = "id")]
@@ -65,5 +63,3 @@ impl Workflow {
         }
     }
 }
-
-

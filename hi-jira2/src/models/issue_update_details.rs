@@ -10,8 +10,6 @@
 
 /// IssueUpdateDetails : Details of an issue update request.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct IssueUpdateDetails {
     /// Details of a transition. Required when performing a transition, optional when creating or editing an issue.
@@ -22,7 +20,8 @@ pub struct IssueUpdateDetails {
     pub fields: Option<::std::collections::HashMap<String, serde_json::Value>>,
     /// A Map containing the field field name and a list of operations to perform on the issue screen field. Note that fields included in here cannot be included in `fields`.
     #[serde(rename = "update", skip_serializing_if = "Option::is_none")]
-    pub update: Option<::std::collections::HashMap<String, Vec<crate::models::FieldUpdateOperation>>>,
+    pub update:
+        Option<::std::collections::HashMap<String, Vec<crate::models::FieldUpdateOperation>>>,
     /// Additional issue history details.
     #[serde(rename = "historyMetadata", skip_serializing_if = "Option::is_none")]
     pub history_metadata: Option<crate::models::HistoryMetadata>,
@@ -43,5 +42,3 @@ impl IssueUpdateDetails {
         }
     }
 }
-
-

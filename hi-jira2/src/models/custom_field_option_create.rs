@@ -10,8 +10,6 @@
 
 /// CustomFieldOptionCreate : Details of a custom field option to create.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct CustomFieldOptionCreate {
     /// The value of the custom field option.
@@ -35,5 +33,3 @@ impl CustomFieldOptionCreate {
         }
     }
 }
-
-

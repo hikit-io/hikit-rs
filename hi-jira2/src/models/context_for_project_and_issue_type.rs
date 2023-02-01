@@ -10,8 +10,6 @@
 
 /// ContextForProjectAndIssueType : The project and issue type mapping with a matching custom field context.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct ContextForProjectAndIssueType {
     /// The ID of the project.
@@ -27,7 +25,11 @@ pub struct ContextForProjectAndIssueType {
 
 impl ContextForProjectAndIssueType {
     /// The project and issue type mapping with a matching custom field context.
-    pub fn new(project_id: String, issue_type_id: String, context_id: String) -> ContextForProjectAndIssueType {
+    pub fn new(
+        project_id: String,
+        issue_type_id: String,
+        context_id: String,
+    ) -> ContextForProjectAndIssueType {
         ContextForProjectAndIssueType {
             project_id,
             issue_type_id,
@@ -35,5 +37,3 @@ impl ContextForProjectAndIssueType {
         }
     }
 }
-
-

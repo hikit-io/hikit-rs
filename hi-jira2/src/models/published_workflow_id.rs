@@ -10,8 +10,6 @@
 
 /// PublishedWorkflowId : Properties that identify a published workflow.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct PublishedWorkflowId {
     /// The name of the workflow.
@@ -31,5 +29,3 @@ impl PublishedWorkflowId {
         }
     }
 }
-
-

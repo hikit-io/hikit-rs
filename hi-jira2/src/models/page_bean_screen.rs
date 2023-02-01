@@ -10,8 +10,6 @@
 
 /// PageBeanScreen : A page of items.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct PageBeanScreen {
     /// The URL of the page.
@@ -51,5 +49,3 @@ impl PageBeanScreen {
         }
     }
 }
-
-

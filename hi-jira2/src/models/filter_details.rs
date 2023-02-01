@@ -10,8 +10,6 @@
 
 /// FilterDetails : Details of a filter.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct FilterDetails {
     /// Expand options that include additional filter details in the response.
@@ -79,5 +77,3 @@ impl FilterDetails {
         }
     }
 }
-
-

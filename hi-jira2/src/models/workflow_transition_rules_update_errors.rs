@@ -10,8 +10,6 @@
 
 /// WorkflowTransitionRulesUpdateErrors : Details of any errors encountered while updating workflow transition rules.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct WorkflowTransitionRulesUpdateErrors {
     /// A list of workflows.
@@ -21,11 +19,9 @@ pub struct WorkflowTransitionRulesUpdateErrors {
 
 impl WorkflowTransitionRulesUpdateErrors {
     /// Details of any errors encountered while updating workflow transition rules.
-    pub fn new(update_results: Vec<crate::models::WorkflowTransitionRulesUpdateErrorDetails>) -> WorkflowTransitionRulesUpdateErrors {
-        WorkflowTransitionRulesUpdateErrors {
-            update_results,
-        }
+    pub fn new(
+        update_results: Vec<crate::models::WorkflowTransitionRulesUpdateErrorDetails>,
+    ) -> WorkflowTransitionRulesUpdateErrors {
+        WorkflowTransitionRulesUpdateErrors { update_results }
     }
 }
-
-

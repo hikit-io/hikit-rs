@@ -10,8 +10,6 @@
 
 /// CustomFieldValueUpdate : A list of issue IDs and the value to update a custom field to.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct CustomFieldValueUpdate {
     /// The list of issue IDs.
@@ -25,11 +23,6 @@ pub struct CustomFieldValueUpdate {
 impl CustomFieldValueUpdate {
     /// A list of issue IDs and the value to update a custom field to.
     pub fn new(issue_ids: Vec<i64>, value: Option<serde_json::Value>) -> CustomFieldValueUpdate {
-        CustomFieldValueUpdate {
-            issue_ids,
-            value,
-        }
+        CustomFieldValueUpdate { issue_ids, value }
     }
 }
-
-

@@ -10,8 +10,6 @@
 
 /// IssueTypeDetails : Details about an issue type.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct IssueTypeDetails {
     /// The URL of these issue type details.
@@ -63,5 +61,3 @@ impl IssueTypeDetails {
         }
     }
 }
-
-

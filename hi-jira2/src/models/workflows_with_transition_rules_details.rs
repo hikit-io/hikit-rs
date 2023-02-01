@@ -10,8 +10,6 @@
 
 /// WorkflowsWithTransitionRulesDetails : Details of workflows and their transition rules to delete.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct WorkflowsWithTransitionRulesDetails {
     /// The list of workflows with transition rules to delete.
@@ -21,11 +19,9 @@ pub struct WorkflowsWithTransitionRulesDetails {
 
 impl WorkflowsWithTransitionRulesDetails {
     /// Details of workflows and their transition rules to delete.
-    pub fn new(workflows: Vec<crate::models::WorkflowTransitionRulesDetails>) -> WorkflowsWithTransitionRulesDetails {
-        WorkflowsWithTransitionRulesDetails {
-            workflows,
-        }
+    pub fn new(
+        workflows: Vec<crate::models::WorkflowTransitionRulesDetails>,
+    ) -> WorkflowsWithTransitionRulesDetails {
+        WorkflowsWithTransitionRulesDetails { workflows }
     }
 }
-
-

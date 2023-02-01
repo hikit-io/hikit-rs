@@ -10,8 +10,6 @@
 
 /// FoundGroup : A group found in a search.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct FoundGroup {
     /// The name of the group. The name of a group is mutable, to reliably identify a group use ``groupId`.`
@@ -38,5 +36,3 @@ impl FoundGroup {
         }
     }
 }
-
-

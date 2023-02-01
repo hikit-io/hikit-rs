@@ -10,8 +10,6 @@
 
 /// ProjectIssueTypeMapping : The project and issue type mapping.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct ProjectIssueTypeMapping {
     /// The ID of the project.
@@ -31,5 +29,3 @@ impl ProjectIssueTypeMapping {
         }
     }
 }
-
-

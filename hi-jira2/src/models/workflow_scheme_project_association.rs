@@ -10,8 +10,6 @@
 
 /// WorkflowSchemeProjectAssociation : An associated workflow scheme and project.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct WorkflowSchemeProjectAssociation {
     /// The ID of the workflow scheme. If the workflow scheme ID is `null`, the operation assigns the default workflow scheme.
@@ -31,5 +29,3 @@ impl WorkflowSchemeProjectAssociation {
         }
     }
 }
-
-

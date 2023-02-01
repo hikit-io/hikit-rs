@@ -10,8 +10,6 @@
 
 /// HistoryMetadata : Details of issue history metadata.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct HistoryMetadata {
     /// The type of the history record.
@@ -24,16 +22,25 @@ pub struct HistoryMetadata {
     #[serde(rename = "descriptionKey", skip_serializing_if = "Option::is_none")]
     pub description_key: Option<String>,
     /// The activity described in the history record.
-    #[serde(rename = "activityDescription", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "activityDescription",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub activity_description: Option<String>,
     /// The key of the activity described in the history record.
-    #[serde(rename = "activityDescriptionKey", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "activityDescriptionKey",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub activity_description_key: Option<String>,
     /// The description of the email address associated the history record.
     #[serde(rename = "emailDescription", skip_serializing_if = "Option::is_none")]
     pub email_description: Option<String>,
     /// The description key of the email address associated the history record.
-    #[serde(rename = "emailDescriptionKey", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "emailDescriptionKey",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub email_description_key: Option<String>,
     /// Details of the user whose action created the history record.
     #[serde(rename = "actor", skip_serializing_if = "Option::is_none")]
@@ -67,5 +74,3 @@ impl HistoryMetadata {
         }
     }
 }
-
-

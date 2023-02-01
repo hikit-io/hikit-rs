@@ -10,8 +10,6 @@
 
 /// WorkflowScheme : Details about a workflow scheme.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct WorkflowScheme {
     /// The ID of the workflow scheme.
@@ -30,10 +28,16 @@ pub struct WorkflowScheme {
     #[serde(rename = "issueTypeMappings", skip_serializing_if = "Option::is_none")]
     pub issue_type_mappings: Option<::std::collections::HashMap<String, String>>,
     /// For draft workflow schemes, this property is the name of the default workflow for the original workflow scheme. The default workflow has *All Unassigned Issue Types* assigned to it in Jira.
-    #[serde(rename = "originalDefaultWorkflow", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "originalDefaultWorkflow",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub original_default_workflow: Option<String>,
     /// For draft workflow schemes, this property is the issue type to workflow mappings for the original workflow scheme, where each mapping is an issue type ID and workflow name pair. Note that an issue type can only be mapped to one workflow in a workflow scheme.
-    #[serde(rename = "originalIssueTypeMappings", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "originalIssueTypeMappings",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub original_issue_type_mappings: Option<::std::collections::HashMap<String, String>>,
     /// Whether the workflow scheme is a draft or not.
     #[serde(rename = "draft", skip_serializing_if = "Option::is_none")]
@@ -47,7 +51,10 @@ pub struct WorkflowScheme {
     #[serde(rename = "self", skip_serializing_if = "Option::is_none")]
     pub _self: Option<String>,
     /// Whether to create or update a draft workflow scheme when updating an active workflow scheme. An active workflow scheme is a workflow scheme that is used by at least one project. The following examples show how this property works:   *  Update an active workflow scheme with `updateDraftIfNeeded` set to `true`: If a draft workflow scheme exists, it is updated. Otherwise, a draft workflow scheme is created.  *  Update an active workflow scheme with `updateDraftIfNeeded` set to `false`: An error is returned, as active workflow schemes cannot be updated.  *  Update an inactive workflow scheme with `updateDraftIfNeeded` set to `true`: The workflow scheme is updated, as inactive workflow schemes do not require drafts to update.  Defaults to `false`.
-    #[serde(rename = "updateDraftIfNeeded", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "updateDraftIfNeeded",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub update_draft_if_needed: Option<bool>,
     /// The issue types available in Jira.
     #[serde(rename = "issueTypes", skip_serializing_if = "Option::is_none")]
@@ -74,5 +81,3 @@ impl WorkflowScheme {
         }
     }
 }
-
-

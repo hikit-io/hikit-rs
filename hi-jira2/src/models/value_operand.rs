@@ -10,8 +10,6 @@
 
 /// ValueOperand : An operand that is a user-provided value.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct ValueOperand {
     /// The operand value.
@@ -22,10 +20,6 @@ pub struct ValueOperand {
 impl ValueOperand {
     /// An operand that is a user-provided value.
     pub fn new(value: String) -> ValueOperand {
-        ValueOperand {
-            value,
-        }
+        ValueOperand { value }
     }
 }
-
-

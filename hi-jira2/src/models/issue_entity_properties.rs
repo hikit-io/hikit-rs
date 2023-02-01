@@ -10,8 +10,6 @@
 
 /// IssueEntityProperties : Lists of issues and entity properties. See [Entity properties](https://developer.atlassian.com/cloud/jira/platform/jira-entity-properties/) for more information.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct IssueEntityProperties {
     /// A list of entity property IDs.
@@ -31,5 +29,3 @@ impl IssueEntityProperties {
         }
     }
 }
-
-

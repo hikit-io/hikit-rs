@@ -10,8 +10,6 @@
 
 /// NotificationRecipientsRestrictions : Details of the group membership or permissions needed to receive the notification.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct NotificationRecipientsRestrictions {
     /// List of group memberships required to receive the notification.
@@ -35,5 +33,3 @@ impl NotificationRecipientsRestrictions {
         }
     }
 }
-
-

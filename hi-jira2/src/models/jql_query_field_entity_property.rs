@@ -10,8 +10,6 @@
 
 /// JqlQueryFieldEntityProperty : Details of an entity property.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct JqlQueryFieldEntityProperty {
     /// The object on which the property is set.
@@ -60,4 +58,3 @@ impl Default for Type {
         Self::Number
     }
 }
-

@@ -10,8 +10,6 @@
 
 /// MultipleCustomFieldValuesUpdateDetails : List of updates for a custom fields.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct MultipleCustomFieldValuesUpdateDetails {
     #[serde(rename = "updates", skip_serializing_if = "Option::is_none")]
@@ -21,10 +19,6 @@ pub struct MultipleCustomFieldValuesUpdateDetails {
 impl MultipleCustomFieldValuesUpdateDetails {
     /// List of updates for a custom fields.
     pub fn new() -> MultipleCustomFieldValuesUpdateDetails {
-        MultipleCustomFieldValuesUpdateDetails {
-            updates: None,
-        }
+        MultipleCustomFieldValuesUpdateDetails { updates: None }
     }
 }
-
-

@@ -10,8 +10,6 @@
 
 /// Worklog : Details of a worklog.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct Worklog {
     /// The URL of the worklog item.
@@ -75,5 +73,3 @@ impl Worklog {
         }
     }
 }
-
-

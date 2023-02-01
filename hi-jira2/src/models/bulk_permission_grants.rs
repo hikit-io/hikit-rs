@@ -10,8 +10,6 @@
 
 /// BulkPermissionGrants : Details of global and project permissions granted to the user.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct BulkPermissionGrants {
     /// List of project permissions and the projects and issues those permissions provide access to.
@@ -24,12 +22,13 @@ pub struct BulkPermissionGrants {
 
 impl BulkPermissionGrants {
     /// Details of global and project permissions granted to the user.
-    pub fn new(project_permissions: Vec<crate::models::BulkProjectPermissionGrants>, global_permissions: Vec<String>) -> BulkPermissionGrants {
+    pub fn new(
+        project_permissions: Vec<crate::models::BulkProjectPermissionGrants>,
+        global_permissions: Vec<String>,
+    ) -> BulkPermissionGrants {
         BulkPermissionGrants {
             project_permissions,
             global_permissions,
         }
     }
 }
-
-

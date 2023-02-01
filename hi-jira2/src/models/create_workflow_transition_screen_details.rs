@@ -10,8 +10,6 @@
 
 /// CreateWorkflowTransitionScreenDetails : The details of a transition screen.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct CreateWorkflowTransitionScreenDetails {
     /// The ID of the screen.
@@ -22,10 +20,6 @@ pub struct CreateWorkflowTransitionScreenDetails {
 impl CreateWorkflowTransitionScreenDetails {
     /// The details of a transition screen.
     pub fn new(id: String) -> CreateWorkflowTransitionScreenDetails {
-        CreateWorkflowTransitionScreenDetails {
-            id,
-        }
+        CreateWorkflowTransitionScreenDetails { id }
     }
 }
-
-

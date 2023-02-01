@@ -10,8 +10,6 @@
 
 /// Version : Details about a project version.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct Version {
     /// Use [expand](em>#expansion) to include additional information about version in the response. This parameter accepts a comma-separated list. Expand options include:   *  `operations` Returns the list of operations available for this version.  *  `issuesstatus` Returns the count of issues in this version for each of the status categories *to do*, *in progress*, *done*, and *unmapped*. The *unmapped* property contains a count of issues with a status other than *to do*, *in progress*, and *done*.  Optional for create and update.
@@ -57,13 +55,19 @@ pub struct Version {
     #[serde(rename = "projectId", skip_serializing_if = "Option::is_none")]
     pub project_id: Option<i64>,
     /// The URL of the self link to the version to which all unfixed issues are moved when a version is released. Not applicable when creating a version. Optional when updating a version.
-    #[serde(rename = "moveUnfixedIssuesTo", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "moveUnfixedIssuesTo",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub move_unfixed_issues_to: Option<String>,
     /// If the expand option `operations` is used, returns the list of operations available for this version.
     #[serde(rename = "operations", skip_serializing_if = "Option::is_none")]
     pub operations: Option<Vec<crate::models::SimpleLink>>,
     /// If the expand option `issuesstatus` is used, returns the count of issues in this version for each of the status categories *to do*, *in progress*, *done*, and *unmapped*. The *unmapped* property contains a count of issues with a status other than *to do*, *in progress*, and *done*.
-    #[serde(rename = "issuesStatusForFixVersion", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "issuesStatusForFixVersion",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub issues_status_for_fix_version: Option<crate::models::VersionIssuesStatus>,
 }
 
@@ -91,5 +95,3 @@ impl Version {
         }
     }
 }
-
-

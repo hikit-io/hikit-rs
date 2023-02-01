@@ -10,8 +10,6 @@
 
 /// FieldConfiguration : Details of a field configuration.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct FieldConfiguration {
     /// The ID of the field configuration.
@@ -39,5 +37,3 @@ impl FieldConfiguration {
         }
     }
 }
-
-

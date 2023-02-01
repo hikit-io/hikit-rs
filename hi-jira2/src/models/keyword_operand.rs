@@ -10,8 +10,6 @@
 
 /// KeywordOperand : An operand that is a JQL keyword. See [Advanced searching - keywords reference](https://confluence.atlassian.com/jiracorecloud/advanced-searching-keywords-reference-765593717.html#Advancedsearching-keywordsreference-EMPTYEMPTY) for more information about operand keywords.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct KeywordOperand {
     /// The keyword that is the operand value.
@@ -22,9 +20,7 @@ pub struct KeywordOperand {
 impl KeywordOperand {
     /// An operand that is a JQL keyword. See [Advanced searching - keywords reference](https://confluence.atlassian.com/jiracorecloud/advanced-searching-keywords-reference-765593717.html#Advancedsearching-keywordsreference-EMPTYEMPTY) for more information about operand keywords.
     pub fn new(keyword: Keyword) -> KeywordOperand {
-        KeywordOperand {
-            keyword,
-        }
+        KeywordOperand { keyword }
     }
 }
 
@@ -40,4 +36,3 @@ impl Default for Keyword {
         Self::Empty
     }
 }
-

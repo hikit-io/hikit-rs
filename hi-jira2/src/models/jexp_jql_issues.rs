@@ -10,8 +10,6 @@
 
 /// JexpJqlIssues : The JQL specifying the issues available in the evaluated Jira expression under the `issues` context variable. Not all issues returned by the JQL query are loaded, only those described by the `startAt` and `maxResults` properties. To determine whether it is necessary to iterate to ensure all the issues returned by the JQL query are evaluated, inspect `meta.issues.jql.count` in the response.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct JexpJqlIssues {
     /// The JQL query.
@@ -56,4 +54,3 @@ impl Default for Validation {
         Self::Strict
     }
 }
-

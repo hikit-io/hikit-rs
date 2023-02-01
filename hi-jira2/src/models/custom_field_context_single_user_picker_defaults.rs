@@ -10,8 +10,6 @@
 
 /// CustomFieldContextSingleUserPickerDefaults : Defaults for a User Picker (single) custom field.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct CustomFieldContextSingleUserPickerDefaults {
     /// The ID of the context.
@@ -28,7 +26,12 @@ pub struct CustomFieldContextSingleUserPickerDefaults {
 
 impl CustomFieldContextSingleUserPickerDefaults {
     /// Defaults for a User Picker (single) custom field.
-    pub fn new(context_id: String, account_id: String, user_filter: crate::models::UserFilter, _type: String) -> CustomFieldContextSingleUserPickerDefaults {
+    pub fn new(
+        context_id: String,
+        account_id: String,
+        user_filter: crate::models::UserFilter,
+        _type: String,
+    ) -> CustomFieldContextSingleUserPickerDefaults {
         CustomFieldContextSingleUserPickerDefaults {
             context_id,
             account_id,
@@ -37,5 +40,3 @@ impl CustomFieldContextSingleUserPickerDefaults {
         }
     }
 }
-
-

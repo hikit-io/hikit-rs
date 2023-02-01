@@ -10,8 +10,6 @@
 
 /// ScreenableField : A screen tab field.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct ScreenableField {
     /// The ID of the screen tab field.
@@ -31,5 +29,3 @@ impl ScreenableField {
         }
     }
 }
-
-

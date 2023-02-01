@@ -10,8 +10,6 @@
 
 /// FieldReferenceData : Details of a field that can be used in advanced searches.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct FieldReferenceData {
     /// The field identifier.
@@ -98,4 +96,3 @@ impl Default for Auto {
         Self::_True
     }
 }
-

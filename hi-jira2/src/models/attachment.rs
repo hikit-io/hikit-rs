@@ -10,8 +10,6 @@
 
 /// Attachment : Details about an attachment.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct Attachment {
     /// The URL of the attachment details response.
@@ -59,5 +57,3 @@ impl Attachment {
         }
     }
 }
-
-

@@ -10,8 +10,6 @@
 
 /// WebhookRegistrationDetails : Details of webhooks to register.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct WebhookRegistrationDetails {
     /// A list of webhooks.
@@ -24,12 +22,10 @@ pub struct WebhookRegistrationDetails {
 
 impl WebhookRegistrationDetails {
     /// Details of webhooks to register.
-    pub fn new(webhooks: Vec<crate::models::WebhookDetails>, url: String) -> WebhookRegistrationDetails {
-        WebhookRegistrationDetails {
-            webhooks,
-            url,
-        }
+    pub fn new(
+        webhooks: Vec<crate::models::WebhookDetails>,
+        url: String,
+    ) -> WebhookRegistrationDetails {
+        WebhookRegistrationDetails { webhooks, url }
     }
 }
-
-

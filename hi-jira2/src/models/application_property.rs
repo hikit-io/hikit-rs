@@ -10,8 +10,6 @@
 
 /// ApplicationProperty : Details of an application property.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct ApplicationProperty {
     /// The ID of the application property. The ID and key are the same.
@@ -58,5 +56,3 @@ impl ApplicationProperty {
         }
     }
 }
-
-

@@ -10,8 +10,6 @@
 
 /// WorkflowRules : A collection of transition rules.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct WorkflowRules {
     #[serde(rename = "conditionsTree", skip_serializing_if = "Option::is_none")]
@@ -34,5 +32,3 @@ impl WorkflowRules {
         }
     }
 }
-
-

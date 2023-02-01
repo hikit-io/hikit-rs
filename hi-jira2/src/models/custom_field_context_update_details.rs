@@ -10,8 +10,6 @@
 
 /// CustomFieldContextUpdateDetails : Details of a custom field context.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct CustomFieldContextUpdateDetails {
     /// The name of the custom field context. The name must be unique. The maximum length is 255 characters.
@@ -31,5 +29,3 @@ impl CustomFieldContextUpdateDetails {
         }
     }
 }
-
-

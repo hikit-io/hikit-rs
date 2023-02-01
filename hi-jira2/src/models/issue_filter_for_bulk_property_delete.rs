@@ -10,8 +10,6 @@
 
 /// IssueFilterForBulkPropertyDelete : Bulk operation filter details.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct IssueFilterForBulkPropertyDelete {
     /// List of issues to perform the bulk delete operation on.
@@ -31,5 +29,3 @@ impl IssueFilterForBulkPropertyDelete {
         }
     }
 }
-
-

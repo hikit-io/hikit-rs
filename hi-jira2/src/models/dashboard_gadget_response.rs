@@ -10,8 +10,6 @@
 
 /// DashboardGadgetResponse : The list of gadgets on the dashboard.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct DashboardGadgetResponse {
     /// The list of gadgets.
@@ -22,10 +20,6 @@ pub struct DashboardGadgetResponse {
 impl DashboardGadgetResponse {
     /// The list of gadgets on the dashboard.
     pub fn new(gadgets: Vec<crate::models::DashboardGadget>) -> DashboardGadgetResponse {
-        DashboardGadgetResponse {
-            gadgets,
-        }
+        DashboardGadgetResponse { gadgets }
     }
 }
-
-

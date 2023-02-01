@@ -10,8 +10,6 @@
 
 /// ChangedWorklogs : List of changed worklogs.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct ChangedWorklogs {
     /// Changed worklog list.
@@ -46,5 +44,3 @@ impl ChangedWorklogs {
         }
     }
 }
-
-

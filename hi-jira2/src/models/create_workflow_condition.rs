@@ -10,8 +10,6 @@
 
 /// CreateWorkflowCondition : A workflow transition condition.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct CreateWorkflowCondition {
     /// The compound condition operator.
@@ -54,4 +52,3 @@ impl Default for Operator {
         Self::AND
     }
 }
-

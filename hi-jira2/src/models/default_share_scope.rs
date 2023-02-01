@@ -10,8 +10,6 @@
 
 /// DefaultShareScope : Details of the scope of the default sharing for new filters and dashboards.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct DefaultShareScope {
     /// The scope of the default sharing for new filters and dashboards:   *  `AUTHENTICATED` Shared with all logged-in users.  *  `GLOBAL` Shared with all logged-in users. This shows as `AUTHENTICATED` in the response.  *  `PRIVATE` Not shared with any users.
@@ -22,9 +20,7 @@ pub struct DefaultShareScope {
 impl DefaultShareScope {
     /// Details of the scope of the default sharing for new filters and dashboards.
     pub fn new(scope: Scope) -> DefaultShareScope {
-        DefaultShareScope {
-            scope,
-        }
+        DefaultShareScope { scope }
     }
 }
 
@@ -44,4 +40,3 @@ impl Default for Scope {
         Self::GLOBAL
     }
 }
-

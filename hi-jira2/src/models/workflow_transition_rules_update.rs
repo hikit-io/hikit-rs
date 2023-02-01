@@ -10,8 +10,6 @@
 
 /// WorkflowTransitionRulesUpdate : Details about a workflow configuration update request.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct WorkflowTransitionRulesUpdate {
     /// The list of workflows with transition rules to update.
@@ -21,11 +19,9 @@ pub struct WorkflowTransitionRulesUpdate {
 
 impl WorkflowTransitionRulesUpdate {
     /// Details about a workflow configuration update request.
-    pub fn new(workflows: Vec<crate::models::WorkflowTransitionRules>) -> WorkflowTransitionRulesUpdate {
-        WorkflowTransitionRulesUpdate {
-            workflows,
-        }
+    pub fn new(
+        workflows: Vec<crate::models::WorkflowTransitionRules>,
+    ) -> WorkflowTransitionRulesUpdate {
+        WorkflowTransitionRulesUpdate { workflows }
     }
 }
-
-

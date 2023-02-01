@@ -10,8 +10,6 @@
 
 /// BulkCustomFieldOptionCreateRequest : Details of the options to create for a custom field.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct BulkCustomFieldOptionCreateRequest {
     /// Details of options to create.
@@ -22,10 +20,6 @@ pub struct BulkCustomFieldOptionCreateRequest {
 impl BulkCustomFieldOptionCreateRequest {
     /// Details of the options to create for a custom field.
     pub fn new() -> BulkCustomFieldOptionCreateRequest {
-        BulkCustomFieldOptionCreateRequest {
-            options: None,
-        }
+        BulkCustomFieldOptionCreateRequest { options: None }
     }
 }
-
-

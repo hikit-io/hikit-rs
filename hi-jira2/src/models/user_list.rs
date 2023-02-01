@@ -10,8 +10,6 @@
 
 /// UserList : A paginated list of users sharing the filter. This includes users that are members of the groups or can browse the projects that the filter is shared with.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct UserList {
     /// The number of items on the page.
@@ -43,5 +41,3 @@ impl UserList {
         }
     }
 }
-
-

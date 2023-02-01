@@ -10,8 +10,6 @@
 
 /// SanitizedJqlQueries : The sanitized JQL queries for the given account IDs.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct SanitizedJqlQueries {
     /// The list of sanitized JQL queries.
@@ -22,10 +20,6 @@ pub struct SanitizedJqlQueries {
 impl SanitizedJqlQueries {
     /// The sanitized JQL queries for the given account IDs.
     pub fn new() -> SanitizedJqlQueries {
-        SanitizedJqlQueries {
-            queries: None,
-        }
+        SanitizedJqlQueries { queries: None }
     }
 }
-
-

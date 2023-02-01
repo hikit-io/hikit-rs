@@ -10,8 +10,6 @@
 
 /// IssueTypeToContextMapping : Mapping of an issue type to a context.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct IssueTypeToContextMapping {
     /// The ID of the context.
@@ -35,5 +33,3 @@ impl IssueTypeToContextMapping {
         }
     }
 }
-
-

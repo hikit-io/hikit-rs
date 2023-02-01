@@ -10,8 +10,6 @@
 
 /// HistoryMetadataParticipant : Details of user or system associated with a issue history metadata item.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct HistoryMetadataParticipant {
     /// The ID of the user or system associated with a history record.
@@ -47,5 +45,3 @@ impl HistoryMetadataParticipant {
         }
     }
 }
-
-

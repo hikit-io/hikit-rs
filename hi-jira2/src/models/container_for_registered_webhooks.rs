@@ -10,12 +10,13 @@
 
 /// ContainerForRegisteredWebhooks : Container for a list of registered webhooks. Webhook details are returned in the same order as the request.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct ContainerForRegisteredWebhooks {
     /// A list of registered webhooks.
-    #[serde(rename = "webhookRegistrationResult", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "webhookRegistrationResult",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub webhook_registration_result: Option<Vec<crate::models::RegisteredWebhook>>,
 }
 
@@ -27,5 +28,3 @@ impl ContainerForRegisteredWebhooks {
         }
     }
 }
-
-

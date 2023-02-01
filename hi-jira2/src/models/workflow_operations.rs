@@ -10,8 +10,6 @@
 
 /// WorkflowOperations : Operations allowed on a workflow
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct WorkflowOperations {
     /// Whether the workflow can be updated.
@@ -31,5 +29,3 @@ impl WorkflowOperations {
         }
     }
 }
-
-

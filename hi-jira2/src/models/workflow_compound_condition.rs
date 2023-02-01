@@ -10,8 +10,6 @@
 
 /// WorkflowCompoundCondition : A compound workflow transition rule condition. This object returns `nodeType` as `compound`.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct WorkflowCompoundCondition {
     /// The compound condition operator.
@@ -26,7 +24,11 @@ pub struct WorkflowCompoundCondition {
 
 impl WorkflowCompoundCondition {
     /// A compound workflow transition rule condition. This object returns `nodeType` as `compound`.
-    pub fn new(operator: Operator, conditions: Vec<crate::models::WorkflowCondition>, node_type: String) -> WorkflowCompoundCondition {
+    pub fn new(
+        operator: Operator,
+        conditions: Vec<crate::models::WorkflowCondition>,
+        node_type: String,
+    ) -> WorkflowCompoundCondition {
         WorkflowCompoundCondition {
             operator,
             conditions,
@@ -49,4 +51,3 @@ impl Default for Operator {
         Self::AND
     }
 }
-

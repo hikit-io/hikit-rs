@@ -10,8 +10,6 @@
 
 /// CustomFieldContextDefaultValueDateTime : The default value for a date time custom field.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct CustomFieldContextDefaultValueDateTime {
     /// The default date-time in ISO format. Ignored if `useCurrent` is true.
@@ -34,5 +32,3 @@ impl CustomFieldContextDefaultValueDateTime {
         }
     }
 }
-
-

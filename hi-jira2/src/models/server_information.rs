@@ -10,8 +10,6 @@
 
 /// ServerInformation : Details about the Jira instance.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct ServerInformation {
     /// The base URL of the Jira instance.
@@ -63,5 +61,3 @@ impl ServerInformation {
         }
     }
 }
-
-

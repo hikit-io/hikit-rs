@@ -10,8 +10,6 @@
 
 /// IssueTypeInfo : Details of an issue type.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct IssueTypeInfo {
     /// The ID of the issue type.
@@ -35,5 +33,3 @@ impl IssueTypeInfo {
         }
     }
 }
-
-

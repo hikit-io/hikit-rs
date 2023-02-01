@@ -10,8 +10,6 @@
 
 /// JqlQueryToSanitize : The JQL query to sanitize for the account ID. If the account ID is null, sanitizing is performed for an anonymous user.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct JqlQueryToSanitize {
     /// The account ID of the user, which uniquely identifies the user across all Atlassian products. For example, *5b10ac8d82e05b22cc7d4ef5*.
@@ -31,5 +29,3 @@ impl JqlQueryToSanitize {
         }
     }
 }
-
-

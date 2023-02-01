@@ -10,8 +10,6 @@
 
 /// IssueTypeScheme : Details of an issue type scheme.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct IssueTypeScheme {
     /// The ID of the issue type scheme.
@@ -43,5 +41,3 @@ impl IssueTypeScheme {
         }
     }
 }
-
-

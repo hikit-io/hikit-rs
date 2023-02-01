@@ -10,8 +10,6 @@
 
 /// IssueTypeIdsToRemove : The list of issue type IDs to be removed from the field configuration scheme.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct IssueTypeIdsToRemove {
     /// The list of issue type IDs. Must contain unique values not longer than 255 characters and not be empty. Maximum of 100 IDs.
@@ -22,10 +20,6 @@ pub struct IssueTypeIdsToRemove {
 impl IssueTypeIdsToRemove {
     /// The list of issue type IDs to be removed from the field configuration scheme.
     pub fn new(issue_type_ids: Vec<String>) -> IssueTypeIdsToRemove {
-        IssueTypeIdsToRemove {
-            issue_type_ids,
-        }
+        IssueTypeIdsToRemove { issue_type_ids }
     }
 }
-
-

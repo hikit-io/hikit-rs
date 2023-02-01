@@ -10,12 +10,13 @@
 
 /// IssueTypeScreenSchemeProjectAssociation : Associated issue type screen scheme and project.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct IssueTypeScreenSchemeProjectAssociation {
     /// The ID of the issue type screen scheme.
-    #[serde(rename = "issueTypeScreenSchemeId", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "issueTypeScreenSchemeId",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub issue_type_screen_scheme_id: Option<String>,
     /// The ID of the project.
     #[serde(rename = "projectId", skip_serializing_if = "Option::is_none")]
@@ -31,5 +32,3 @@ impl IssueTypeScreenSchemeProjectAssociation {
         }
     }
 }
-
-

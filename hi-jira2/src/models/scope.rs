@@ -10,8 +10,6 @@
 
 /// Scope : The projects the item is associated with. Indicated for items associated with [next-gen projects](https://confluence.atlassian.com/x/loMyO).
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct Scope {
     /// The type of scope.
@@ -46,4 +44,3 @@ impl Default for Type {
         Self::PROJECT
     }
 }
-

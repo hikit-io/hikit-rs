@@ -10,8 +10,6 @@
 
 /// LinkedIssue : The ID or key of a linked issue.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct LinkedIssue {
     /// The ID of an issue. Required if `key` isn't provided.
@@ -39,5 +37,3 @@ impl LinkedIssue {
         }
     }
 }
-
-

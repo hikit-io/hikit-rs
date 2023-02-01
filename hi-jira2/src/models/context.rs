@@ -10,8 +10,6 @@
 
 /// Context : A context.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct Context {
     /// The ID of the context.
@@ -35,5 +33,3 @@ impl Context {
         }
     }
 }
-
-

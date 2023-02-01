@@ -10,8 +10,6 @@
 
 /// CustomFieldContextDefaultValueTextField : The default text for a text custom field.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct CustomFieldContextDefaultValueTextField {
     /// The default text. The maximum length is 254 characters.
@@ -24,11 +22,6 @@ pub struct CustomFieldContextDefaultValueTextField {
 impl CustomFieldContextDefaultValueTextField {
     /// The default text for a text custom field.
     pub fn new(_type: String) -> CustomFieldContextDefaultValueTextField {
-        CustomFieldContextDefaultValueTextField {
-            text: None,
-            _type,
-        }
+        CustomFieldContextDefaultValueTextField { text: None, _type }
     }
 }
-
-

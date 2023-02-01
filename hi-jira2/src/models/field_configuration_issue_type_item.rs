@@ -10,8 +10,6 @@
 
 /// FieldConfigurationIssueTypeItem : The field configuration for an issue type.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct FieldConfigurationIssueTypeItem {
     /// The ID of the field configuration scheme.
@@ -27,7 +25,11 @@ pub struct FieldConfigurationIssueTypeItem {
 
 impl FieldConfigurationIssueTypeItem {
     /// The field configuration for an issue type.
-    pub fn new(field_configuration_scheme_id: String, issue_type_id: String, field_configuration_id: String) -> FieldConfigurationIssueTypeItem {
+    pub fn new(
+        field_configuration_scheme_id: String,
+        issue_type_id: String,
+        field_configuration_id: String,
+    ) -> FieldConfigurationIssueTypeItem {
         FieldConfigurationIssueTypeItem {
             field_configuration_scheme_id,
             issue_type_id,
@@ -35,5 +37,3 @@ impl FieldConfigurationIssueTypeItem {
         }
     }
 }
-
-

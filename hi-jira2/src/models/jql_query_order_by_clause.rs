@@ -10,8 +10,6 @@
 
 /// JqlQueryOrderByClause : Details of the order-by JQL clause.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct JqlQueryOrderByClause {
     /// The list of order-by clause fields and their ordering directives.
@@ -22,10 +20,6 @@ pub struct JqlQueryOrderByClause {
 impl JqlQueryOrderByClause {
     /// Details of the order-by JQL clause.
     pub fn new(fields: Vec<crate::models::JqlQueryOrderByClauseElement>) -> JqlQueryOrderByClause {
-        JqlQueryOrderByClause {
-            fields,
-        }
+        JqlQueryOrderByClause { fields }
     }
 }
-
-

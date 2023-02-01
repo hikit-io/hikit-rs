@@ -10,8 +10,6 @@
 
 /// PermissionSchemes : List of all permission schemes.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct PermissionSchemes {
     /// Permission schemes list.
@@ -27,5 +25,3 @@ impl PermissionSchemes {
         }
     }
 }
-
-

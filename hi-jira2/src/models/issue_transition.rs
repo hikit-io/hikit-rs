@@ -10,8 +10,6 @@
 
 /// IssueTransition : Details of an issue transition.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct IssueTransition {
     /// The ID of the issue transition. Required when specifying a transition to undertake.
@@ -66,5 +64,3 @@ impl IssueTransition {
         }
     }
 }
-
-

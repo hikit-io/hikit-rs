@@ -10,8 +10,6 @@
 
 /// Configuration : Details about the configuration of Jira.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct Configuration {
     /// Whether the ability for users to vote on issues is enabled. See [Configuring Jira application options](https://confluence.atlassian.com/x/uYXKM) for details.
@@ -21,22 +19,34 @@ pub struct Configuration {
     #[serde(rename = "watchingEnabled", skip_serializing_if = "Option::is_none")]
     pub watching_enabled: Option<bool>,
     /// Whether the ability to create unassigned issues is enabled. See [Configuring Jira application options](https://confluence.atlassian.com/x/uYXKM) for details.
-    #[serde(rename = "unassignedIssuesAllowed", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "unassignedIssuesAllowed",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub unassigned_issues_allowed: Option<bool>,
     /// Whether the ability to create subtasks for issues is enabled.
     #[serde(rename = "subTasksEnabled", skip_serializing_if = "Option::is_none")]
     pub sub_tasks_enabled: Option<bool>,
     /// Whether the ability to link issues is enabled.
-    #[serde(rename = "issueLinkingEnabled", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "issueLinkingEnabled",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub issue_linking_enabled: Option<bool>,
     /// Whether the ability to track time is enabled. This property is deprecated.
-    #[serde(rename = "timeTrackingEnabled", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "timeTrackingEnabled",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub time_tracking_enabled: Option<bool>,
     /// Whether the ability to add attachments to issues is enabled.
     #[serde(rename = "attachmentsEnabled", skip_serializing_if = "Option::is_none")]
     pub attachments_enabled: Option<bool>,
     /// The configuration of time tracking.
-    #[serde(rename = "timeTrackingConfiguration", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "timeTrackingConfiguration",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub time_tracking_configuration: Option<crate::models::TimeTrackingConfiguration>,
 }
 
@@ -55,5 +65,3 @@ impl Configuration {
         }
     }
 }
-
-

@@ -10,8 +10,6 @@
 
 /// IssueTypeSchemeUpdateDetails : Details of the name, description, and default issue type for an issue type scheme.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct IssueTypeSchemeUpdateDetails {
     /// The name of the issue type scheme. The name must be unique. The maximum length is 255 characters.
@@ -35,5 +33,3 @@ impl IssueTypeSchemeUpdateDetails {
         }
     }
 }
-
-

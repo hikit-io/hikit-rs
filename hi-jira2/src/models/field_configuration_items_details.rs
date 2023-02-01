@@ -10,8 +10,6 @@
 
 /// FieldConfigurationItemsDetails : Details of field configuration items.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct FieldConfigurationItemsDetails {
     /// Details of fields in a field configuration.
@@ -21,11 +19,11 @@ pub struct FieldConfigurationItemsDetails {
 
 impl FieldConfigurationItemsDetails {
     /// Details of field configuration items.
-    pub fn new(field_configuration_items: Vec<crate::models::FieldConfigurationItem>) -> FieldConfigurationItemsDetails {
+    pub fn new(
+        field_configuration_items: Vec<crate::models::FieldConfigurationItem>,
+    ) -> FieldConfigurationItemsDetails {
         FieldConfigurationItemsDetails {
             field_configuration_items,
         }
     }
 }
-
-

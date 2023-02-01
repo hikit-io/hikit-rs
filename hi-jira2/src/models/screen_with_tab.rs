@@ -10,8 +10,6 @@
 
 /// ScreenWithTab : A screen with tab details.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct ScreenWithTab {
     /// The ID of the screen.
@@ -43,5 +41,3 @@ impl ScreenWithTab {
         }
     }
 }
-
-

@@ -10,8 +10,6 @@
 
 /// PropertyKeys : List of property keys.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct PropertyKeys {
     /// Property key details.
@@ -22,10 +20,6 @@ pub struct PropertyKeys {
 impl PropertyKeys {
     /// List of property keys.
     pub fn new() -> PropertyKeys {
-        PropertyKeys {
-            keys: None,
-        }
+        PropertyKeys { keys: None }
     }
 }
-
-

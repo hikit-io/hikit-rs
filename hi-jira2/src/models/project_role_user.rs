@@ -10,8 +10,6 @@
 
 /// ProjectRoleUser : Details of the user associated with the role.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct ProjectRoleUser {
     /// The account ID of the user, which uniquely identifies the user across all Atlassian products. For example, *5b10ac8d82e05b22cc7d4ef5*. Returns *unknown* if the record is deleted and corrupted, for example, as the result of a server import.
@@ -22,10 +20,6 @@ pub struct ProjectRoleUser {
 impl ProjectRoleUser {
     /// Details of the user associated with the role.
     pub fn new() -> ProjectRoleUser {
-        ProjectRoleUser {
-            account_id: None,
-        }
+        ProjectRoleUser { account_id: None }
     }
 }
-
-

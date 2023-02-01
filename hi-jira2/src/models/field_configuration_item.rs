@@ -10,8 +10,6 @@
 
 /// FieldConfigurationItem : A field within a field configuration.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct FieldConfigurationItem {
     /// The ID of the field within the field configuration.
@@ -43,5 +41,3 @@ impl FieldConfigurationItem {
         }
     }
 }
-
-

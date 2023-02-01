@@ -10,8 +10,6 @@
 
 /// ChangedValueBean : Details of names changed in the record event.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct ChangedValueBean {
     /// The name of the field changed.
@@ -35,5 +33,3 @@ impl ChangedValueBean {
         }
     }
 }
-
-

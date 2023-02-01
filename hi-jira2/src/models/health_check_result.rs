@@ -10,8 +10,6 @@
 
 /// HealthCheckResult : Jira instance health check results. Deprecated and no longer returned.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct HealthCheckResult {
     /// The name of the Jira health check item.
@@ -35,5 +33,3 @@ impl HealthCheckResult {
         }
     }
 }
-
-

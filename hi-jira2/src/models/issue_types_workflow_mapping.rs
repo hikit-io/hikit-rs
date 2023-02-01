@@ -10,8 +10,6 @@
 
 /// IssueTypesWorkflowMapping : Details about the mapping between issue types and a workflow.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct IssueTypesWorkflowMapping {
     /// The name of the workflow. Optional if updating the workflow-issue types mapping.
@@ -24,7 +22,10 @@ pub struct IssueTypesWorkflowMapping {
     #[serde(rename = "defaultMapping", skip_serializing_if = "Option::is_none")]
     pub default_mapping: Option<bool>,
     /// Whether a draft workflow scheme is created or updated when updating an active workflow scheme. The draft is updated with the new workflow-issue types mapping. Defaults to `false`.
-    #[serde(rename = "updateDraftIfNeeded", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "updateDraftIfNeeded",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub update_draft_if_needed: Option<bool>,
 }
 
@@ -39,5 +40,3 @@ impl IssueTypesWorkflowMapping {
         }
     }
 }
-
-

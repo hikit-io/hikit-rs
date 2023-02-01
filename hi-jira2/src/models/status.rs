@@ -10,8 +10,6 @@
 
 /// Status : The status of the item.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct Status {
     /// Whether the item is resolved. If set to \"true\", the link to the issue is displayed in a strikethrough font, otherwise the link displays in normal font.
@@ -31,5 +29,3 @@ impl Status {
         }
     }
 }
-
-

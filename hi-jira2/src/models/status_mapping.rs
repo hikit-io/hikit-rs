@@ -10,8 +10,6 @@
 
 /// StatusMapping : Details about the mapping from a status to a new status for an issue type.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct StatusMapping {
     /// The ID of the issue type.
@@ -35,5 +33,3 @@ impl StatusMapping {
         }
     }
 }
-
-

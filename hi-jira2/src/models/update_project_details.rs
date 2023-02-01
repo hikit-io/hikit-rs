@@ -10,8 +10,6 @@
 
 /// UpdateProjectDetails : Details about the project.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct UpdateProjectDetails {
     /// Project keys must be unique and start with an uppercase letter followed by one or more uppercase alphanumeric characters. The maximum length is 10 characters.
@@ -39,7 +37,10 @@ pub struct UpdateProjectDetails {
     #[serde(rename = "avatarId", skip_serializing_if = "Option::is_none")]
     pub avatar_id: Option<i64>,
     /// The ID of the issue security scheme for the project, which enables you to control who can and cannot view issues. Use the [Get issue security schemes](#api-rest-api-2-issuesecurityschemes-get) resource to get all issue security scheme IDs.
-    #[serde(rename = "issueSecurityScheme", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "issueSecurityScheme",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub issue_security_scheme: Option<i64>,
     /// The ID of the permission scheme for the project. Use the [Get all permission schemes](#api-rest-api-2-permissionscheme-get) resource to see a list of all permission scheme IDs.
     #[serde(rename = "permissionScheme", skip_serializing_if = "Option::is_none")]
@@ -86,4 +87,3 @@ impl Default for AssigneeType {
         Self::PROJECTLEAD
     }
 }
-

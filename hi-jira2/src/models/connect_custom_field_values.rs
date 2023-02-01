@@ -10,8 +10,6 @@
 
 /// ConnectCustomFieldValues : Details of updates for a custom field.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct ConnectCustomFieldValues {
     /// The list of custom field update details.
@@ -27,5 +25,3 @@ impl ConnectCustomFieldValues {
         }
     }
 }
-
-

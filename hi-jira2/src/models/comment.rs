@@ -10,8 +10,6 @@
 
 /// Comment : A comment.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct Comment {
     /// The URL of the comment.
@@ -45,7 +43,10 @@ pub struct Comment {
     #[serde(rename = "jsdPublic", skip_serializing_if = "Option::is_none")]
     pub jsd_public: Option<bool>,
     /// Whether the comment was added from an email sent by a person who is not part of the issue. See [Allow external emails to be added as comments on issues](https://support.atlassian.com/jira-service-management-cloud/docs/allow-external-emails-to-be-added-as-comments-on-issues/)for information on setting up this feature.
-    #[serde(rename = "jsdAuthorCanSeeRequest", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "jsdAuthorCanSeeRequest",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub jsd_author_can_see_request: Option<bool>,
     /// A list of comment properties. Optional on create and update.
     #[serde(rename = "properties", skip_serializing_if = "Option::is_none")]
@@ -71,5 +72,3 @@ impl Comment {
         }
     }
 }
-
-

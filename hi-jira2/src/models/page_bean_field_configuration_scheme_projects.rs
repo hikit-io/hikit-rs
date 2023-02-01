@@ -10,8 +10,6 @@
 
 /// PageBeanFieldConfigurationSchemeProjects : A page of items.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct PageBeanFieldConfigurationSchemeProjects {
     /// The URL of the page.
@@ -51,5 +49,3 @@ impl PageBeanFieldConfigurationSchemeProjects {
         }
     }
 }
-
-

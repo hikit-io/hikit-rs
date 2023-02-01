@@ -10,8 +10,6 @@
 
 /// Application : The application the linked item is in.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct Application {
     /// The name-spaced type of the application, used by registered rendering apps.
@@ -31,5 +29,3 @@ impl Application {
         }
     }
 }
-
-

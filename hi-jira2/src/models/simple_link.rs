@@ -10,8 +10,6 @@
 
 /// SimpleLink : Details about the operations available in this version.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct SimpleLink {
     #[serde(rename = "id", skip_serializing_if = "Option::is_none")]
@@ -44,5 +42,3 @@ impl SimpleLink {
         }
     }
 }
-
-

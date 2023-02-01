@@ -10,8 +10,6 @@
 
 /// IssuePickerSuggestionsIssueType : A type of issue suggested for use in auto-completion.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct IssuePickerSuggestionsIssueType {
     /// The label of the type of issues suggested for use in auto-completion.
@@ -43,5 +41,3 @@ impl IssuePickerSuggestionsIssueType {
         }
     }
 }
-
-

@@ -10,8 +10,6 @@
 
 /// Resolution : Details of an issue resolution.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct Resolution {
     /// The URL of the issue resolution.
@@ -39,5 +37,3 @@ impl Resolution {
         }
     }
 }
-
-

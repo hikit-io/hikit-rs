@@ -10,8 +10,6 @@
 
 /// IssueEntityPropertiesForMultiUpdate : An issue ID with entity property values. See [Entity properties](https://developer.atlassian.com/cloud/jira/platform/jira-entity-properties/) for more information.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct IssueEntityPropertiesForMultiUpdate {
     /// The ID of the issue.
@@ -31,5 +29,3 @@ impl IssueEntityPropertiesForMultiUpdate {
         }
     }
 }
-
-

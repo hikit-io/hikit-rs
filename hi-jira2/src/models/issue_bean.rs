@@ -10,8 +10,6 @@
 
 /// IssueBean : Details about an issue.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct IssueBean {
     /// Expand options that include additional issue details in the response.
@@ -51,8 +49,13 @@ pub struct IssueBean {
     #[serde(rename = "changelog", skip_serializing_if = "Option::is_none")]
     pub changelog: Option<crate::models::PageOfChangelogs>,
     /// The versions of each field on the issue.
-    #[serde(rename = "versionedRepresentations", skip_serializing_if = "Option::is_none")]
-    pub versioned_representations: Option<::std::collections::HashMap<String, ::std::collections::HashMap<String, serde_json::Value>>>,
+    #[serde(
+        rename = "versionedRepresentations",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub versioned_representations: Option<
+        ::std::collections::HashMap<String, ::std::collections::HashMap<String, serde_json::Value>>,
+    >,
     #[serde(rename = "fieldsToInclude", skip_serializing_if = "Option::is_none")]
     pub fields_to_include: Option<crate::models::IncludedFields>,
     #[serde(rename = "fields", skip_serializing_if = "Option::is_none")]
@@ -81,5 +84,3 @@ impl IssueBean {
         }
     }
 }
-
-

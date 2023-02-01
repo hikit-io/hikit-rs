@@ -10,8 +10,6 @@
 
 /// CustomFieldContextProjectMapping : Details of a context to project association.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct CustomFieldContextProjectMapping {
     /// The ID of the context.
@@ -35,5 +33,3 @@ impl CustomFieldContextProjectMapping {
         }
     }
 }
-
-

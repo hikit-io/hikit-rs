@@ -10,8 +10,6 @@
 
 /// CustomFieldContextDefaultValueFloat : Default value for a float (number) custom field.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct CustomFieldContextDefaultValueFloat {
     /// The default floating-point number.
@@ -24,11 +22,6 @@ pub struct CustomFieldContextDefaultValueFloat {
 impl CustomFieldContextDefaultValueFloat {
     /// Default value for a float (number) custom field.
     pub fn new(number: f64, _type: String) -> CustomFieldContextDefaultValueFloat {
-        CustomFieldContextDefaultValueFloat {
-            number,
-            _type,
-        }
+        CustomFieldContextDefaultValueFloat { number, _type }
     }
 }
-
-

@@ -10,8 +10,6 @@
 
 /// ScreenableTab : A screen tab.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct ScreenableTab {
     /// The ID of the screen tab.
@@ -25,11 +23,6 @@ pub struct ScreenableTab {
 impl ScreenableTab {
     /// A screen tab.
     pub fn new(name: String) -> ScreenableTab {
-        ScreenableTab {
-            id: None,
-            name,
-        }
+        ScreenableTab { id: None, name }
     }
 }
-
-

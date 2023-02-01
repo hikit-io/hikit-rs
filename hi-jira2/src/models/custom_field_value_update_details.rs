@@ -10,8 +10,6 @@
 
 /// CustomFieldValueUpdateDetails : Details of updates for a custom field.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct CustomFieldValueUpdateDetails {
     /// The list of custom field update details.
@@ -22,10 +20,6 @@ pub struct CustomFieldValueUpdateDetails {
 impl CustomFieldValueUpdateDetails {
     /// Details of updates for a custom field.
     pub fn new() -> CustomFieldValueUpdateDetails {
-        CustomFieldValueUpdateDetails {
-            updates: None,
-        }
+        CustomFieldValueUpdateDetails { updates: None }
     }
 }
-
-

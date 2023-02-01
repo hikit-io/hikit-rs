@@ -10,8 +10,6 @@
 
 /// FilterSubscription : Details of a user or group subscribing to a filter.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct FilterSubscription {
     /// The ID of the filter subscription.
@@ -35,5 +33,3 @@ impl FilterSubscription {
         }
     }
 }
-
-

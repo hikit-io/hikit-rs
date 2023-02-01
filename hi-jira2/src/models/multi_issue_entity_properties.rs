@@ -10,8 +10,6 @@
 
 /// MultiIssueEntityProperties : A list of issues and their respective properties to set or update. See [Entity properties](https://developer.atlassian.com/cloud/jira/platform/jira-entity-properties/) for more information.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct MultiIssueEntityProperties {
     /// A list of issue IDs and their respective properties.
@@ -22,10 +20,6 @@ pub struct MultiIssueEntityProperties {
 impl MultiIssueEntityProperties {
     /// A list of issues and their respective properties to set or update. See [Entity properties](https://developer.atlassian.com/cloud/jira/platform/jira-entity-properties/) for more information.
     pub fn new() -> MultiIssueEntityProperties {
-        MultiIssueEntityProperties {
-            issues: None,
-        }
+        MultiIssueEntityProperties { issues: None }
     }
 }
-
-

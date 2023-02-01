@@ -10,8 +10,6 @@
 
 /// CustomFieldContextDefaultValueCascadingOption : The default value for a cascading select custom field.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct CustomFieldContextDefaultValueCascadingOption {
     /// The ID of the context.
@@ -29,7 +27,11 @@ pub struct CustomFieldContextDefaultValueCascadingOption {
 
 impl CustomFieldContextDefaultValueCascadingOption {
     /// The default value for a cascading select custom field.
-    pub fn new(context_id: String, option_id: String, _type: String) -> CustomFieldContextDefaultValueCascadingOption {
+    pub fn new(
+        context_id: String,
+        option_id: String,
+        _type: String,
+    ) -> CustomFieldContextDefaultValueCascadingOption {
         CustomFieldContextDefaultValueCascadingOption {
             context_id,
             option_id,
@@ -38,5 +40,3 @@ impl CustomFieldContextDefaultValueCascadingOption {
         }
     }
 }
-
-

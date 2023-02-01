@@ -10,8 +10,6 @@
 
 /// CustomFieldContextDefaultValueForgeUserField : Defaults for a Forge user custom field.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct CustomFieldContextDefaultValueForgeUserField {
     /// The ID of the context.
@@ -26,7 +24,11 @@ pub struct CustomFieldContextDefaultValueForgeUserField {
 
 impl CustomFieldContextDefaultValueForgeUserField {
     /// Defaults for a Forge user custom field.
-    pub fn new(context_id: String, account_id: String, user_filter: crate::models::UserFilter) -> CustomFieldContextDefaultValueForgeUserField {
+    pub fn new(
+        context_id: String,
+        account_id: String,
+        user_filter: crate::models::UserFilter,
+    ) -> CustomFieldContextDefaultValueForgeUserField {
         CustomFieldContextDefaultValueForgeUserField {
             context_id,
             account_id,
@@ -34,5 +36,3 @@ impl CustomFieldContextDefaultValueForgeUserField {
         }
     }
 }
-
-

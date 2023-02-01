@@ -10,8 +10,6 @@
 
 /// IssueTypeSchemeProjectAssociation : Details of the association between an issue type scheme and project.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct IssueTypeSchemeProjectAssociation {
     /// The ID of the issue type scheme.
@@ -24,12 +22,13 @@ pub struct IssueTypeSchemeProjectAssociation {
 
 impl IssueTypeSchemeProjectAssociation {
     /// Details of the association between an issue type scheme and project.
-    pub fn new(issue_type_scheme_id: String, project_id: String) -> IssueTypeSchemeProjectAssociation {
+    pub fn new(
+        issue_type_scheme_id: String,
+        project_id: String,
+    ) -> IssueTypeSchemeProjectAssociation {
         IssueTypeSchemeProjectAssociation {
             issue_type_scheme_id,
             project_id,
         }
     }
 }
-
-

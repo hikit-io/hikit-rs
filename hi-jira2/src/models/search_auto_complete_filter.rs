@@ -10,15 +10,16 @@
 
 /// SearchAutoCompleteFilter : Details of how to filter and list search auto complete information.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct SearchAutoCompleteFilter {
     /// List of project IDs used to filter the visible field details returned.
     #[serde(rename = "projectIds", skip_serializing_if = "Option::is_none")]
     pub project_ids: Option<Vec<i64>>,
     /// Include collapsed fields for fields that have non-unique names.
-    #[serde(rename = "includeCollapsedFields", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "includeCollapsedFields",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub include_collapsed_fields: Option<bool>,
 }
 
@@ -31,5 +32,3 @@ impl SearchAutoCompleteFilter {
         }
     }
 }
-
-

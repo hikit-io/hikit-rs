@@ -10,8 +10,6 @@
 
 /// WebhookDetails : A list of webhooks.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct WebhookDetails {
     /// The JQL filter that specifies which issues the webhook is sent for. Only a subset of JQL can be used. The supported elements are:   *  Fields: `issueKey`, `project`, `issuetype`, `status`, `assignee`, `reporter`, `issue.property`, and `cf[id]`. For custom fields (`cf[id]`), only the epic label custom field is supported.\".  *  Operators: `=`, `!=`, `IN`, and `NOT IN`.
@@ -21,7 +19,10 @@ pub struct WebhookDetails {
     #[serde(rename = "fieldIdsFilter", skip_serializing_if = "Option::is_none")]
     pub field_ids_filter: Option<Vec<String>>,
     /// A list of issue property keys. A change of those issue properties triggers the `issue_property_set` or `issue_property_deleted` webhooks. If this parameter is not present, the app is notified about all issue property updates.
-    #[serde(rename = "issuePropertyKeysFilter", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "issuePropertyKeysFilter",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub issue_property_keys_filter: Option<Vec<String>>,
     /// The Jira events that trigger the webhook.
     #[serde(rename = "events")]
@@ -66,4 +67,3 @@ impl Default for Events {
         Self::JiraissueCreated
     }
 }
-

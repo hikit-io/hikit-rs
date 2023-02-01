@@ -10,8 +10,6 @@
 
 /// Transition : Details of a workflow transition.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct Transition {
     /// The ID of the transition.
@@ -43,7 +41,14 @@ pub struct Transition {
 
 impl Transition {
     /// Details of a workflow transition.
-    pub fn new(id: String, name: String, description: String, from: Vec<String>, to: String, _type: Type) -> Transition {
+    pub fn new(
+        id: String,
+        name: String,
+        description: String,
+        from: Vec<String>,
+        to: String,
+        _type: Type,
+    ) -> Transition {
         Transition {
             id,
             name,
@@ -74,4 +79,3 @@ impl Default for Type {
         Self::Global
     }
 }
-

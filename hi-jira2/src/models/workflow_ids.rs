@@ -10,8 +10,6 @@
 
 /// WorkflowIds : The classic workflow identifiers.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct WorkflowIds {
     /// The name of the workflow.
@@ -31,5 +29,3 @@ impl WorkflowIds {
         }
     }
 }
-
-

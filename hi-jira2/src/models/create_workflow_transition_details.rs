@@ -10,8 +10,6 @@
 
 /// CreateWorkflowTransitionDetails : The details of a workflow transition.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct CreateWorkflowTransitionDetails {
     /// The name of the transition. The maximum length is 60 characters.
@@ -72,4 +70,3 @@ impl Default for Type {
         Self::Global
     }
 }
-

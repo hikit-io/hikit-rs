@@ -10,8 +10,6 @@
 
 /// Transitions : List of issue transitions.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct Transitions {
     /// Expand options that include additional transitions details in the response.
@@ -31,5 +29,3 @@ impl Transitions {
         }
     }
 }
-
-

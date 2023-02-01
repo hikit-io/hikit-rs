@@ -10,8 +10,6 @@
 
 /// Notification : Details about a notification.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct Notification {
     /// The subject of the email notification for the issue. If this is not specified, then the subject is set to the issue key and summary.
@@ -43,5 +41,3 @@ impl Notification {
         }
     }
 }
-
-

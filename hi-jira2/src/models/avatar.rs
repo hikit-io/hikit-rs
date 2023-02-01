@@ -10,8 +10,6 @@
 
 /// Avatar : Details of an avatar.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct Avatar {
     /// The ID of the avatar.
@@ -51,5 +49,3 @@ impl Avatar {
         }
     }
 }
-
-

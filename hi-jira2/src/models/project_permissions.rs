@@ -10,8 +10,6 @@
 
 /// ProjectPermissions : Permissions which a user has on a project.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct ProjectPermissions {
     /// Whether the logged user can edit the project.
@@ -22,10 +20,6 @@ pub struct ProjectPermissions {
 impl ProjectPermissions {
     /// Permissions which a user has on a project.
     pub fn new() -> ProjectPermissions {
-        ProjectPermissions {
-            can_edit: None,
-        }
+        ProjectPermissions { can_edit: None }
     }
 }
-
-

@@ -10,8 +10,6 @@
 
 /// AuditRecords : Container for a list of audit records.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct AuditRecords {
     /// The number of audit items skipped before the first item in this list.
@@ -39,5 +37,3 @@ impl AuditRecords {
         }
     }
 }
-
-

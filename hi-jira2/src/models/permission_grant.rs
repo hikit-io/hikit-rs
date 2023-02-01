@@ -10,8 +10,6 @@
 
 /// PermissionGrant : Details about a permission granted to a user or group.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct PermissionGrant {
     /// The ID of the permission granted details.
@@ -39,5 +37,3 @@ impl PermissionGrant {
         }
     }
 }
-
-

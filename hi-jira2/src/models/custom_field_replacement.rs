@@ -10,8 +10,6 @@
 
 /// CustomFieldReplacement : Details about the replacement for a deleted version.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct CustomFieldReplacement {
     /// The ID of the custom field in which to replace the version number.
@@ -31,5 +29,3 @@ impl CustomFieldReplacement {
         }
     }
 }
-
-

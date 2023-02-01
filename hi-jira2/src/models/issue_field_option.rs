@@ -10,8 +10,6 @@
 
 /// IssueFieldOption : Details of the options for a select list issue field.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct IssueFieldOption {
     /// The unique identifier for the option. This is only unique within the select field's set of options.
@@ -38,5 +36,3 @@ impl IssueFieldOption {
         }
     }
 }
-
-

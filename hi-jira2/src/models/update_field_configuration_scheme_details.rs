@@ -10,8 +10,6 @@
 
 /// UpdateFieldConfigurationSchemeDetails : The details of the field configuration scheme.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct UpdateFieldConfigurationSchemeDetails {
     /// The name of the field configuration scheme. The name must be unique.
@@ -31,5 +29,3 @@ impl UpdateFieldConfigurationSchemeDetails {
         }
     }
 }
-
-

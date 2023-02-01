@@ -10,8 +10,6 @@
 
 /// RemoteObject : The linked item.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct RemoteObject {
     /// The URL of the item.
@@ -43,5 +41,3 @@ impl RemoteObject {
         }
     }
 }
-
-

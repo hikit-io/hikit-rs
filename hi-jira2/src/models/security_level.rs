@@ -10,8 +10,6 @@
 
 /// SecurityLevel : Details of an issue level security item.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct SecurityLevel {
     /// The URL of the issue level security item.
@@ -39,5 +37,3 @@ impl SecurityLevel {
         }
     }
 }
-
-

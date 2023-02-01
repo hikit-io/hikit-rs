@@ -10,8 +10,6 @@
 
 /// ErrorCollection : Error messages from an operation.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct ErrorCollection {
     /// The list of error messages produced by this operation. For example, \"input parameter 'key' must be provided\"
@@ -34,5 +32,3 @@ impl ErrorCollection {
         }
     }
 }
-
-

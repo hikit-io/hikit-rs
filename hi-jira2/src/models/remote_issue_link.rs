@@ -10,8 +10,6 @@
 
 /// RemoteIssueLink : Details of an issue remote link.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct RemoteIssueLink {
     /// The ID of the link.
@@ -47,5 +45,3 @@ impl RemoteIssueLink {
         }
     }
 }
-
-

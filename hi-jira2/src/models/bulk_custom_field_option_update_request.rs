@@ -10,8 +10,6 @@
 
 /// BulkCustomFieldOptionUpdateRequest : Details of the options to update for a custom field.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct BulkCustomFieldOptionUpdateRequest {
     /// Details of the options to update.
@@ -22,10 +20,6 @@ pub struct BulkCustomFieldOptionUpdateRequest {
 impl BulkCustomFieldOptionUpdateRequest {
     /// Details of the options to update for a custom field.
     pub fn new() -> BulkCustomFieldOptionUpdateRequest {
-        BulkCustomFieldOptionUpdateRequest {
-            options: None,
-        }
+        BulkCustomFieldOptionUpdateRequest { options: None }
     }
 }
-
-

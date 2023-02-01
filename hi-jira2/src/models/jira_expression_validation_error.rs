@@ -10,8 +10,6 @@
 
 /// JiraExpressionValidationError : Details about syntax and type errors. The error details apply to the entire expression, unless the object includes:   *  `line` and `column`  *  `expression`
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct JiraExpressionValidationError {
     /// The text line in which the error occurred.
@@ -60,4 +58,3 @@ impl Default for Type {
         Self::Syntax
     }
 }
-

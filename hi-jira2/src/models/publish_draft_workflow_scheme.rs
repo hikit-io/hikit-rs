@@ -10,8 +10,6 @@
 
 /// PublishDraftWorkflowScheme : Details about the status mappings for publishing a draft workflow scheme.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct PublishDraftWorkflowScheme {
     /// Mappings of statuses to new statuses for issue types.
@@ -27,5 +25,3 @@ impl PublishDraftWorkflowScheme {
         }
     }
 }
-
-

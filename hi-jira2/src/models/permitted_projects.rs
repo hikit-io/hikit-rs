@@ -10,8 +10,6 @@
 
 /// PermittedProjects : A list of projects in which a user is granted permissions.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct PermittedProjects {
     /// A list of projects.
@@ -22,10 +20,6 @@ pub struct PermittedProjects {
 impl PermittedProjects {
     /// A list of projects in which a user is granted permissions.
     pub fn new() -> PermittedProjects {
-        PermittedProjects {
-            projects: None,
-        }
+        PermittedProjects { projects: None }
     }
 }
-
-

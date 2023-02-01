@@ -10,8 +10,6 @@
 
 /// ComponentWithIssueCount : Details about a component with a count of the issues it contains.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct ComponentWithIssueCount {
     /// Count of issues for the component.
@@ -21,7 +19,10 @@ pub struct ComponentWithIssueCount {
     #[serde(rename = "realAssignee", skip_serializing_if = "Option::is_none")]
     pub real_assignee: Option<crate::models::User>,
     /// Whether a user is associated with `assigneeType`. For example, if the `assigneeType` is set to `COMPONENT_LEAD` but the component lead is not set, then `false` is returned.
-    #[serde(rename = "isAssigneeTypeValid", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "isAssigneeTypeValid",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub is_assignee_type_valid: Option<bool>,
     /// The type of the assignee that is assigned to issues created with this component, when an assignee cannot be set from the `assigneeType`. For example, `assigneeType` is set to `COMPONENT_LEAD` but no component lead is set. This property is set to one of the following values:   *  `PROJECT_LEAD` when `assigneeType` is `PROJECT_LEAD` and the project lead has permission to be assigned issues in the project that the component is in.  *  `COMPONENT_LEAD` when `assignee`Type is `COMPONENT_LEAD` and the component lead has permission to be assigned issues in the project that the component is in.  *  `UNASSIGNED` when `assigneeType` is `UNASSIGNED` and Jira is configured to allow unassigned issues.  *  `PROJECT_DEFAULT` when none of the preceding cases are true.
     #[serde(rename = "realAssigneeType", skip_serializing_if = "Option::is_none")]
@@ -112,4 +113,3 @@ impl Default for AssigneeType {
         Self::PROJECTDEFAULT
     }
 }
-

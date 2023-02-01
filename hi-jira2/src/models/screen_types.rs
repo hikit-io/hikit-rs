@@ -10,8 +10,6 @@
 
 /// ScreenTypes : The IDs of the screens for the screen types of the screen scheme.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct ScreenTypes {
     /// The ID of the edit screen.
@@ -39,5 +37,3 @@ impl ScreenTypes {
         }
     }
 }
-
-

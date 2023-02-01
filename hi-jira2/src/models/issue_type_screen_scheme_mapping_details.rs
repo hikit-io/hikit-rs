@@ -10,8 +10,6 @@
 
 /// IssueTypeScreenSchemeMappingDetails : A list of issue type screen scheme mappings.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct IssueTypeScreenSchemeMappingDetails {
     /// The list of issue type to screen scheme mappings. A *default* entry cannot be specified because a default entry is added when an issue type screen scheme is created.
@@ -21,11 +19,11 @@ pub struct IssueTypeScreenSchemeMappingDetails {
 
 impl IssueTypeScreenSchemeMappingDetails {
     /// A list of issue type screen scheme mappings.
-    pub fn new(issue_type_mappings: Vec<crate::models::IssueTypeScreenSchemeMapping>) -> IssueTypeScreenSchemeMappingDetails {
+    pub fn new(
+        issue_type_mappings: Vec<crate::models::IssueTypeScreenSchemeMapping>,
+    ) -> IssueTypeScreenSchemeMappingDetails {
         IssueTypeScreenSchemeMappingDetails {
             issue_type_mappings,
         }
     }
 }
-
-

@@ -10,8 +10,6 @@
 
 /// ScreenSchemeId : The ID of a screen scheme.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct ScreenSchemeId {
     /// The ID of the screen scheme.
@@ -22,10 +20,6 @@ pub struct ScreenSchemeId {
 impl ScreenSchemeId {
     /// The ID of a screen scheme.
     pub fn new(id: i64) -> ScreenSchemeId {
-        ScreenSchemeId {
-            id,
-        }
+        ScreenSchemeId { id }
     }
 }
-
-

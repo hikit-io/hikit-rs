@@ -10,8 +10,6 @@
 
 /// CreateCustomFieldContext : The details of a created custom field context.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct CreateCustomFieldContext {
     /// The ID of the context.
@@ -43,5 +41,3 @@ impl CreateCustomFieldContext {
         }
     }
 }
-
-

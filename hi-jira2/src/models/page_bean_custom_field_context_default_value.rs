@@ -10,8 +10,6 @@
 
 /// PageBeanCustomFieldContextDefaultValue : A page of items.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct PageBeanCustomFieldContextDefaultValue {
     /// The URL of the page.
@@ -51,5 +49,3 @@ impl PageBeanCustomFieldContextDefaultValue {
         }
     }
 }
-
-

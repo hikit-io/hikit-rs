@@ -10,8 +10,6 @@
 
 /// ProjectIssueTypeHierarchy : The hierarchy of issue types within a project.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct ProjectIssueTypeHierarchy {
     /// The ID of the project.
@@ -31,5 +29,3 @@ impl ProjectIssueTypeHierarchy {
         }
     }
 }
-
-

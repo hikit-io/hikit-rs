@@ -10,8 +10,6 @@
 
 /// JqlQueryClause : A JQL query clause.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct JqlQueryClause {
     /// The list of nested clauses.
@@ -31,7 +29,13 @@ pub struct JqlQueryClause {
 
 impl JqlQueryClause {
     /// A JQL query clause.
-    pub fn new(clauses: Vec<crate::models::JqlQueryClause>, operator: Operator, field: crate::models::JqlQueryField, operand: crate::models::JqlQueryClauseOperand, predicates: Vec<crate::models::JqlQueryClauseTimePredicate>) -> JqlQueryClause {
+    pub fn new(
+        clauses: Vec<crate::models::JqlQueryClause>,
+        operator: Operator,
+        field: crate::models::JqlQueryField,
+        operand: crate::models::JqlQueryClauseOperand,
+        predicates: Vec<crate::models::JqlQueryClauseTimePredicate>,
+    ) -> JqlQueryClause {
         JqlQueryClause {
             clauses,
             operator,
@@ -54,4 +58,3 @@ impl Default for Operator {
         Self::Changed
     }
 }
-

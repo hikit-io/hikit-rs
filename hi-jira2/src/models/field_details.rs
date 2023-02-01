@@ -10,8 +10,6 @@
 
 /// FieldDetails : Details about a field.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct FieldDetails {
     /// The ID of the field.
@@ -63,5 +61,3 @@ impl FieldDetails {
         }
     }
 }
-
-

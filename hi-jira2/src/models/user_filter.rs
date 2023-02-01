@@ -10,8 +10,6 @@
 
 /// UserFilter : Filter for a User Picker (single) custom field.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct UserFilter {
     /// Whether the filter is enabled.
@@ -35,5 +33,3 @@ impl UserFilter {
         }
     }
 }
-
-

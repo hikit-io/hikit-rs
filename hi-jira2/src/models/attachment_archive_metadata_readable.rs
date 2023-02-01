@@ -10,8 +10,6 @@
 
 /// AttachmentArchiveMetadataReadable : Metadata for an archive (for example a zip) and its contents.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct AttachmentArchiveMetadataReadable {
     /// The ID of the attachment.
@@ -43,5 +41,3 @@ impl AttachmentArchiveMetadataReadable {
         }
     }
 }
-
-

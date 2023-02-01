@@ -10,8 +10,6 @@
 
 /// CustomFieldContextDefaultValueForgeMultiStringField : The default text for a Forge collection of strings custom field.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct CustomFieldContextDefaultValueForgeMultiStringField {
     /// List of string values. The maximum length for a value is 254 characters.
@@ -30,5 +28,3 @@ impl CustomFieldContextDefaultValueForgeMultiStringField {
         }
     }
 }
-
-

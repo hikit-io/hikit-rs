@@ -10,8 +10,6 @@
 
 /// ScreenScheme : A screen scheme.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct ScreenScheme {
     /// The ID of the screen scheme.
@@ -27,7 +25,10 @@ pub struct ScreenScheme {
     #[serde(rename = "screens", skip_serializing_if = "Option::is_none")]
     pub screens: Option<crate::models::ScreenTypes>,
     /// Details of the issue type screen schemes associated with the screen scheme.
-    #[serde(rename = "issueTypeScreenSchemes", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "issueTypeScreenSchemes",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub issue_type_screen_schemes: Option<crate::models::PageBeanIssueTypeScreenScheme>,
 }
 
@@ -43,5 +44,3 @@ impl ScreenScheme {
         }
     }
 }
-
-

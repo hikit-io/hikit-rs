@@ -10,8 +10,6 @@
 
 /// FunctionReferenceData : Details of functions that can be used in advanced searches.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct FunctionReferenceData {
     /// The function identifier.
@@ -54,4 +52,3 @@ impl Default for IsList {
         Self::_True
     }
 }
-

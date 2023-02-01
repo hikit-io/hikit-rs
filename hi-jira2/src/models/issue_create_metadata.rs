@@ -10,8 +10,6 @@
 
 /// IssueCreateMetadata : The wrapper for the issue creation metadata for a list of projects.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct IssueCreateMetadata {
     /// Expand options that include additional project details in the response.
@@ -31,5 +29,3 @@ impl IssueCreateMetadata {
         }
     }
 }
-
-

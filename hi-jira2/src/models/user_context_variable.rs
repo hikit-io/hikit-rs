@@ -10,8 +10,6 @@
 
 /// UserContextVariable : A [user](https://developer.atlassian.com/cloud/jira/platform/jira-expressions-type-reference#user) specified as an Atlassian account ID.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct UserContextVariable {
     /// Type of custom context variable.
@@ -25,11 +23,6 @@ pub struct UserContextVariable {
 impl UserContextVariable {
     /// A [user](https://developer.atlassian.com/cloud/jira/platform/jira-expressions-type-reference#user) specified as an Atlassian account ID.
     pub fn new(_type: String, account_id: String) -> UserContextVariable {
-        UserContextVariable {
-            _type,
-            account_id,
-        }
+        UserContextVariable { _type, account_id }
     }
 }
-
-
