@@ -142,8 +142,8 @@ pub use lib::*;
 mod tests {
     #[test]
     fn test_msg_builder() {
-        use crate::*;
         use super::*;
+        use crate::*;
         let msg = MessageBuilder::default()
             .to(To::Totag("()"))
             .agentid(123)
@@ -163,8 +163,8 @@ mod tests {
 
     #[tokio::test]
     async fn test_client() {
-        use crate::*;
         use crate::Pusher;
+        use crate::*;
 
         let client_id = std::env::var("WECOM_CLIENT_ID").unwrap();
         let client_secret = std::env::var("WECOM_CLIENT_SECRET").unwrap();

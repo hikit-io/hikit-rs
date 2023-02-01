@@ -1,7 +1,8 @@
 use std::collections::HashMap;
 
+use derive_builder::Builder;
 use serde::{Deserialize, Serialize};
-use serde_repr::{Serialize_repr};
+use serde_repr::{Deserialize_repr, Serialize_repr};
 
 #[cfg(all(feature = "client", target_arch = "wasm32"))]
 pub use super::model_wasm::*;
@@ -195,7 +196,7 @@ impl Default for Token {
  *
  * Data transfer object
  */
-#[derive(Debug, Serialize_repr, Clone, Default)]
+#[derive(Debug, Serialize_repr, Clone, Default, Eq, PartialEq)]
 #[repr(u8)]
 pub enum Code {
     #[default]
@@ -203,20 +204,22 @@ pub enum Code {
     Err,
 }
 
-#[cfg(not(feature = "client"))]
-#[derive(Debug, Serialize, Builder, Clone, Default)]
+#[derive(Debug, Clone, Default)]
+#[cfg_attr(all(not(feature = "client")), derive(Serialize, Builder))]
+#[cfg_attr(all(feature = "client"), derive(Deserialize))]
 pub struct Response<T = String> {
-    #[builder(default)]
+    #[cfg_attr(all(not(feature = "client")), builder(default))]
     pub code: Code,
-    #[builder(default)]
+    #[cfg_attr(all(not(feature = "client")), builder(default))]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub data: Option<T>,
-    #[builder(default)]
+    #[cfg_attr(all(not(feature = "client")), builder(default))]
     pub msg: String,
-    #[builder(default)]
+    #[cfg_attr(all(not(feature = "client")), builder(default))]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub errors: Option<Vec<String>>,
 }
+
 
 #[cfg(not(feature = "client"))]
 impl<T> From<anyhow::Error> for Response<T> {
@@ -230,7 +233,8 @@ impl<T> From<anyhow::Error> for Response<T> {
     }
 }
 
-#[cfg(not(target_arch = "wasm32"))]
+
+
 #[cfg_attr(feature = "client", derive(Deserialize))]
 #[cfg_attr(not(feature = "client"), derive(Serialize, Clone))]
 #[serde(rename_all = "camelCase")]
@@ -243,7 +247,6 @@ pub struct RegisterTokenResp {
 #[cfg_attr(feature = "client", derive(Serialize))]
 #[cfg_attr(not(feature = "client"), derive(Deserialize))]
 #[serde(rename_all = "camelCase")]
-#[cfg_attr(all(target_arch = "wasm32", feature = "client"), wasm_bindgen(getter_with_clone))]
 pub struct RegisterTokenParams {
     pub group: String,
     pub token: String,
@@ -255,14 +258,12 @@ pub struct RegisterTokenParams {
 #[cfg_attr(feature = "client", derive(Serialize))]
 #[cfg_attr(not(feature = "client"), derive(Deserialize))]
 #[serde(rename_all = "camelCase")]
-#[cfg_attr(all(target_arch = "wasm32", feature = "client"), wasm_bindgen(getter_with_clone))]
 pub struct RevokeTokenParams {
     pub group: String,
     pub token: String,
     pub ch_id: String,
 }
 
-#[cfg(not(target_arch = "wasm32"))]
 #[cfg_attr(feature = "client", derive(Deserialize))]
 #[cfg_attr(not(feature = "client"), derive(Serialize, Clone))]
 #[serde(rename_all = "camelCase")]
@@ -272,7 +273,6 @@ pub struct RevokeTokenResp {
     pub failure_tokens: Vec<String>,
 }
 
-#[cfg(not(target_arch = "wasm32"))]
 #[cfg_attr(feature = "client", derive(Serialize))]
 #[cfg_attr(not(feature = "client"), derive(Deserialize))]
 #[serde(rename_all = "camelCase")]
@@ -295,7 +295,6 @@ pub enum Body {
     Text(String),
 }
 
-#[cfg(not(target_arch = "wasm32"))]
 #[cfg_attr(feature = "client", derive(Serialize))]
 #[cfg_attr(not(feature = "client"), derive(Deserialize))]
 #[serde(rename_all = "camelCase")]
@@ -308,7 +307,6 @@ pub struct PushTransparentParams {
     pub platform_extra: PlatformParams,
 }
 
-#[cfg(not(target_arch = "wasm32"))]
 #[cfg_attr(feature = "client", derive(Serialize))]
 #[cfg_attr(not(feature = "client"), derive(Deserialize))]
 #[serde(rename_all = "camelCase")]
@@ -340,13 +338,13 @@ pub struct ApnsExtra {
 }
 
 #[cfg(all(
-any(
-feature = "fcm",
-feature = "xiaomi",
-feature = "huawei",
-feature = "client",
-),
-not(all(feature = "client", target_arch = "wasm32"))
+    any(
+        feature = "fcm",
+        feature = "xiaomi",
+        feature = "huawei",
+        feature = "client",
+    ),
+    not(all(feature = "client", target_arch = "wasm32"))
 ))]
 #[cfg_attr(feature = "client", derive(Serialize))]
 #[cfg_attr(not(feature = "client"), derive(Deserialize))]
@@ -387,10 +385,10 @@ pub struct AndroidExtra {
 #[serde(rename_all = "camelCase")]
 pub struct PlatformParams {
     #[cfg(any(
-    feature = "fcm",
-    feature = "xiaomi",
-    feature = "huawei",
-    feature = "client"
+        feature = "fcm",
+        feature = "xiaomi",
+        feature = "huawei",
+        feature = "client"
     ))]
     pub android: Option<AndroidExtra>,
     #[cfg(any(feature = "apns", feature = "client"))]
@@ -458,7 +456,7 @@ pub struct Running {
 #[cfg_attr(feature = "client", derive(Serialize))]
 #[cfg_attr(not(feature = "client"), derive(Deserialize))]
 #[serde(rename_all = "camelCase")]
-pub struct CreateAppParams {
+pub struct CreateApplicationParams {
     pub name: String,
 }
 

@@ -28,7 +28,7 @@ pub async fn delete_app(
 
 pub async fn create_app(
     Extension(app): Extension<Arc<service::App>>,
-    Json(params): Json<CreateAppParams>,
+    Json(params): Json<CreateApplicationParams>,
 ) -> Json<Response<App>> {
     match app.create_app(&params.name).await {
         Ok(app) => Json(ResponseBuilder::default().data(Some(app)).build().unwrap()),
@@ -57,7 +57,5 @@ pub async fn status(Extension(app): Extension<Arc<service::App>>) -> Json<Respon
 }
 
 pub async fn admin_login(Extension(app): Extension<Arc<service::App>>) -> Json<Response> {
-    
     Json(ResponseBuilder::default().build().unwrap())
 }
-

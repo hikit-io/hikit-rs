@@ -4,7 +4,6 @@ mod model;
 #[cfg(feature = "xiaomi-model")]
 pub use model::*;
 
-
 #[cfg(feature = "xiaomi")]
 pub use lib::*;
 
@@ -80,7 +79,6 @@ mod lib {
     }
 }
 
-
 #[cfg(feature = "xiaomi")]
 #[cfg_attr(feature = "xiaomi", test)]
 mod tests {
@@ -99,7 +97,7 @@ mod tests {
             client_secret: &client_secret,
             project_id: &project_id,
         })
-            .unwrap();
+        .unwrap();
 
         let mut msg = Message::default();
         msg.registration_id = Some(
@@ -111,7 +109,7 @@ mod tests {
             notify_foreground: Bool::True.into(),
             ..Default::default()
         }
-            .into();
+        .into();
         let resp = cli.push(&msg).await;
 
         println!("{resp:?}");

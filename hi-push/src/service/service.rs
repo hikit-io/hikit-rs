@@ -1,6 +1,6 @@
+use crate::service::model::Body;
 use anyhow::anyhow;
 use std::{any, collections::HashMap};
-use crate::{service::model::Body};
 
 use crate::service::model;
 
@@ -132,7 +132,7 @@ impl App {
                         .ok_or(anyhow!("mi missing `client_id`"))?
                         .as_str(),
                 )
-                    .await?,
+                .await?,
             ),
             #[cfg(feature = "fcm")]
             model::ChannelType::Fcm => crate::Client::Fcm(
@@ -185,7 +185,7 @@ impl App {
                             .ok_or(anyhow!("Fcm missing `client_x509_cert_url`"))?,
                     ),
                 })
-                    .await?,
+                .await?,
             ),
             #[cfg(feature = "wecom")]
             model::ChannelType::Wecom => crate::Client::Wecom(
@@ -200,7 +200,7 @@ impl App {
                         .as_str(),
                     conf.agentid.ok_or(anyhow!("Wecom missing `agentid`"))?,
                 )
-                    .await?,
+                .await?,
             ),
             #[cfg(feature = "apns")]
             model::ChannelType::Apns => crate::Client::Apns(apns::Client::new(
@@ -229,7 +229,7 @@ impl App {
                         .ok_or(anyhow!("Email missing `addr`"))?
                         .as_str(),
                 )
-                    .await,
+                .await,
             ),
             model::ChannelType::Unknown => Err(anyhow!("Unknown channel type"))?,
         })
@@ -285,92 +285,92 @@ impl App {
         };
 
         #[cfg(feature = "wecom")]
-            let wecom = match &msg {
+        let wecom = match &msg {
             Message::Transparent(msg) => msg.platform_extra.wecom.as_ref(),
             Message::Notification(msg) => msg.platform_extra.wecom.as_ref(),
         }
-            .map_or(None, |wecom| {
-                match wecom {
-                    model::WecomExtra::Markdown(ok) => crate::model::WecomExtra::Markdown(*ok),
-                    model::WecomExtra::Text { url, btntxt } => crate::model::WecomExtra::Text {
-                        url: &url,
-                        btntxt: &btntxt,
-                    },
-                }
-                    .into()
-            });
+        .map_or(None, |wecom| {
+            match wecom {
+                model::WecomExtra::Markdown(ok) => crate::model::WecomExtra::Markdown(*ok),
+                model::WecomExtra::Text { url, btntxt } => crate::model::WecomExtra::Text {
+                    url: &url,
+                    btntxt: &btntxt,
+                },
+            }
+            .into()
+        });
 
         #[cfg(feature = "apns")]
-            let apns = match &msg {
+        let apns = match &msg {
             Message::Transparent(msg) => msg.platform_extra.apns.as_ref(),
             Message::Notification(msg) => msg.platform_extra.apns.as_ref(),
         }
-            .map_or(None, |model::ApnsExtra { topic, push_type }| {
-                crate::model::ApnsExtra {
-                    topic: topic,
-                    push_type: push_type,
-                }
-                    .into()
-            });
+        .map_or(None, |model::ApnsExtra { topic, push_type }| {
+            crate::model::ApnsExtra {
+                topic: topic,
+                push_type: push_type,
+            }
+            .into()
+        });
 
         #[cfg(any(feature = "huawei", feature = "fcm", feature = "xiaomi"))]
-            let android = match &msg {
+        let android = match &msg {
             Message::Transparent(msg) => msg.platform_extra.android.as_ref(),
             Message::Notification(msg) => msg.platform_extra.android.as_ref(),
         }
-            .map_or(
-                None,
-                |model::AndroidExtra {
-                     collapse_key,
-                     priority,
-                     ttl,
-                     title,
-                     body,
-                     icon,
-                     color,
-                     sound,
-                     tag,
-                     click_action,
-                     body_loc_key,
-                     body_loc_args,
-                     title_loc_key,
-                     title_loc_args,
-                     channel_id,
-                     image,
-                     ticker,
-                     visibility,
-                     package_name,
-                     auto_clear,
-                     foreground_show,
-                     notify_id,
-                 }| {
-                    crate::model::AndroidExtra {
-                        collapse_key: collapse_key.clone(),
-                        priority: priority.clone(),
-                        ttl: ttl.clone(),
-                        title: title.as_deref(),
-                        body: body.as_deref(),
-                        icon: icon.as_deref(),
-                        color: color.as_deref(),
-                        sound: sound.as_deref(),
-                        tag: tag.as_deref(),
-                        click_action: click_action.as_deref(),
-                        body_loc_key: body_loc_key.as_deref(),
-                        body_loc_args: body_loc_args.as_deref(),
-                        title_loc_key: title_loc_key.as_deref(),
-                        title_loc_args: title_loc_args.as_deref(),
-                        channel_id: channel_id.as_deref(),
-                        image: image.as_deref(),
-                        ticker: ticker.as_deref(),
-                        visibility: visibility.clone(),
-                        package_name: package_name.as_deref(),
-                        auto_clear: auto_clear.clone(),
-                        foreground_show: foreground_show.clone(),
-                        notify_id: notify_id.clone(),
-                    }
-                        .into()
-                },
-            );
+        .map_or(
+            None,
+            |model::AndroidExtra {
+                 collapse_key,
+                 priority,
+                 ttl,
+                 title,
+                 body,
+                 icon,
+                 color,
+                 sound,
+                 tag,
+                 click_action,
+                 body_loc_key,
+                 body_loc_args,
+                 title_loc_key,
+                 title_loc_args,
+                 channel_id,
+                 image,
+                 ticker,
+                 visibility,
+                 package_name,
+                 auto_clear,
+                 foreground_show,
+                 notify_id,
+             }| {
+                crate::model::AndroidExtra {
+                    collapse_key: collapse_key.clone(),
+                    priority: priority.clone(),
+                    ttl: ttl.clone(),
+                    title: title.as_deref(),
+                    body: body.as_deref(),
+                    icon: icon.as_deref(),
+                    color: color.as_deref(),
+                    sound: sound.as_deref(),
+                    tag: tag.as_deref(),
+                    click_action: click_action.as_deref(),
+                    body_loc_key: body_loc_key.as_deref(),
+                    body_loc_args: body_loc_args.as_deref(),
+                    title_loc_key: title_loc_key.as_deref(),
+                    title_loc_args: title_loc_args.as_deref(),
+                    channel_id: channel_id.as_deref(),
+                    image: image.as_deref(),
+                    ticker: ticker.as_deref(),
+                    visibility: visibility.clone(),
+                    package_name: package_name.as_deref(),
+                    auto_clear: auto_clear.clone(),
+                    foreground_show: foreground_show.clone(),
+                    notify_id: notify_id.clone(),
+                }
+                .into()
+            },
+        );
 
         // push message by channel
         for (chan, tokens) in token_map {

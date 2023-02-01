@@ -15,30 +15,27 @@ mod lib {
     use crate::apns;
     #[cfg(feature = "email")]
     use crate::email;
-    #[cfg(feature = "huawei")]
-    use crate::huawei;
-    #[cfg(feature = "xiaomi")]
-    use crate::xiaomi;
-    #[cfg(feature = "wecom")]
-    use crate::wecom;
     #[cfg(feature = "fcm")]
     use crate::fcm;
-
+    #[cfg(feature = "huawei")]
+    use crate::huawei;
+    #[cfg(feature = "wecom")]
+    use crate::wecom;
+    #[cfg(feature = "xiaomi")]
+    use crate::xiaomi;
 
     #[cfg(any(feature = "xiaomi", feature = "huawei", feature = "fcm"))]
     use flatten_json_object::{ArrayFormatting, Flattener};
 
-    use http::StatusCode;
-    use std::{collections::HashMap, error::Error as StdError};
-    use thiserror::Error;
     use async_trait::async_trait;
+    use http::StatusCode;
     use serde::{Deserialize, Serialize};
     use serde_repr::{Deserialize_repr, Serialize_repr};
+    use std::{collections::HashMap, error::Error as StdError};
+    use thiserror::Error;
     use tokio::sync::RwLock;
 
     pub(crate) type BoxError = Box<dyn StdError + Send + Sync>;
-
-
 
     #[derive(Debug, Error)]
     #[error(transparent)]
@@ -104,7 +101,9 @@ mod lib {
                     StatusCode::REQUEST_TIMEOUT => {
                         InnerError::RetryError(RetryError::Timeout(e.to_string()))
                     }
-                    StatusCode::UNAUTHORIZED => InnerError::RetryError(RetryError::Auth(e.to_string())),
+                    StatusCode::UNAUTHORIZED => {
+                        InnerError::RetryError(RetryError::Auth(e.to_string()))
+                    }
                     _ => InnerError::Unknown(e.to_string()),
                 }
             } else if e.is_timeout() {
@@ -156,18 +155,18 @@ mod lib {
     }
 
     // Pusher
-// Message pushing abstract.
-// limit:
-// - max token number
-// - retryable
-// - qps
-// - body
-// - msg field
+    // Message pushing abstract.
+    // limit:
+    // - max token number
+    // - retryable
+    // - qps
+    // - body
+    // - msg field
     #[async_trait]
     pub trait Pusher<'b, M, R>
-        where
-            M: Sync + std::fmt::Debug,
-            R: Send,
+    where
+        M: Sync + std::fmt::Debug,
+        R: Send,
     {
         const TOKEN_LIMIT: usize = 500;
 
@@ -186,7 +185,7 @@ mod lib {
                     _ => false,
                 },
             )
-                .await
+            .await
         }
 
         async fn retry_batch_push(&self, msgs: &'b [M]) -> Result<Vec<R>, Error> {
@@ -221,7 +220,8 @@ mod lib {
                     pass_through: xiaomi::Passtrough::Notice,
                     restricted_package_name: extra.map_or("", |v| v.package_name.unwrap_or("")),
                     extra: xiaomi::Extra {
-                        notify_foreground: extra.map_or(None, |v| v.foreground_show.map(|v| v.into())),
+                        notify_foreground: extra
+                            .map_or(None, |v| v.foreground_show.map(|v| v.into())),
                         notify_effect: extra.map_or(None, |v| match v.click_action {
                             None => None,
                             Some(click_action) => {
@@ -244,7 +244,7 @@ mod lib {
                         }),
                         ..Default::default()
                     }
-                        .into(),
+                    .into(),
                     ..Default::default()
                 },
             })
@@ -334,9 +334,12 @@ mod lib {
                                 image: extra.map_or(None, |e| e.image),
                                 tag: extra.map_or(None, |e| e.tag),
                                 body_loc_key: extra.map_or(None, |e| e.body_loc_key),
-                                body_loc_args: extra.map_or(Default::default(), |e| e.body_loc_args),
-                                title_loc_key: extra.map_or(Default::default(), |e| e.title_loc_key),
-                                title_loc_args: extra.map_or(Default::default(), |e| e.title_loc_args),
+                                body_loc_args: extra
+                                    .map_or(Default::default(), |e| e.body_loc_args),
+                                title_loc_key: extra
+                                    .map_or(Default::default(), |e| e.title_loc_key),
+                                title_loc_args: extra
+                                    .map_or(Default::default(), |e| e.title_loc_args),
                                 channel_id: extra.map_or(None, |e| e.channel_id),
                                 ticker: extra.map_or(None, |e| e.ticker),
                                 click_action: extra
@@ -347,7 +350,8 @@ mod lib {
                                         "missing click action".to_string(),
                                     ))?,
                                 visibility: extra.map_or(None, |e| {
-                                    match e.visibility.as_ref().unwrap_or(&Visibility::Unspecified) {
+                                    match e.visibility.as_ref().unwrap_or(&Visibility::Unspecified)
+                                    {
                                         &Visibility::Unspecified => Some(""),
                                         &Visibility::Private => Some("PRIVATE"),
                                         &Visibility::Public => Some("PUBLIC"),
@@ -449,16 +453,19 @@ mod lib {
                                 Priority::Normal => Some("normal".to_string()),
                             })
                         }),
-                        ttl: extra.map_or(None, |e| e.ttl.map_or(None, |e| Some(format!("{}s", e)))),
+                        ttl: extra
+                            .map_or(None, |e| e.ttl.map_or(None, |e| Some(format!("{}s", e)))),
                         notification: Some(fcm::AndroidNotification {
                             sound: extra
                                 .map_or(None, |e| e.sound.map_or(None, |e| Some(e.to_string()))),
-                            icon: extra.map_or(None, |e| e.icon.map_or(None, |e| Some(e.to_string()))),
+                            icon: extra
+                                .map_or(None, |e| e.icon.map_or(None, |e| Some(e.to_string()))),
                             image: extra.map_or(None, |e| match e.image {
                                 None => None,
                                 Some(e) => Some(e.to_string()),
                             }),
-                            tag: extra.map_or(None, |e| e.tag.map_or(None, |e| Some(e.to_string()))),
+                            tag: extra
+                                .map_or(None, |e| e.tag.map_or(None, |e| Some(e.to_string()))),
                             body_loc_key: extra.map_or(None, |e| match e.body_loc_key {
                                 None => None,
                                 Some(e) => Some(e.to_string()),

@@ -37,7 +37,7 @@ mod lib {
         HttpsConnector<SocksConnector<HttpConnector<GaiResolver>>>,
     >;
     type CommonAuthClient =
-    oauth2::authenticator::Authenticator<HttpsConnector<HttpConnector<GaiResolver>>>;
+        oauth2::authenticator::Authenticator<HttpsConnector<HttpConnector<GaiResolver>>>;
 
     enum InnerAuthClient {
         Common(CommonAuthClient),
@@ -112,8 +112,8 @@ mod lib {
                 auth,
                 connector,
             }
-                .with_tls()
-                .unwrap();
+            .with_tls()
+            .unwrap();
             let cli = hyper::Client::builder().build(conn);
             let auth = oauth2::ServiceAccountAuthenticator::builder(self.conf.clone())
                 .hyper_client(cli.clone())
@@ -156,7 +156,7 @@ mod lib {
                     }),
                     validate_only: None,
                 })
-                    .unwrap();
+                .unwrap();
 
                 let mut buf = Vec::new();
                 let mut req = httpcodec::Request::new(
@@ -315,8 +315,8 @@ pub use lib::*;
 
 #[cfg(all(feature = "fcm", test))]
 mod test {
-    use std::collections::HashMap;
     use super::*;
+    use std::collections::HashMap;
 
     #[tokio::test]
     async fn test_fcm() {
@@ -347,7 +347,7 @@ mod test {
             user: None,
             pass: None,
         })
-            .await;
+        .await;
 
         let res = fcm
             .multicast_send(&MulticastMessage {

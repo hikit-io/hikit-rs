@@ -1,5 +1,6 @@
 
-features = fcm apns email wecom huawei xiaomi
+features := fcm apns email wecom huawei xiaomi
+all_features := fcm,apns,email,wecom,huawei,xiaomi
 
 
 build:
@@ -18,6 +19,7 @@ client:
 feature:$(addsuffix -feature,$(features))
 	@echo [feature] $^
 
+
 %-http-api:
 	cargo build --lib --features http-api,mongo,$*
 	@echo [http-api] $@
@@ -25,6 +27,9 @@ feature:$(addsuffix -feature,$(features))
 http-api:$(addsuffix -http-api,$(features))
 	@echo [http-api] $^
 
+
+http-api-all:
+	cargo build --lib --features http-api,mongo,$(all_features)
 
 %-test:
 	cargo test --features $*

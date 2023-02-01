@@ -33,7 +33,10 @@ mod lib {
             })
         }
 
-        pub async fn _push<'b>(&self, notification: &'b Notification<'_>) -> Result<Response, Error> {
+        pub async fn _push<'b>(
+            &self,
+            notification: &'b Notification<'_>,
+        ) -> Result<Response, Error> {
             let url = self.build_url(&notification.device_token);
 
             let mut headers = header::HeaderMap::new();
@@ -148,7 +151,6 @@ mod lib {
         }
     }
 }
-
 
 #[cfg(test)]
 mod test {

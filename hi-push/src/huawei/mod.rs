@@ -45,7 +45,6 @@ mod lib {
         cli: reqwest::Client,
     }
 
-
     impl Client {
         const TOKEN_URL: &'static str = "https://oauth-login.cloud.huawei.com/oauth2/v3/token";
 
@@ -205,7 +204,6 @@ mod lib {
     }
 }
 
-
 #[cfg(feature = "huawei")]
 #[cfg_attr(feature = "huawei", test)]
 mod tests {
@@ -213,8 +211,8 @@ mod tests {
 
     #[tokio::test]
     async fn test_push() {
-        use crate::*;
         use super::*;
+        use crate::*;
 
         let client_id = std::env::var("HW_CLIENT_ID").unwrap();
         let client_secret = std::env::var("HW_CLIENT_SECRET").unwrap();

@@ -4,7 +4,6 @@ mod model;
 #[cfg(feature = "email-model")]
 pub use self::model::*;
 
-
 #[cfg(feature = "email")]
 pub use self::lib::*;
 
@@ -19,7 +18,6 @@ mod lib {
         transport::smtp::authentication::{Credentials, Mechanism},
         SmtpTransport, Transport,
     };
-
 
     pub struct Client {
         client_id: String,
@@ -108,7 +106,6 @@ mod lib {
         }
     }
 }
-
 
 #[cfg(all(test, feature = "email"))]
 mod tests {
