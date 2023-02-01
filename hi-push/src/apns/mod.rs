@@ -1,20 +1,20 @@
-#[cfg(feature = "apns-model")]
-mod types;
+#[cfg(feature = "apns")]
+pub use lib::*;
 
 #[cfg(feature = "apns-model")]
 pub use self::types::*;
 
-#[cfg(feature = "apns")]
-pub use lib::*;
+#[cfg(feature = "apns-model")]
+mod types;
 
 #[cfg(feature = "apns")]
 mod lib {
-    use super::types::*;
     use async_trait::async_trait;
+    use reqwest::header;
 
     use crate::Error;
 
-    use reqwest::header;
+    use super::types::*;
 
     pub struct Client {
         cli: reqwest::Client,

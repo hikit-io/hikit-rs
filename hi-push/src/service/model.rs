@@ -3,15 +3,12 @@ use std::collections::HashMap;
 use derive_builder::Builder;
 use serde::{Deserialize, Serialize};
 
+#[cfg(any(feature = "apns-model", feature = "client"))]
+use crate::apns;
+
 pub use super::common_model::*;
 #[cfg(all(feature = "client", target_arch = "wasm32"))]
 pub use super::model_wasm::*;
-
-#[cfg(all(feature = "client", target_arch = "wasm32"))]
-use wasm_bindgen::prelude::wasm_bindgen;
-
-#[cfg(any(feature = "apns-model", feature = "client"))]
-use crate::apns;
 
 #[derive(Debug, Clone, Default)]
 #[cfg_attr(all(not(feature = "client")), derive(Serialize, Builder))]

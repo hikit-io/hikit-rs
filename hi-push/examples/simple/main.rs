@@ -1,5 +1,6 @@
-use hi_push::service;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
+
+use hi_push::service;
 
 #[tokio::main]
 async fn main() {

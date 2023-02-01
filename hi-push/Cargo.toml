@@ -166,6 +166,7 @@ http-api = [
     "base64",
     "derive_builder",
 ]
+graphql-api = []
 
 mongo = ["mongodb", "futures"]
 mysql = ["sea-orm"]

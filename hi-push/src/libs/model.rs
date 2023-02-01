@@ -1,11 +1,10 @@
-#[cfg(any(feature = "apns", feature = "client"))]
-use crate::apns;
-
 use serde::{Deserialize, Serialize};
 use serde_repr::{Deserialize_repr, Serialize_repr};
-
 #[cfg(all(feature = "client", target_arch = "wasm32"))]
 use wasm_bindgen::prelude::wasm_bindgen;
+
+#[cfg(any(feature = "apns", feature = "client"))]
+use crate::apns;
 
 #[derive(Debug, Serialize_repr, Deserialize_repr, Clone, Copy)]
 #[repr(u8)]

@@ -1,12 +1,9 @@
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen::prelude::*;
 
-use crate::service::model::*;
-
 #[cfg(all(target_arch = "wasm32", feature = "client"))]
 #[global_allocator]
 static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
-
 
 #[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
 pub struct Client {
@@ -68,8 +65,8 @@ impl Client {
             .unwrap()
     }
     #[cfg_attr(
-    target_arch = "wasm32",
-    wasm_bindgen(js_name = "pushTransparentMessage")
+        target_arch = "wasm32",
+        wasm_bindgen(js_name = "pushTransparentMessage")
     )]
     pub async fn push_transparent_message(&self, params: PushTransparentParams) -> String {
         self.cli
@@ -84,8 +81,8 @@ impl Client {
             .unwrap()
     }
     #[cfg_attr(
-    target_arch = "wasm32",
-    wasm_bindgen(js_name = "pushNotificationMessage")
+        target_arch = "wasm32",
+        wasm_bindgen(js_name = "pushNotificationMessage")
     )]
     pub async fn push_notification_message(&self, params: PushNotificationParams) -> String {
         self.cli

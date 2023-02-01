@@ -1,15 +1,21 @@
-#[cfg(feature = "libs-model")]
-pub mod model;
-
+#[cfg(feature = "libs")]
+pub use self::lib::*;
 #[cfg(feature = "libs-model")]
 pub use self::model::*;
 
-#[cfg(feature = "libs")]
-pub use self::lib::*;
+#[cfg(feature = "libs-model")]
+pub mod model;
 
 #[cfg(feature = "libs")]
 mod lib {
-    use super::model::*;
+    use std::{collections::HashMap, error::Error as StdError};
+
+    use async_trait::async_trait;
+    #[cfg(any(feature = "xiaomi", feature = "huawei", feature = "fcm"))]
+    use flatten_json_object::{ArrayFormatting, Flattener};
+    use http::StatusCode;
+    use thiserror::Error;
+    use tokio::sync::RwLock;
 
     #[cfg(feature = "apns")]
     use crate::apns;
@@ -24,16 +30,7 @@ mod lib {
     #[cfg(feature = "xiaomi")]
     use crate::xiaomi;
 
-    #[cfg(any(feature = "xiaomi", feature = "huawei", feature = "fcm"))]
-    use flatten_json_object::{ArrayFormatting, Flattener};
-
-    use async_trait::async_trait;
-    use http::StatusCode;
-    use serde::{Deserialize, Serialize};
-    use serde_repr::{Deserialize_repr, Serialize_repr};
-    use std::{collections::HashMap, error::Error as StdError};
-    use thiserror::Error;
-    use tokio::sync::RwLock;
+    use super::model::*;
 
     pub(crate) type BoxError = Box<dyn StdError + Send + Sync>;
 

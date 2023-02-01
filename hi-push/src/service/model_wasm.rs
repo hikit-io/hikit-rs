@@ -1,13 +1,13 @@
-pub use super::common_model::*;
+use js_sys::JsString;
+use reqwest::Error;
+use serde::{Deserialize, Serialize};
+use wasm_bindgen::prelude::wasm_bindgen;
+
 #[allow(non_snake_case)]
 #[cfg(feature = "apns-model")]
 use crate::apns;
 
-use js_sys::JsString;
-use reqwest::Error;
-use serde::{Deserialize, Serialize};
-use serde_repr::{Deserialize_repr, Serialize_repr};
-use wasm_bindgen::prelude::wasm_bindgen;
+pub use super::common_model::*;
 
 #[derive(Debug, Serialize, Deserialize, Clone, Default)]
 pub struct Response<T = String> {

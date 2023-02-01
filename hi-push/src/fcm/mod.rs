@@ -1,13 +1,13 @@
-#[cfg(feature = "fcm-model")]
-mod model;
-
+#[cfg(feature = "fcm")]
+pub use lib::*;
 #[cfg(feature = "fcm-model")]
 pub use model::*;
 
+#[cfg(feature = "fcm-model")]
+mod model;
+
 #[cfg(feature = "fcm")]
 mod lib {
-    use super::model::*;
-
     use std::str::FromStr;
 
     use async_trait::async_trait;
@@ -30,6 +30,8 @@ mod lib {
     use serde::Deserialize;
     use yup_oauth2 as oauth2;
     use yup_oauth2::AccessToken;
+
+    use super::model::*;
 
     pub type Config = yup_oauth2::ServiceAccountKey;
 
@@ -310,13 +312,11 @@ mod lib {
     }
 }
 
-#[cfg(feature = "fcm")]
-pub use lib::*;
-
 #[cfg(all(feature = "fcm", test))]
 mod test {
-    use super::*;
     use std::collections::HashMap;
+
+    use super::*;
 
     #[tokio::test]
     async fn test_fcm() {

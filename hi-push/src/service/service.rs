@@ -1,29 +1,24 @@
-use crate::service::model::Body;
-use anyhow::anyhow;
 use std::{any, collections::HashMap};
 
-use crate::service::model;
-
-#[cfg(feature = "mongo")]
-pub use super::mongo::*;
-
-#[cfg(feature = "huawei")]
-use crate::huawei;
-
-#[cfg(feature = "email")]
-use crate::email;
-
-#[cfg(feature = "fcm")]
-use crate::fcm;
-
-#[cfg(feature = "xiaomi")]
-use crate::xiaomi;
+use anyhow::anyhow;
 
 #[cfg(feature = "apns")]
 use crate::apns;
-
+#[cfg(feature = "email")]
+use crate::email;
+#[cfg(feature = "fcm")]
+use crate::fcm;
+#[cfg(feature = "huawei")]
+use crate::huawei;
+use crate::service::model;
+use crate::service::model::Body;
 #[cfg(feature = "wecom")]
 use crate::wecom;
+#[cfg(feature = "xiaomi")]
+use crate::xiaomi;
+
+#[cfg(feature = "mongo")]
+pub use super::mongo::*;
 
 pub enum Database {
     #[cfg(feature = "mongo")]

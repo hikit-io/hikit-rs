@@ -1,19 +1,18 @@
-#[cfg(feature = "wecom-model")]
-mod model;
-
+#[cfg(feature = "wecom")]
+pub use lib::*;
 #[cfg(feature = "wecom-model")]
 pub use model::*;
 
+#[cfg(feature = "wecom-model")]
+mod model;
+
 #[cfg(feature = "wecom")]
 mod lib {
-    use super::model::*;
-
     use std::sync::Arc;
 
-    use derive_builder::Builder;
-    use serde::{Deserialize, Serialize};
-    use serde_repr::Serialize_repr;
     use tokio::sync::RwLock;
+
+    use super::model::*;
 
     pub struct Client {
         agentid: i64,
@@ -135,15 +134,11 @@ mod lib {
 }
 
 #[cfg(feature = "wecom")]
-pub use lib::*;
-
-#[cfg(feature = "wecom")]
 #[cfg_attr(feature = "wecom", test)]
 mod tests {
     #[test]
     fn test_msg_builder() {
         use super::*;
-        use crate::*;
         let msg = MessageBuilder::default()
             .to(To::Totag("()"))
             .agentid(123)

@@ -1,22 +1,16 @@
-#[cfg(feature = "huawei-model")]
-mod model;
-
+#[cfg(feature = "huawei")]
+pub use lib::*;
 #[cfg(feature = "huawei-model")]
 pub use model::*;
 
-#[cfg(feature = "huawei")]
-pub use lib::*;
+#[cfg(feature = "huawei-model")]
+mod model;
 
 #[cfg(feature = "huawei")]
 mod lib {
-    pub use super::model::*;
-
-    use http::StatusCode;
     use std::{sync::Arc, time::Duration};
 
-    use serde::{Deserialize, Serialize};
-    use serde_repr::Serialize_repr;
-
+    use http::StatusCode;
     use oauth2::TokenResponse;
     use oauth2::{
         basic::{BasicClient, BasicErrorResponseType, BasicTokenType},
@@ -26,6 +20,8 @@ mod lib {
     };
     use oauth2::{AuthUrl, ClientId, ClientSecret, TokenUrl};
     use tokio::sync::RwLock;
+
+    pub use super::model::*;
 
     type Token = StandardTokenResponse<EmptyExtraTokenFields, BasicTokenType>;
 

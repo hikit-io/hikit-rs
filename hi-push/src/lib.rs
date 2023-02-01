@@ -1,3 +1,14 @@
+#[cfg(any(
+    feature = "wecom",
+    feature = "xiaomi",
+    feature = "fcm",
+    feature = "huawei",
+    feature = "apns",
+    feature = "email",
+    feature = "client",
+))]
+pub use libs::*;
+
 #[cfg(all(feature = "mysql", feature = "mongo"))]
 compile_error!("mysql and mongo not enable both.");
 
@@ -33,6 +44,19 @@ pub mod apns;
 pub mod email;
 #[cfg(any(feature = "fcm", feature = "fcm-model"))]
 pub mod fcm;
+#[cfg(any(feature = "huawei", feature = "huawei-model"))]
+pub mod huawei;
+#[cfg(any(feature = "wecom", feature = "wecom-model"))]
+pub mod wecom;
+#[cfg(any(feature = "xiaomi", feature = "xiaomi-model"))]
+pub mod xiaomi;
+
+#[cfg(feature = "client")]
+pub mod client;
+
+#[cfg(all(any(feature = "http-api", feature = "grpc-api", feature = "client")))]
+pub mod service;
+
 #[cfg(all(
     feature = "grpc-api",
     any(
@@ -57,18 +81,19 @@ pub mod grpc;
     )
 ))]
 pub mod http;
-#[cfg(any(feature = "huawei", feature = "huawei-model"))]
-pub mod huawei;
-#[cfg(any(feature = "wecom", feature = "wecom-model"))]
-pub mod wecom;
-#[cfg(any(feature = "xiaomi", feature = "xiaomi-model"))]
-pub mod xiaomi;
 
-#[cfg(feature = "client")]
-pub mod client;
-
-#[cfg(all(any(feature = "http-api", feature = "grpc-api", feature = "client")))]
-pub mod service;
+#[cfg(all(
+    feature = "graphql-api",
+    any(
+        feature = "wecom",
+        feature = "xiaomi",
+        feature = "fcm",
+        feature = "huawei",
+        feature = "apns",
+        feature = "email"
+    )
+))]
+pub mod graphql;
 
 #[cfg(any(
     feature = "wecom",
@@ -80,14 +105,3 @@ pub mod service;
     feature = "client",
 ))]
 mod libs;
-
-#[cfg(any(
-    feature = "wecom",
-    feature = "xiaomi",
-    feature = "fcm",
-    feature = "huawei",
-    feature = "apns",
-    feature = "email",
-    feature = "client",
-))]
-pub use libs::*;

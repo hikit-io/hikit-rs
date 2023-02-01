@@ -1,16 +1,13 @@
-#[cfg(feature = "email-model")]
-mod model;
-
+#[cfg(feature = "email")]
+pub use self::lib::*;
 #[cfg(feature = "email-model")]
 pub use self::model::*;
 
-#[cfg(feature = "email")]
-pub use self::lib::*;
+#[cfg(feature = "email-model")]
+mod model;
 
 #[cfg(feature = "email")]
 mod lib {
-    use super::model::*;
-
     use std::time::Duration;
 
     use async_trait::async_trait;
@@ -18,6 +15,8 @@ mod lib {
         transport::smtp::authentication::{Credentials, Mechanism},
         SmtpTransport, Transport,
     };
+
+    use super::model::*;
 
     pub struct Client {
         client_id: String,

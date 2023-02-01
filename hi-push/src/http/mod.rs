@@ -1,9 +1,3 @@
-mod admin_api;
-mod api;
-
-use admin_api::*;
-use api::*;
-
 use std::sync::Arc;
 
 use axum::{
@@ -14,6 +8,9 @@ use axum::{
 };
 
 use crate::service;
+
+mod admin_api;
+mod api;
 
 #[inline]
 pub fn api_router() -> axum::Router {

@@ -1,23 +1,19 @@
-#[cfg(feature = "xiaomi-model")]
-mod model;
-
+#[cfg(feature = "xiaomi")]
+pub use lib::*;
 #[cfg(feature = "xiaomi-model")]
 pub use model::*;
 
-#[cfg(feature = "xiaomi")]
-pub use lib::*;
+#[cfg(feature = "xiaomi-model")]
+mod model;
 
 #[cfg(feature = "xiaomi")]
 mod lib {
-    use super::model::*;
-    use std::ops::Deref;
-
     /**
      * https://dev.mi.com/console/doc/detail?pId=2086
      */
     use reqwest::header;
-    use serde::{Deserialize, Serialize};
-    use serde_repr::{Deserialize_repr, Serialize_repr};
+
+    use super::model::*;
 
     pub struct Config<'a> {
         pub client_id: &'a str,

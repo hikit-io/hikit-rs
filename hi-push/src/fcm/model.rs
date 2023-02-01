@@ -1,6 +1,7 @@
-use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::default::Default;
+
+use serde::{Deserialize, Serialize};
 
 /// Identifies the an OAuth2 authorization scope.
 /// A scope is needed when requesting an
