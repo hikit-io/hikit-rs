@@ -10,8 +10,6 @@
 
 /// CustomFieldContextDefaultValueMultipleGroupPicker : The default value for a multiple group picker custom field.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct CustomFieldContextDefaultValueMultipleGroupPicker {
     /// The ID of the context.
@@ -26,7 +24,11 @@ pub struct CustomFieldContextDefaultValueMultipleGroupPicker {
 
 impl CustomFieldContextDefaultValueMultipleGroupPicker {
     /// The default value for a multiple group picker custom field.
-    pub fn new(context_id: String, group_ids: Vec<String>, _type: String) -> CustomFieldContextDefaultValueMultipleGroupPicker {
+    pub fn new(
+        context_id: String,
+        group_ids: Vec<String>,
+        _type: String,
+    ) -> CustomFieldContextDefaultValueMultipleGroupPicker {
         CustomFieldContextDefaultValueMultipleGroupPicker {
             context_id,
             group_ids,
@@ -34,5 +36,3 @@ impl CustomFieldContextDefaultValueMultipleGroupPicker {
         }
     }
 }
-
-

@@ -10,8 +10,6 @@
 
 /// ProjectEmailAddress : A project's sender email address.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct ProjectEmailAddress {
     /// The email address.
@@ -31,5 +29,3 @@ impl ProjectEmailAddress {
         }
     }
 }
-
-

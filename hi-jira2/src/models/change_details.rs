@@ -10,8 +10,6 @@
 
 /// ChangeDetails : A change item.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct ChangeDetails {
     /// The name of the field changed.
@@ -51,5 +49,3 @@ impl ChangeDetails {
         }
     }
 }
-
-

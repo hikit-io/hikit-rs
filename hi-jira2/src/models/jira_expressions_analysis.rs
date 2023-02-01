@@ -10,8 +10,6 @@
 
 /// JiraExpressionsAnalysis : Details about the analysed Jira expression.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct JiraExpressionsAnalysis {
     /// The results of Jira expressions analysis.
@@ -22,10 +20,6 @@ pub struct JiraExpressionsAnalysis {
 impl JiraExpressionsAnalysis {
     /// Details about the analysed Jira expression.
     pub fn new(results: Vec<crate::models::JiraExpressionAnalysis>) -> JiraExpressionsAnalysis {
-        JiraExpressionsAnalysis {
-            results,
-        }
+        JiraExpressionsAnalysis { results }
     }
 }
-
-

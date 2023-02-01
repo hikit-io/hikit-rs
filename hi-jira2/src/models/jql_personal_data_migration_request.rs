@@ -10,8 +10,6 @@
 
 /// JqlPersonalDataMigrationRequest : The JQL queries to be converted.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct JqlPersonalDataMigrationRequest {
     /// A list of queries with user identifiers. Maximum of 100 queries.
@@ -27,5 +25,3 @@ impl JqlPersonalDataMigrationRequest {
         }
     }
 }
-
-

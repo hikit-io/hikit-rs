@@ -10,8 +10,6 @@
 
 /// BulkProjectPermissionGrants : List of project permissions and the projects and issues those permissions grant access to.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct BulkProjectPermissionGrants {
     /// A project permission,
@@ -27,7 +25,11 @@ pub struct BulkProjectPermissionGrants {
 
 impl BulkProjectPermissionGrants {
     /// List of project permissions and the projects and issues those permissions grant access to.
-    pub fn new(permission: String, issues: Vec<i64>, projects: Vec<i64>) -> BulkProjectPermissionGrants {
+    pub fn new(
+        permission: String,
+        issues: Vec<i64>,
+        projects: Vec<i64>,
+    ) -> BulkProjectPermissionGrants {
         BulkProjectPermissionGrants {
             permission,
             issues,
@@ -35,5 +37,3 @@ impl BulkProjectPermissionGrants {
         }
     }
 }
-
-

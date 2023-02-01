@@ -10,8 +10,6 @@
 
 /// UserPermission : Details of a permission and its availability to a user.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct UserPermission {
     /// The ID of the permission. Either `id` or `key` must be specified. Use [Get all permissions](#api-rest-api-2-permissions-get) to get the list of permissions.
@@ -66,4 +64,3 @@ impl Default for Type {
         Self::GLOBAL
     }
 }
-

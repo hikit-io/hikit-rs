@@ -10,8 +10,6 @@
 
 /// PageBeanVersion : A page of items.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct PageBeanVersion {
     /// The URL of the page.
@@ -51,5 +49,3 @@ impl PageBeanVersion {
         }
     }
 }
-
-

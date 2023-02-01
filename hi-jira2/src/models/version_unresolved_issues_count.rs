@@ -10,15 +10,16 @@
 
 /// VersionUnresolvedIssuesCount : Count of a version's unresolved issues.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct VersionUnresolvedIssuesCount {
     /// The URL of these count details.
     #[serde(rename = "self", skip_serializing_if = "Option::is_none")]
     pub _self: Option<String>,
     /// Count of unresolved issues.
-    #[serde(rename = "issuesUnresolvedCount", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "issuesUnresolvedCount",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub issues_unresolved_count: Option<i64>,
     /// Count of issues.
     #[serde(rename = "issuesCount", skip_serializing_if = "Option::is_none")]
@@ -35,5 +36,3 @@ impl VersionUnresolvedIssuesCount {
         }
     }
 }
-
-

@@ -1,247 +1,141 @@
-use std::sync::Arc;
+#[cfg(feature = "wecom")]
+pub use lib::*;
+#[cfg(feature = "wecom-model")]
+pub use model::*;
 
-use derive_builder::Builder;
-use serde::{Deserialize, Serialize};
-use serde_repr::Serialize_repr;
-use tokio::sync::RwLock;
+#[cfg(feature = "wecom-model")]
+mod model;
 
-pub struct Client {
-    agentid: i64,
-    cli: reqwest::Client,
-    token_url: String,
-    token: Arc<RwLock<Option<TokenResponse>>>,
-}
+#[cfg(feature = "wecom")]
+mod lib {
+    use std::sync::Arc;
 
-#[derive(Deserialize, Debug)]
-pub struct Response {
-    pub errcode: i32,
-    pub errmsg: String,
-    pub invaliduser: Option<String>,
-    pub invalidparty: Option<String>,
-    pub invalidtag: Option<String>,
-    pub msgid: String,
-    pub response_code: Option<String>,
-}
+    use tokio::sync::RwLock;
 
-impl Client {
-    const MAX_TOKEN: i32 = 1000;
+    use super::model::*;
 
-    pub async fn new(
-        client_id: &str,
-        client_secret: &str,
+    pub struct Client {
         agentid: i64,
-    ) -> Result<Client, super::Error> {
-        let cli = reqwest::Client::builder()
-            .build()
-            .map_err(|e| super::InnerError::Http(e.to_string()))?;
-
-        let token_url = format!(
-            "https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid={}&corpsecret={}",
-            client_id, client_secret
-        );
-        let client = Client {
-            cli,
-            agentid,
-            token_url,
-            token: Default::default(),
-        };
-
-        client.request_token().await?;
-
-        Ok(client)
+        cli: reqwest::Client,
+        token_url: String,
+        token: Arc<RwLock<Option<TokenResponse>>>,
     }
 
-    async fn request_token(&self) -> Result<TokenResponse, super::Error> {
-        let token = self
-            .cli
-            .get(&self.token_url)
-            .send()
-            .await
-            .map_err(|e| super::RetryError::Auth(e.to_string()))?
-            .json::<TokenResponse>()
-            .await
-            .map_err(|e| super::RetryError::Auth(e.to_string()))?;
-        if token.errcode != 0 {
-            return Err(super::RetryError::Auth(token.errmsg).into());
-        }
-        self.set_token(token.clone()).await;
-        Ok(token)
-    }
+    impl Client {
+        pub async fn new(
+            client_id: &str,
+            client_secret: &str,
+            agentid: i64,
+        ) -> Result<Client, crate::Error> {
+            let cli = reqwest::Client::builder()
+                .build()
+                .map_err(|e| crate::InnerError::Http(e.to_string()))?;
 
-    async fn set_token(&self, mut token: TokenResponse) {
-        let expires_in = chrono::Utc::now().timestamp() as i64 + token.expires_in;
-        token.expires_in = expires_in;
-        *(self.token.write().await) = Some(token);
-    }
+            let token_url = format!(
+                "https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid={}&corpsecret={}",
+                client_id, client_secret
+            );
+            let client = Client {
+                cli,
+                agentid,
+                token_url,
+                token: Default::default(),
+            };
 
-    /*
-        valid token before pushing
-    */
-    fn valid_token(&self, token: &TokenResponse) -> bool {
-        if token.expires_in >= chrono::Utc::now().timestamp() as i64 {
-            return false;
-        }
-        true
-    }
+            client.request_token().await?;
 
-    /*
-        valid msg before pushing
-    */
-
-    pub fn agentid(&self) -> i64 {
-        self.agentid
-    }
-}
-
-#[async_trait::async_trait]
-impl<'b> super::Pusher<'b, Message<'b>, Response> for Client {
-    async fn push(&self, msg: &'b Message) -> Result<Response, crate::Error> {
-        let token = self.token.clone();
-
-        let token = token.read().await;
-
-        let token = match token.clone() {
-            Some(token) => token.clone(),
-            None => match self.request_token().await {
-                Ok(token) => token,
-                //todo handle _e
-                Err(_e) => return Err(super::RetryError::Auth("".to_string()).into()),
-            },
-        };
-
-        if self.valid_token(&token) {
-            return Err(super::RetryError::Auth("token expired or invalid".to_string()).into());
+            Ok(client)
         }
 
-        let text = serde_json::to_string(msg).unwrap();
+        async fn request_token(&self) -> Result<TokenResponse, crate::Error> {
+            let token = self
+                .cli
+                .get(&self.token_url)
+                .send()
+                .await
+                .map_err(|e| crate::RetryError::Auth(e.to_string()))?
+                .json::<TokenResponse>()
+                .await
+                .map_err(|e| crate::RetryError::Auth(e.to_string()))?;
+            if token.errcode != 0 {
+                return Err(crate::RetryError::Auth(token.errmsg).into());
+            }
+            self.set_token(token.clone()).await;
+            Ok(token)
+        }
 
-        let text = text.replace("\"agentid\":0", &format!("\"agentid\":{}", self.agentid));
+        async fn set_token(&self, mut token: TokenResponse) {
+            let expires_in = chrono::Utc::now().timestamp() as i64 + token.expires_in;
+            token.expires_in = expires_in;
+            *(self.token.write().await) = Some(token);
+        }
 
-        let resp = self
-            .cli
-            .post("https://qyapi.weixin.qq.com/cgi-bin/message/send")
-            .query(&[("access_token", &token.access_token)])
-            .header("Content-Type", "application/json;encode=utf-8")
-            .body(text)
-            .send()
-            .await;
+        /*
+            valid token before pushing
+        */
+        fn valid_token(&self, token: &TokenResponse) -> bool {
+            if token.expires_in >= chrono::Utc::now().timestamp() as i64 {
+                return false;
+            }
+            true
+        }
 
-        match resp {
-            Ok(resp) => match resp.error_for_status() {
-                Ok(resp) => Ok(resp.json::<Response>().await.unwrap()),
-                Err(e) => Err(super::InnerError::Http(e.to_string()).into()),
-            },
-            Err(e) => Err(super::InnerError::Http(e.to_string()).into()),
+        /*
+            valid msg before pushing
+        */
+
+        pub fn agentid(&self) -> i64 {
+            self.agentid
         }
     }
-}
 
-#[derive(Debug, Deserialize, Clone)]
-struct TokenResponse {
-    errcode: i32,
-    errmsg: String,
-    access_token: String,
-    expires_in: i64,
-}
+    #[async_trait::async_trait]
+    impl<'b> crate::Pusher<'b, Message<'b>, Response> for Client {
+        async fn push(&self, msg: &'b Message) -> Result<Response, crate::Error> {
+            let token = self.token.clone();
 
-#[derive(Debug, Serialize_repr, Clone)]
-#[repr(u8)]
-pub enum Bool {
-    False = 0,
-    True = 1,
-}
+            let token = token.read().await;
 
-impl From<Bool> for bool {
-    fn from(b: Bool) -> Self {
-        match b {
-            Bool::False => false,
-            Bool::True => true,
+            let token = match token.clone() {
+                Some(token) => token.clone(),
+                None => match self.request_token().await {
+                    Ok(token) => token,
+                    //todo handle _e
+                    Err(_e) => return Err(crate::RetryError::Auth("".to_string()).into()),
+                },
+            };
+
+            if self.valid_token(&token) {
+                return Err(crate::RetryError::Auth("token expired or invalid".to_string()).into());
+            }
+
+            let text = serde_json::to_string(msg).unwrap();
+
+            let text = text.replace("\"agentid\":0", &format!("\"agentid\":{}", self.agentid));
+
+            let resp = self
+                .cli
+                .post("https://qyapi.weixin.qq.com/cgi-bin/message/send")
+                .query(&[("access_token", &token.access_token)])
+                .header("Content-Type", "application/json;encode=utf-8")
+                .body(text)
+                .send()
+                .await;
+
+            match resp {
+                Ok(resp) => match resp.error_for_status() {
+                    Ok(resp) => Ok(resp.json::<Response>().await.unwrap()),
+                    Err(e) => Err(crate::InnerError::Http(e.to_string()).into()),
+                },
+                Err(e) => Err(crate::InnerError::Http(e.to_string()).into()),
+            }
         }
     }
 }
 
-impl From<bool> for Bool {
-    fn from(b: bool) -> Self {
-        match b {
-            true => Self::True,
-            false => Self::False,
-        }
-    }
-}
-
-#[derive(Debug, Serialize, Builder)]
-pub struct Message<'a> {
-    #[serde(flatten)]
-    pub to: To<'a>,
-    pub msgtype: MsgType,
-    #[builder(default)]
-    pub agentid: i64,
-    #[builder(default)]
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub safe: Option<Bool>,
-    #[builder(default)]
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub enable_duplicate_check: Option<Bool>,
-    #[builder(default)]
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub duplicate_check_interval: Option<Bool>,
-    #[builder(default)]
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub enable_id_trans: Option<Bool>,
-    #[serde(flatten, skip_serializing_if = "Option::is_none")]
-    #[builder(setter(custom), default)]
-    pub inner: Option<InnerMesssage<'a>>,
-}
-
-impl<'a> MessageBuilder<'a> {
-    pub fn inner(&mut self, value: InnerMesssage<'a>) -> &mut Self {
-        match value {
-            InnerMesssage::Text { .. } => self.msgtype = Some(MsgType::Text),
-            InnerMesssage::Markdown { .. } => self.msgtype = Some(MsgType::Markdown),
-            InnerMesssage::Textcard { .. } => self.msgtype = Some(MsgType::Textcard),
-        }
-        self.inner = Some(Some(value));
-        self
-    }
-}
-
-#[derive(Debug, Serialize, Clone)]
-#[serde(rename_all = "snake_case")]
-pub enum To<'a> {
-    Touser(String),
-    Toparty(&'a str),
-    Totag(&'a str),
-}
-
-#[derive(Debug, Serialize, Clone, Default)]
-#[serde(rename_all = "lowercase")]
-pub enum MsgType {
-    #[default]
-    Text,
-    Markdown,
-    Textcard,
-}
-
-#[derive(Debug, Serialize, Clone)]
-#[serde(rename_all = "snake_case")]
-pub enum InnerMesssage<'a> {
-    Text {
-        content: &'a str,
-    },
-    Markdown {
-        content: &'a str,
-    },
-    Textcard {
-        title: &'a str,
-        description: &'a str,
-        url: &'a str,
-        btntxt: Option<&'a str>,
-    },
-}
-
+#[cfg(feature = "wecom")]
+#[cfg_attr(feature = "wecom", test)]
 mod tests {
-    use crate::Pusher;
-
     #[test]
     fn test_msg_builder() {
         use super::*;
@@ -264,7 +158,8 @@ mod tests {
 
     #[tokio::test]
     async fn test_client() {
-        use super::*;
+        use crate::Pusher;
+        use crate::*;
 
         let client_id = std::env::var("WECOM_CLIENT_ID").unwrap();
         let client_secret = std::env::var("WECOM_CLIENT_SECRET").unwrap();

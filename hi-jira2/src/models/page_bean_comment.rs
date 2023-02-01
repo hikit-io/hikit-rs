@@ -10,8 +10,6 @@
 
 /// PageBeanComment : A page of items.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct PageBeanComment {
     /// The URL of the page.
@@ -51,5 +49,3 @@ impl PageBeanComment {
         }
     }
 }
-
-

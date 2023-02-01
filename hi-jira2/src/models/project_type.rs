@@ -10,8 +10,6 @@
 
 /// ProjectType : Details about a project type.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct ProjectType {
     /// The key of the project type.
@@ -43,5 +41,3 @@ impl ProjectType {
         }
     }
 }
-
-

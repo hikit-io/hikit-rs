@@ -10,8 +10,6 @@
 
 /// CustomFieldContextDefaultValueProject : The default value for a project custom field.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct CustomFieldContextDefaultValueProject {
     /// The ID of the context.
@@ -26,7 +24,11 @@ pub struct CustomFieldContextDefaultValueProject {
 
 impl CustomFieldContextDefaultValueProject {
     /// The default value for a project custom field.
-    pub fn new(context_id: String, project_id: String, _type: String) -> CustomFieldContextDefaultValueProject {
+    pub fn new(
+        context_id: String,
+        project_id: String,
+        _type: String,
+    ) -> CustomFieldContextDefaultValueProject {
         CustomFieldContextDefaultValueProject {
             context_id,
             project_id,
@@ -34,5 +36,3 @@ impl CustomFieldContextDefaultValueProject {
         }
     }
 }
-
-

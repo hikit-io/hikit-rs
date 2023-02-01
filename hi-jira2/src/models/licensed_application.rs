@@ -10,8 +10,6 @@
 
 /// LicensedApplication : Details about a licensed Jira application.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct LicensedApplication {
     /// The ID of the application.
@@ -25,10 +23,7 @@ pub struct LicensedApplication {
 impl LicensedApplication {
     /// Details about a licensed Jira application.
     pub fn new(id: String, plan: Plan) -> LicensedApplication {
-        LicensedApplication {
-            id,
-            plan,
-        }
+        LicensedApplication { id, plan }
     }
 }
 
@@ -48,4 +43,3 @@ impl Default for Plan {
         Self::UNLICENSED
     }
 }
-

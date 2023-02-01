@@ -10,8 +10,6 @@
 
 /// CreateWorkflowStatusDetails : The details of a transition status.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct CreateWorkflowStatusDetails {
     /// The ID of the status.
@@ -31,5 +29,3 @@ impl CreateWorkflowStatusDetails {
         }
     }
 }
-
-

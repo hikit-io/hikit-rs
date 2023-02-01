@@ -10,8 +10,6 @@
 
 /// ListOperand : An operand that is a list of values.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct ListOperand {
     /// The list of operand values.
@@ -22,10 +20,6 @@ pub struct ListOperand {
 impl ListOperand {
     /// An operand that is a list of values.
     pub fn new(values: Vec<crate::models::JqlQueryUnitaryOperand>) -> ListOperand {
-        ListOperand {
-            values,
-        }
+        ListOperand { values }
     }
 }
-
-

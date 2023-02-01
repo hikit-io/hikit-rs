@@ -10,8 +10,6 @@
 
 /// ProjectIds : A list of project IDs.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct ProjectIds {
     /// The IDs of projects.
@@ -22,10 +20,6 @@ pub struct ProjectIds {
 impl ProjectIds {
     /// A list of project IDs.
     pub fn new(project_ids: Vec<String>) -> ProjectIds {
-        ProjectIds {
-            project_ids,
-        }
+        ProjectIds { project_ids }
     }
 }
-
-

@@ -10,8 +10,6 @@
 
 /// TaskProgressBeanRemoveOptionFromIssuesResult : Details about a task.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct TaskProgressBeanRemoveOptionFromIssuesResult {
     /// The URL of the task.
@@ -57,7 +55,16 @@ pub struct TaskProgressBeanRemoveOptionFromIssuesResult {
 
 impl TaskProgressBeanRemoveOptionFromIssuesResult {
     /// Details about a task.
-    pub fn new(_self: String, id: String, status: Status, submitted_by: i64, progress: i64, elapsed_runtime: i64, submitted: i64, last_update: i64) -> TaskProgressBeanRemoveOptionFromIssuesResult {
+    pub fn new(
+        _self: String,
+        id: String,
+        status: Status,
+        submitted_by: i64,
+        progress: i64,
+        elapsed_runtime: i64,
+        submitted: i64,
+        last_update: i64,
+    ) -> TaskProgressBeanRemoveOptionFromIssuesResult {
         TaskProgressBeanRemoveOptionFromIssuesResult {
             _self,
             id,
@@ -100,4 +107,3 @@ impl Default for Status {
         Self::ENQUEUED
     }
 }
-

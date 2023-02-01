@@ -10,8 +10,6 @@
 
 /// CustomFieldOption : Details of a custom option for a field.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct CustomFieldOption {
     /// The URL of these custom field option details.
@@ -31,5 +29,3 @@ impl CustomFieldOption {
         }
     }
 }
-
-

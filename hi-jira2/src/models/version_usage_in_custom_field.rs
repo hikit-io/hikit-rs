@@ -10,8 +10,6 @@
 
 /// VersionUsageInCustomField : List of custom fields using the version.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct VersionUsageInCustomField {
     /// The name of the custom field.
@@ -21,7 +19,10 @@ pub struct VersionUsageInCustomField {
     #[serde(rename = "customFieldId", skip_serializing_if = "Option::is_none")]
     pub custom_field_id: Option<i64>,
     /// Count of the issues where the custom field contains the version.
-    #[serde(rename = "issueCountWithVersionInCustomField", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "issueCountWithVersionInCustomField",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub issue_count_with_version_in_custom_field: Option<i64>,
 }
 
@@ -35,5 +36,3 @@ impl VersionUsageInCustomField {
         }
     }
 }
-
-

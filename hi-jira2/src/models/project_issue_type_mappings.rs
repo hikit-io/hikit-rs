@@ -10,8 +10,6 @@
 
 /// ProjectIssueTypeMappings : The project and issue type mappings.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct ProjectIssueTypeMappings {
     /// The project and issue type mappings.
@@ -22,10 +20,6 @@ pub struct ProjectIssueTypeMappings {
 impl ProjectIssueTypeMappings {
     /// The project and issue type mappings.
     pub fn new(mappings: Vec<crate::models::ProjectIssueTypeMapping>) -> ProjectIssueTypeMappings {
-        ProjectIssueTypeMappings {
-            mappings,
-        }
+        ProjectIssueTypeMappings { mappings }
     }
 }
-
-

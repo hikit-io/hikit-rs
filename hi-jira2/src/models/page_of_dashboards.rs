@@ -10,8 +10,6 @@
 
 /// PageOfDashboards : A page containing dashboard details.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct PageOfDashboards {
     /// The index of the first item returned on the page.
@@ -47,5 +45,3 @@ impl PageOfDashboards {
         }
     }
 }
-
-

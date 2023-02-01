@@ -10,8 +10,6 @@
 
 /// CustomFieldContextDefaultValueMultipleOption : The default value for a multi-select custom field.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct CustomFieldContextDefaultValueMultipleOption {
     /// The ID of the context.
@@ -26,7 +24,11 @@ pub struct CustomFieldContextDefaultValueMultipleOption {
 
 impl CustomFieldContextDefaultValueMultipleOption {
     /// The default value for a multi-select custom field.
-    pub fn new(context_id: String, option_ids: Vec<String>, _type: String) -> CustomFieldContextDefaultValueMultipleOption {
+    pub fn new(
+        context_id: String,
+        option_ids: Vec<String>,
+        _type: String,
+    ) -> CustomFieldContextDefaultValueMultipleOption {
         CustomFieldContextDefaultValueMultipleOption {
             context_id,
             option_ids,
@@ -34,5 +36,3 @@ impl CustomFieldContextDefaultValueMultipleOption {
         }
     }
 }
-
-

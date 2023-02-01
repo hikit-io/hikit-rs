@@ -10,8 +10,6 @@
 
 /// Operations : Details of the operations that can be performed on the issue.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct Operations {
     /// Details of the link groups defining issue operations.
@@ -22,10 +20,6 @@ pub struct Operations {
 impl Operations {
     /// Details of the operations that can be performed on the issue.
     pub fn new() -> Operations {
-        Operations {
-            link_groups: None,
-        }
+        Operations { link_groups: None }
     }
 }
-
-

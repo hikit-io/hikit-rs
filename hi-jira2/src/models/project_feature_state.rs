@@ -10,8 +10,6 @@
 
 /// ProjectFeatureState : Details of the feature state.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct ProjectFeatureState {
     /// The feature state.
@@ -22,9 +20,7 @@ pub struct ProjectFeatureState {
 impl ProjectFeatureState {
     /// Details of the feature state.
     pub fn new() -> ProjectFeatureState {
-        ProjectFeatureState {
-            state: None,
-        }
+        ProjectFeatureState { state: None }
     }
 }
 
@@ -44,4 +40,3 @@ impl Default for State {
         Self::ENABLED
     }
 }
-

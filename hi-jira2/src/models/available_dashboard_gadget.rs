@@ -10,8 +10,6 @@
 
 /// AvailableDashboardGadget : The details of the available dashboard gadget.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct AvailableDashboardGadget {
     /// The module key of the gadget type.
@@ -35,5 +33,3 @@ impl AvailableDashboardGadget {
         }
     }
 }
-
-

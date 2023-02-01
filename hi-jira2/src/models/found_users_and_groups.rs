@@ -10,8 +10,6 @@
 
 /// FoundUsersAndGroups : List of users and groups found in a search.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct FoundUsersAndGroups {
     #[serde(rename = "users", skip_serializing_if = "Option::is_none")]
@@ -29,5 +27,3 @@ impl FoundUsersAndGroups {
         }
     }
 }
-
-

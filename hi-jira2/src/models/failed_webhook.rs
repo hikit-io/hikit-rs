@@ -10,8 +10,6 @@
 
 /// FailedWebhook : Details about a failed webhook.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct FailedWebhook {
     /// The webhook ID, as sent in the `X-Atlassian-Webhook-Identifier` header with the webhook.
@@ -39,5 +37,3 @@ impl FailedWebhook {
         }
     }
 }
-
-

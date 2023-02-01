@@ -10,8 +10,6 @@
 
 /// UpdateScreenTypes : The IDs of the screens for the screen types of the screen scheme.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct UpdateScreenTypes {
     /// The ID of the edit screen. To remove the screen association, pass a null.
@@ -39,5 +37,3 @@ impl UpdateScreenTypes {
         }
     }
 }
-
-

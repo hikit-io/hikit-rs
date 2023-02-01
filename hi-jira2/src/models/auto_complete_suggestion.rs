@@ -10,8 +10,6 @@
 
 /// AutoCompleteSuggestion : A field auto-complete suggestion.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct AutoCompleteSuggestion {
     /// The value of a suggested item.
@@ -31,5 +29,3 @@ impl AutoCompleteSuggestion {
         }
     }
 }
-
-

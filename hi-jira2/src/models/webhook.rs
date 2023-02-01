@@ -10,8 +10,6 @@
 
 /// Webhook : A webhook.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct Webhook {
     /// The ID of the webhook.
@@ -24,7 +22,10 @@ pub struct Webhook {
     #[serde(rename = "fieldIdsFilter", skip_serializing_if = "Option::is_none")]
     pub field_ids_filter: Option<Vec<String>>,
     /// A list of issue property keys. A change of those issue properties triggers the `issue_property_set` or `issue_property_deleted` webhooks. If this parameter is not present, the app is notified about all issue property updates.
-    #[serde(rename = "issuePropertyKeysFilter", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "issuePropertyKeysFilter",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub issue_property_keys_filter: Option<Vec<String>>,
     /// The Jira events that trigger the webhook.
     #[serde(rename = "events")]
@@ -74,4 +75,3 @@ impl Default for Events {
         Self::JiraissueCreated
     }
 }
-

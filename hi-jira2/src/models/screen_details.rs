@@ -10,8 +10,6 @@
 
 /// ScreenDetails : Details of a screen.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct ScreenDetails {
     /// The name of the screen. The name must be unique. The maximum length is 255 characters.
@@ -31,5 +29,3 @@ impl ScreenDetails {
         }
     }
 }
-
-

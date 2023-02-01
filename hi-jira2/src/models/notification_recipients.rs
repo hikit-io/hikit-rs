@@ -10,8 +10,6 @@
 
 /// NotificationRecipients : Details of the users and groups to receive the notification.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct NotificationRecipients {
     /// Whether the notification should be sent to the issue's reporter.
@@ -51,5 +49,3 @@ impl NotificationRecipients {
         }
     }
 }
-
-

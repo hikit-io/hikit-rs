@@ -10,8 +10,6 @@
 
 /// CreatedIssue : Details about a created issue or subtask.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct CreatedIssue {
     /// The ID of the created issue or subtask.
@@ -39,5 +37,3 @@ impl CreatedIssue {
         }
     }
 }
-
-

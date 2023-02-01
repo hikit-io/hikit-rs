@@ -10,8 +10,6 @@
 
 /// CustomFieldContextDefaultValueForgeNumberField : Default value for a Forge number custom field.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct CustomFieldContextDefaultValueForgeNumberField {
     /// The default floating-point number.
@@ -22,10 +20,6 @@ pub struct CustomFieldContextDefaultValueForgeNumberField {
 impl CustomFieldContextDefaultValueForgeNumberField {
     /// Default value for a Forge number custom field.
     pub fn new(number: f64) -> CustomFieldContextDefaultValueForgeNumberField {
-        CustomFieldContextDefaultValueForgeNumberField {
-            number,
-        }
+        CustomFieldContextDefaultValueForgeNumberField { number }
     }
 }
-
-

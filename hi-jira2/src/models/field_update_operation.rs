@@ -10,8 +10,6 @@
 
 /// FieldUpdateOperation : Details of an operation to perform on a field.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct FieldUpdateOperation {
     /// The value to add to the field.
@@ -39,5 +37,3 @@ impl FieldUpdateOperation {
         }
     }
 }
-
-

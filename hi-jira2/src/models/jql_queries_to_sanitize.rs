@@ -10,8 +10,6 @@
 
 /// JqlQueriesToSanitize : The list of JQL queries to sanitize for the given account IDs.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct JqlQueriesToSanitize {
     /// The list of JQL queries to sanitize. Must contain unique values. Maximum of 20 queries.
@@ -22,10 +20,6 @@ pub struct JqlQueriesToSanitize {
 impl JqlQueriesToSanitize {
     /// The list of JQL queries to sanitize for the given account IDs.
     pub fn new(queries: Vec<crate::models::JqlQueryToSanitize>) -> JqlQueriesToSanitize {
-        JqlQueriesToSanitize {
-            queries,
-        }
+        JqlQueriesToSanitize { queries }
     }
 }
-
-

@@ -10,8 +10,6 @@
 
 /// JqlQueryField : A field used in a JQL query. See [Advanced searching - fields reference](https://confluence.atlassian.com/x/dAiiLQ) for more information about fields in JQL queries.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct JqlQueryField {
     /// The name of the field.
@@ -31,5 +29,3 @@ impl JqlQueryField {
         }
     }
 }
-
-

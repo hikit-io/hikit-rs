@@ -10,12 +10,13 @@
 
 /// FieldConfigurationSchemeProjectAssociation : Associated field configuration scheme and project.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct FieldConfigurationSchemeProjectAssociation {
     /// The ID of the field configuration scheme. If the field configuration scheme ID is `null`, the operation assigns the default field configuration scheme.
-    #[serde(rename = "fieldConfigurationSchemeId", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "fieldConfigurationSchemeId",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub field_configuration_scheme_id: Option<String>,
     /// The ID of the project.
     #[serde(rename = "projectId")]
@@ -31,5 +32,3 @@ impl FieldConfigurationSchemeProjectAssociation {
         }
     }
 }
-
-

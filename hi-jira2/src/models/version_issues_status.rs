@@ -10,8 +10,6 @@
 
 /// VersionIssuesStatus : Counts of the number of issues in various statuses.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct VersionIssuesStatus {
     /// Count of issues with a status other than *to do*, *in progress*, and *done*.
@@ -39,5 +37,3 @@ impl VersionIssuesStatus {
         }
     }
 }
-
-

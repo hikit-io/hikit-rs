@@ -10,8 +10,6 @@
 
 /// PermissionScheme : Details of a permission scheme.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct PermissionScheme {
     /// The expand options available for the permission scheme.
@@ -51,5 +49,3 @@ impl PermissionScheme {
         }
     }
 }
-
-

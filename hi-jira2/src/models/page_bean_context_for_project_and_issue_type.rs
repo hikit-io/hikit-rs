@@ -10,8 +10,6 @@
 
 /// PageBeanContextForProjectAndIssueType : A page of items.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct PageBeanContextForProjectAndIssueType {
     /// The URL of the page.
@@ -51,5 +49,3 @@ impl PageBeanContextForProjectAndIssueType {
         }
     }
 }
-
-

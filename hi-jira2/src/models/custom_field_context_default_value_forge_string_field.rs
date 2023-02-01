@@ -10,8 +10,6 @@
 
 /// CustomFieldContextDefaultValueForgeStringField : The default text for a Forge string custom field.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct CustomFieldContextDefaultValueForgeStringField {
     /// The default text. The maximum length is 254 characters.
@@ -22,10 +20,6 @@ pub struct CustomFieldContextDefaultValueForgeStringField {
 impl CustomFieldContextDefaultValueForgeStringField {
     /// The default text for a Forge string custom field.
     pub fn new() -> CustomFieldContextDefaultValueForgeStringField {
-        CustomFieldContextDefaultValueForgeStringField {
-            text: None,
-        }
+        CustomFieldContextDefaultValueForgeStringField { text: None }
     }
 }
-
-

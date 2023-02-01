@@ -10,8 +10,6 @@
 
 /// CustomFieldContextDefaultValueReadOnly : The default text for a read only custom field.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct CustomFieldContextDefaultValueReadOnly {
     /// The default text. The maximum length is 255 characters.
@@ -24,11 +22,6 @@ pub struct CustomFieldContextDefaultValueReadOnly {
 impl CustomFieldContextDefaultValueReadOnly {
     /// The default text for a read only custom field.
     pub fn new(_type: String) -> CustomFieldContextDefaultValueReadOnly {
-        CustomFieldContextDefaultValueReadOnly {
-            text: None,
-            _type,
-        }
+        CustomFieldContextDefaultValueReadOnly { text: None, _type }
     }
 }
-
-

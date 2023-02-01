@@ -10,8 +10,6 @@
 
 /// FoundUsers : The list of users found in a search, including header text (Showing X of Y matching users) and total of matched users.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct FoundUsers {
     #[serde(rename = "users", skip_serializing_if = "Option::is_none")]
@@ -34,5 +32,3 @@ impl FoundUsers {
         }
     }
 }
-
-

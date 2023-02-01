@@ -10,8 +10,6 @@
 
 /// CustomFieldContextDefaultValueForgeDateTimeField : The default value for a Forge date time custom field.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct CustomFieldContextDefaultValueForgeDateTimeField {
     /// The default date-time in ISO format. Ignored if `useCurrent` is true.
@@ -31,5 +29,3 @@ impl CustomFieldContextDefaultValueForgeDateTimeField {
         }
     }
 }
-
-

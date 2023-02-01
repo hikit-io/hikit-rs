@@ -10,8 +10,6 @@
 
 /// ProjectAvatars : List of project avatars.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct ProjectAvatars {
     /// List of avatars included with Jira. These avatars cannot be deleted.
@@ -31,5 +29,3 @@ impl ProjectAvatars {
         }
     }
 }
-
-

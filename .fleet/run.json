@@ -1,0 +1,12 @@
+{
+    "configurations": [
+        {
+            "type": "cargo",
+            "name": "simple",
+            "environment":{
+                "MONGO_URI":"mongodb://127.0.0.1:27017"
+            },
+            "cargoArgs": ["run","--example","simple"],
+        },
+    ]
+}

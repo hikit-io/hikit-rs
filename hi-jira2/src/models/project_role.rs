@@ -10,8 +10,6 @@
 
 /// ProjectRole : Details about the roles in a project.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct ProjectRole {
     /// The URL the project role details.
@@ -67,5 +65,3 @@ impl ProjectRole {
         }
     }
 }
-
-

@@ -10,8 +10,6 @@
 
 /// CustomFieldContextDefaultValueLabels : Default value for a labels custom field.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct CustomFieldContextDefaultValueLabels {
     /// The default labels value.
@@ -24,11 +22,6 @@ pub struct CustomFieldContextDefaultValueLabels {
 impl CustomFieldContextDefaultValueLabels {
     /// Default value for a labels custom field.
     pub fn new(labels: Vec<String>, _type: String) -> CustomFieldContextDefaultValueLabels {
-        CustomFieldContextDefaultValueLabels {
-            labels,
-            _type,
-        }
+        CustomFieldContextDefaultValueLabels { labels, _type }
     }
 }
-
-

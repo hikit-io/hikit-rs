@@ -10,8 +10,6 @@
 
 /// ProjectIssueSecurityLevels : List of issue level security items in a project.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct ProjectIssueSecurityLevels {
     /// Issue level security items list.
@@ -22,10 +20,6 @@ pub struct ProjectIssueSecurityLevels {
 impl ProjectIssueSecurityLevels {
     /// List of issue level security items in a project.
     pub fn new(levels: Vec<crate::models::SecurityLevel>) -> ProjectIssueSecurityLevels {
-        ProjectIssueSecurityLevels {
-            levels,
-        }
+        ProjectIssueSecurityLevels { levels }
     }
 }
-
-

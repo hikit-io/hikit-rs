@@ -10,8 +10,6 @@
 
 /// StatusCategory : A status category.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct StatusCategory {
     /// The URL of the status category.
@@ -43,5 +41,3 @@ impl StatusCategory {
         }
     }
 }
-
-

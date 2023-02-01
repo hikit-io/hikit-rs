@@ -10,8 +10,6 @@
 
 /// ParsedJqlQueries : A list of parsed JQL queries.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct ParsedJqlQueries {
     /// A list of parsed JQL queries.
@@ -22,10 +20,6 @@ pub struct ParsedJqlQueries {
 impl ParsedJqlQueries {
     /// A list of parsed JQL queries.
     pub fn new(queries: Vec<crate::models::ParsedJqlQuery>) -> ParsedJqlQueries {
-        ParsedJqlQueries {
-            queries,
-        }
+        ParsedJqlQueries { queries }
     }
 }
-
-

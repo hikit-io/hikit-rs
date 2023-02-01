@@ -10,8 +10,6 @@
 
 /// FieldChangedClause : A clause that asserts whether a field was changed. For example, `status CHANGED AFTER startOfMonth(-1M)`.See [CHANGED](https://confluence.atlassian.com/x/dgiiLQ#Advancedsearching-operatorsreference-CHANGEDCHANGED) for more information about the CHANGED operator.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct FieldChangedClause {
     #[serde(rename = "field")]
@@ -26,7 +24,11 @@ pub struct FieldChangedClause {
 
 impl FieldChangedClause {
     /// A clause that asserts whether a field was changed. For example, `status CHANGED AFTER startOfMonth(-1M)`.See [CHANGED](https://confluence.atlassian.com/x/dgiiLQ#Advancedsearching-operatorsreference-CHANGEDCHANGED) for more information about the CHANGED operator.
-    pub fn new(field: crate::models::JqlQueryField, operator: Operator, predicates: Vec<crate::models::JqlQueryClauseTimePredicate>) -> FieldChangedClause {
+    pub fn new(
+        field: crate::models::JqlQueryField,
+        operator: Operator,
+        predicates: Vec<crate::models::JqlQueryClauseTimePredicate>,
+    ) -> FieldChangedClause {
         FieldChangedClause {
             field: field,
             operator,
@@ -47,4 +49,3 @@ impl Default for Operator {
         Self::Changed
     }
 }
-

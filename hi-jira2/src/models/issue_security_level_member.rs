@@ -10,8 +10,6 @@
 
 /// IssueSecurityLevelMember : Issue security level member.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct IssueSecurityLevelMember {
     /// The ID of the issue security level member.
@@ -27,7 +25,11 @@ pub struct IssueSecurityLevelMember {
 
 impl IssueSecurityLevelMember {
     /// Issue security level member.
-    pub fn new(id: i64, issue_security_level_id: i64, holder: Option<crate::models::PermissionHolder>) -> IssueSecurityLevelMember {
+    pub fn new(
+        id: i64,
+        issue_security_level_id: i64,
+        holder: Option<crate::models::PermissionHolder>,
+    ) -> IssueSecurityLevelMember {
         IssueSecurityLevelMember {
             id,
             issue_security_level_id,
@@ -35,5 +37,3 @@ impl IssueSecurityLevelMember {
         }
     }
 }
-
-

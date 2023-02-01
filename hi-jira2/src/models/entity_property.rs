@@ -10,8 +10,6 @@
 
 /// EntityProperty : An entity property, for more information see [Entity properties](https://developer.atlassian.com/cloud/jira/platform/jira-entity-properties/).
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct EntityProperty {
     /// The key of the property. Required on create and update.
@@ -31,5 +29,3 @@ impl EntityProperty {
         }
     }
 }
-
-

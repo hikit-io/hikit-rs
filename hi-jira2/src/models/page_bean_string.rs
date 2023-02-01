@@ -10,8 +10,6 @@
 
 /// PageBeanString : A page of items.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct PageBeanString {
     /// The URL of the page.
@@ -51,5 +49,3 @@ impl PageBeanString {
         }
     }
 }
-
-

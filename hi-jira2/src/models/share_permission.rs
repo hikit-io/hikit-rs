@@ -10,8 +10,6 @@
 
 /// SharePermission : Details of a share permission for the filter.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct SharePermission {
     /// The unique identifier of the share permission.
@@ -74,4 +72,3 @@ impl Default for Type {
         Self::User
     }
 }
-

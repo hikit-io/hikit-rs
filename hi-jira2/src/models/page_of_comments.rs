@@ -10,8 +10,6 @@
 
 /// PageOfComments : A page of comments.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct PageOfComments {
     /// The index of the first item returned.
@@ -39,5 +37,3 @@ impl PageOfComments {
         }
     }
 }
-
-

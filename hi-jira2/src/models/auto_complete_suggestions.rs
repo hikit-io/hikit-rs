@@ -10,8 +10,6 @@
 
 /// AutoCompleteSuggestions : The results from a JQL query.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct AutoCompleteSuggestions {
     /// The list of suggested item.
@@ -22,10 +20,6 @@ pub struct AutoCompleteSuggestions {
 impl AutoCompleteSuggestions {
     /// The results from a JQL query.
     pub fn new() -> AutoCompleteSuggestions {
-        AutoCompleteSuggestions {
-            results: None,
-        }
+        AutoCompleteSuggestions { results: None }
     }
 }
-
-

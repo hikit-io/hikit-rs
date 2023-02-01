@@ -10,8 +10,6 @@
 
 /// WorkflowSchemeAssociations : A workflow scheme along with a list of projects that use it.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct WorkflowSchemeAssociations {
     /// The list of projects that use the workflow scheme.
@@ -24,12 +22,13 @@ pub struct WorkflowSchemeAssociations {
 
 impl WorkflowSchemeAssociations {
     /// A workflow scheme along with a list of projects that use it.
-    pub fn new(project_ids: Vec<String>, workflow_scheme: Option<crate::models::WorkflowScheme>) -> WorkflowSchemeAssociations {
+    pub fn new(
+        project_ids: Vec<String>,
+        workflow_scheme: Option<crate::models::WorkflowScheme>,
+    ) -> WorkflowSchemeAssociations {
         WorkflowSchemeAssociations {
             project_ids,
             workflow_scheme: workflow_scheme,
         }
     }
 }
-
-

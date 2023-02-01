@@ -10,8 +10,6 @@
 
 /// IssuesMetaBean : Meta data describing the `issues` context variable.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct IssuesMetaBean {
     #[serde(rename = "jql", skip_serializing_if = "Option::is_none")]
@@ -21,10 +19,6 @@ pub struct IssuesMetaBean {
 impl IssuesMetaBean {
     /// Meta data describing the `issues` context variable.
     pub fn new() -> IssuesMetaBean {
-        IssuesMetaBean {
-            jql: None,
-        }
+        IssuesMetaBean { jql: None }
     }
 }
-
-

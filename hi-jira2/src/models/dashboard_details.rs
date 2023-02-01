@@ -10,8 +10,6 @@
 
 /// DashboardDetails : Details of a dashboard.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct DashboardDetails {
     /// The name of the dashboard.
@@ -30,7 +28,11 @@ pub struct DashboardDetails {
 
 impl DashboardDetails {
     /// Details of a dashboard.
-    pub fn new(name: String, share_permissions: Vec<crate::models::SharePermission>, edit_permissions: Vec<crate::models::SharePermission>) -> DashboardDetails {
+    pub fn new(
+        name: String,
+        share_permissions: Vec<crate::models::SharePermission>,
+        edit_permissions: Vec<crate::models::SharePermission>,
+    ) -> DashboardDetails {
         DashboardDetails {
             name,
             description: None,
@@ -39,5 +41,3 @@ impl DashboardDetails {
         }
     }
 }
-
-

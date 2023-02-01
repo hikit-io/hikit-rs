@@ -10,8 +10,6 @@
 
 /// JqlQuery : A parsed JQL query.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct JqlQuery {
     #[serde(rename = "where", skip_serializing_if = "Option::is_none")]
@@ -29,5 +27,3 @@ impl JqlQuery {
         }
     }
 }
-
-

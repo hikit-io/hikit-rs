@@ -10,8 +10,6 @@
 
 /// ConnectCustomFieldValue : A list of custom field details.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct ConnectCustomFieldValue {
     /// The type of custom field.
@@ -78,4 +76,3 @@ impl Default for Type {
         Self::StringIssueField
     }
 }
-

@@ -10,8 +10,6 @@
 
 /// Project : Details about a project.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct Project {
     /// Expand options that include additional project details in the response.
@@ -204,4 +202,3 @@ impl Default for Style {
         Self::Classic
     }
 }
-

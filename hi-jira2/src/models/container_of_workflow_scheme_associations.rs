@@ -10,8 +10,6 @@
 
 /// ContainerOfWorkflowSchemeAssociations : A container for a list of workflow schemes together with the projects they are associated with.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct ContainerOfWorkflowSchemeAssociations {
     /// A list of workflow schemes together with projects they are associated with.
@@ -21,11 +19,9 @@ pub struct ContainerOfWorkflowSchemeAssociations {
 
 impl ContainerOfWorkflowSchemeAssociations {
     /// A container for a list of workflow schemes together with the projects they are associated with.
-    pub fn new(values: Vec<crate::models::WorkflowSchemeAssociations>) -> ContainerOfWorkflowSchemeAssociations {
-        ContainerOfWorkflowSchemeAssociations {
-            values,
-        }
+    pub fn new(
+        values: Vec<crate::models::WorkflowSchemeAssociations>,
+    ) -> ContainerOfWorkflowSchemeAssociations {
+        ContainerOfWorkflowSchemeAssociations { values }
     }
 }
-
-

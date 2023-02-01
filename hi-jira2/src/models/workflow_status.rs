@@ -10,8 +10,6 @@
 
 /// WorkflowStatus : Details of a workflow status.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct WorkflowStatus {
     /// The ID of the issue status.
@@ -35,5 +33,3 @@ impl WorkflowStatus {
         }
     }
 }
-
-

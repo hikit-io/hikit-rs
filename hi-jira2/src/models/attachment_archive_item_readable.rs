@@ -10,8 +10,6 @@
 
 /// AttachmentArchiveItemReadable : Metadata for an item in an attachment archive.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct AttachmentArchiveItemReadable {
     /// The path of the archive item.
@@ -43,5 +41,3 @@ impl AttachmentArchiveItemReadable {
         }
     }
 }
-
-

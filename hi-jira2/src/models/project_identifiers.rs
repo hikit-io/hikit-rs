@@ -10,8 +10,6 @@
 
 /// ProjectIdentifiers : Identifiers for a project.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct ProjectIdentifiers {
     /// The URL of the created project.
@@ -28,12 +26,6 @@ pub struct ProjectIdentifiers {
 impl ProjectIdentifiers {
     /// Identifiers for a project.
     pub fn new(_self: String, id: i64, key: String) -> ProjectIdentifiers {
-        ProjectIdentifiers {
-            _self,
-            id,
-            key,
-        }
+        ProjectIdentifiers { _self, id, key }
     }
 }
-
-

@@ -10,8 +10,6 @@
 
 /// IssueMatches : A list of matched issues or errors for each JQL query, in the order the JQL queries were passed.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct IssueMatches {
     #[serde(rename = "matches")]
@@ -21,10 +19,6 @@ pub struct IssueMatches {
 impl IssueMatches {
     /// A list of matched issues or errors for each JQL query, in the order the JQL queries were passed.
     pub fn new(matches: Vec<crate::models::IssueMatchesForJql>) -> IssueMatches {
-        IssueMatches {
-            matches,
-        }
+        IssueMatches { matches }
     }
 }
-
-

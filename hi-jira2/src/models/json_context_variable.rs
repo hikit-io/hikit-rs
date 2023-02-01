@@ -10,8 +10,6 @@
 
 /// JsonContextVariable : A JSON object with custom content.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct JsonContextVariable {
     /// Type of custom context variable.
@@ -25,11 +23,6 @@ pub struct JsonContextVariable {
 impl JsonContextVariable {
     /// A JSON object with custom content.
     pub fn new(_type: String) -> JsonContextVariable {
-        JsonContextVariable {
-            _type,
-            value: None,
-        }
+        JsonContextVariable { _type, value: None }
     }
 }
-
-

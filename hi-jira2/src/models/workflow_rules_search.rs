@@ -10,8 +10,6 @@
 
 /// WorkflowRulesSearch : Details of the workflow and its transition rules.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct WorkflowRulesSearch {
     /// The workflow ID.
@@ -35,5 +33,3 @@ impl WorkflowRulesSearch {
         }
     }
 }
-
-

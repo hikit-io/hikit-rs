@@ -10,8 +10,6 @@
 
 /// IssueTypeIds : The list of issue type IDs.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct IssueTypeIds {
     /// The list of issue type IDs.
@@ -22,10 +20,6 @@ pub struct IssueTypeIds {
 impl IssueTypeIds {
     /// The list of issue type IDs.
     pub fn new(issue_type_ids: Vec<String>) -> IssueTypeIds {
-        IssueTypeIds {
-            issue_type_ids,
-        }
+        IssueTypeIds { issue_type_ids }
     }
 }
-
-

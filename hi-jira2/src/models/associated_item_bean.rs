@@ -10,8 +10,6 @@
 
 /// AssociatedItemBean : Details of an item associated with the changed record.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct AssociatedItemBean {
     /// The ID of the associated record.
@@ -43,5 +41,3 @@ impl AssociatedItemBean {
         }
     }
 }
-
-

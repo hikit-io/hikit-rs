@@ -10,8 +10,6 @@
 
 /// WorkflowSimpleCondition : A workflow transition rule condition. This object returns `nodeType` as `simple`.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct WorkflowSimpleCondition {
     /// The type of the transition rule.
@@ -34,5 +32,3 @@ impl WorkflowSimpleCondition {
         }
     }
 }
-
-

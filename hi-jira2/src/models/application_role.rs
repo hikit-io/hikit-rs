@@ -10,8 +10,6 @@
 
 /// ApplicationRole : Details of an application role.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct ApplicationRole {
     /// The key of the application role.
@@ -30,7 +28,10 @@ pub struct ApplicationRole {
     #[serde(rename = "defaultGroups", skip_serializing_if = "Option::is_none")]
     pub default_groups: Option<Vec<String>>,
     /// The groups that are granted default access for this application role.
-    #[serde(rename = "defaultGroupsDetails", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "defaultGroupsDetails",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub default_groups_details: Option<Vec<crate::models::GroupName>>,
     /// Determines whether this application role should be selected by default on user creation.
     #[serde(rename = "selectedByDefault", skip_serializing_if = "Option::is_none")]
@@ -48,7 +49,10 @@ pub struct ApplicationRole {
     #[serde(rename = "userCount", skip_serializing_if = "Option::is_none")]
     pub user_count: Option<i32>,
     /// The [type of users](https://confluence.atlassian.com/x/lRW3Ng) being counted against your license.
-    #[serde(rename = "userCountDescription", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "userCountDescription",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub user_count_description: Option<String>,
     #[serde(rename = "hasUnlimitedSeats", skip_serializing_if = "Option::is_none")]
     pub has_unlimited_seats: Option<bool>,
@@ -78,5 +82,3 @@ impl ApplicationRole {
         }
     }
 }
-
-

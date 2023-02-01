@@ -10,8 +10,6 @@
 
 /// CreateWorkflowDetails : The details of a workflow.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct CreateWorkflowDetails {
     /// The name of the workflow. The name must be unique. The maximum length is 255 characters. Characters can be separated by a whitespace but the name cannot start or end with a whitespace.
@@ -30,7 +28,11 @@ pub struct CreateWorkflowDetails {
 
 impl CreateWorkflowDetails {
     /// The details of a workflow.
-    pub fn new(name: String, transitions: Vec<crate::models::CreateWorkflowTransitionDetails>, statuses: Vec<crate::models::CreateWorkflowStatusDetails>) -> CreateWorkflowDetails {
+    pub fn new(
+        name: String,
+        transitions: Vec<crate::models::CreateWorkflowTransitionDetails>,
+        statuses: Vec<crate::models::CreateWorkflowStatusDetails>,
+    ) -> CreateWorkflowDetails {
         CreateWorkflowDetails {
             name,
             description: None,
@@ -39,5 +41,3 @@ impl CreateWorkflowDetails {
         }
     }
 }
-
-

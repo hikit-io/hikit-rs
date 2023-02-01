@@ -10,8 +10,6 @@
 
 /// CustomFieldContextDefaultValueSingleOption : The default value for a single select custom field.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct CustomFieldContextDefaultValueSingleOption {
     /// The ID of the context.
@@ -26,7 +24,11 @@ pub struct CustomFieldContextDefaultValueSingleOption {
 
 impl CustomFieldContextDefaultValueSingleOption {
     /// The default value for a single select custom field.
-    pub fn new(context_id: String, option_id: String, _type: String) -> CustomFieldContextDefaultValueSingleOption {
+    pub fn new(
+        context_id: String,
+        option_id: String,
+        _type: String,
+    ) -> CustomFieldContextDefaultValueSingleOption {
         CustomFieldContextDefaultValueSingleOption {
             context_id,
             option_id,
@@ -34,5 +36,3 @@ impl CustomFieldContextDefaultValueSingleOption {
         }
     }
 }
-
-

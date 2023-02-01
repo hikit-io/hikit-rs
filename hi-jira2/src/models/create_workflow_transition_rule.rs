@@ -10,8 +10,6 @@
 
 /// CreateWorkflowTransitionRule : A workflow transition rule.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct CreateWorkflowTransitionRule {
     /// The type of the transition rule.
@@ -31,5 +29,3 @@ impl CreateWorkflowTransitionRule {
         }
     }
 }
-
-

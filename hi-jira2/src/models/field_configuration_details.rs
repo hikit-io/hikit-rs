@@ -10,8 +10,6 @@
 
 /// FieldConfigurationDetails : Details of a field configuration.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct FieldConfigurationDetails {
     /// The name of the field configuration. Must be unique.
@@ -31,5 +29,3 @@ impl FieldConfigurationDetails {
         }
     }
 }
-
-

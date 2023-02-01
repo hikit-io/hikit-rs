@@ -10,8 +10,6 @@
 
 /// PageBeanCustomFieldContextProjectMapping : A page of items.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct PageBeanCustomFieldContextProjectMapping {
     /// The URL of the page.
@@ -51,5 +49,3 @@ impl PageBeanCustomFieldContextProjectMapping {
         }
     }
 }
-
-

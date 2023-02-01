@@ -10,8 +10,6 @@
 
 /// GroupLabel : A group label.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct GroupLabel {
     /// The group label name.
@@ -52,4 +50,3 @@ impl Default for Type {
         Self::ADMIN
     }
 }
-

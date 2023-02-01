@@ -41,7 +41,7 @@ pub enum ApiErrorReason {
 }
 
 impl ApiErrorReason {
-    fn to_str(&self) -> &str {
+    pub fn to_str(&self) -> &str {
         use self::ApiErrorReason::*;
         match self {
             &BadCollapseId => "BadCollapseId",
@@ -127,7 +127,7 @@ impl<'a> CollapseId<'a> {
     }
 }
 
-#[derive(Serialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(rename_all = "lowercase")]
 pub enum ApnsPushType {
     Alert,

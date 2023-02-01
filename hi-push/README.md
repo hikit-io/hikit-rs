@@ -1,3 +1,6 @@
+
+
+
 # Features
 
 | Platform | QPS  | MAX_TOKEN | InvalidToken | Body |
@@ -8,7 +11,16 @@
 | Huawei   | 6000 | 1000      |              | 4kb  |
 | Email    |      |           |              |      |
 | Wecom    |      | 1000      |              |      |
-| AgoraRtm |      |           |              |      |
+
+# Getting start
+
+```rust
+
+```
+
+# Example
+
+`MONGO_URI=mongodb://root:12334@127.0.0.1:123 cargo run --example simple`
 
 # Arch
 
@@ -50,7 +62,7 @@ interface: http, grpc, graphql
 |-----------------------------------------------------------------------
 | platform |
 |       ------------------------------------------------------
-|       | fcm | apns | email | wecom | xiaomi | huawei | rtm |
+|       | fcm | apns | email | wecom | xiaomi | huawei |
 |       ------------------------------------------------------
 |
 |
@@ -63,7 +75,7 @@ interface: http, grpc, graphql
 | service    |              | init            |
 | db_service | insert_token | delete_token    | insert_chan |
 | lib        | push_message | register_client |
-| fcm        | apns         | email           | xiaomi      | huawei | wecom | agora-rtm |
+| fcm        | apns         | email           | xiaomi      | huawei | wecom | |
 
 
 ```

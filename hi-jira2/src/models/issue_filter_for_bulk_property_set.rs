@@ -10,8 +10,6 @@
 
 /// IssueFilterForBulkPropertySet : Bulk operation filter details.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct IssueFilterForBulkPropertySet {
     /// List of issues to perform the bulk operation on.
@@ -35,5 +33,3 @@ impl IssueFilterForBulkPropertySet {
         }
     }
 }
-
-

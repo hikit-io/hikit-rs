@@ -10,8 +10,6 @@
 
 /// CustomFieldContextDefaultValueSingleGroupPicker : The default value for a group picker custom field.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct CustomFieldContextDefaultValueSingleGroupPicker {
     /// The ID of the context.
@@ -26,7 +24,11 @@ pub struct CustomFieldContextDefaultValueSingleGroupPicker {
 
 impl CustomFieldContextDefaultValueSingleGroupPicker {
     /// The default value for a group picker custom field.
-    pub fn new(context_id: String, group_id: String, _type: String) -> CustomFieldContextDefaultValueSingleGroupPicker {
+    pub fn new(
+        context_id: String,
+        group_id: String,
+        _type: String,
+    ) -> CustomFieldContextDefaultValueSingleGroupPicker {
         CustomFieldContextDefaultValueSingleGroupPicker {
             context_id,
             group_id,
@@ -34,5 +36,3 @@ impl CustomFieldContextDefaultValueSingleGroupPicker {
         }
     }
 }
-
-

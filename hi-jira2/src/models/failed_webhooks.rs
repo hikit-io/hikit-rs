@@ -10,8 +10,6 @@
 
 /// FailedWebhooks : A page of failed webhooks.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct FailedWebhooks {
     /// The list of webhooks.
@@ -35,5 +33,3 @@ impl FailedWebhooks {
         }
     }
 }
-
-

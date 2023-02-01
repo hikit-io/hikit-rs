@@ -2,7 +2,7 @@ use futures::TryStreamExt;
 use mongodb::bson::doc;
 use mongodb::options;
 
-use crate::utils::{self, now_ts};
+use crate::utils::now_ts;
 
 use super::model::*;
 
@@ -239,6 +239,7 @@ pub async fn create_channel(
     pc: PublicChannel,
 ) -> anyhow::Result<Channel> {
     let channel = match pc {
+        #[cfg(feature = "wecom")]
         PublicChannel::Wecom {
             client_id,
             client_secret,
@@ -251,6 +252,7 @@ pub async fn create_channel(
             agentid: Some(agentid),
             ..Default::default()
         },
+        #[cfg(feature = "fcm")]
         PublicChannel::Fcm {
             key_type,
             private_key_id,
@@ -274,6 +276,7 @@ pub async fn create_channel(
             client_x509_cert_url: Some(client_x509_cert_url),
             ..Default::default()
         },
+        #[cfg(feature = "email")]
         PublicChannel::Email {
             client_id,
             client_secret,
@@ -287,6 +290,7 @@ pub async fn create_channel(
             addr: Some(addr),
             ..Default::default()
         },
+        #[cfg(feature = "xiaomi")]
         PublicChannel::Xiaomi {
             client_id,
             client_secret,
@@ -298,17 +302,22 @@ pub async fn create_channel(
             client_secret: Some(client_secret),
             ..Default::default()
         },
+        #[cfg(feature = "apns")]
         PublicChannel::Apns {
             client_id,
             client_secret,
-        } => Channel {
-            app_id: app_id.to_string(),
-            _type: ChannelType::Apns,
+        } => {
+            let certs = base64::decode(client_secret)?;
+            Channel {
+                app_id: app_id.to_string(),
+                _type: ChannelType::Apns,
 
-            client_id: Some(client_id),
-            client_secret: Some(client_secret),
-            ..Default::default()
-        },
+                client_id: Some(client_id),
+                certs: Some(certs),
+                ..Default::default()
+            }
+        }
+        #[cfg(feature = "huawei")]
         PublicChannel::Huawei {
             client_id,
             client_secret,
@@ -336,7 +345,7 @@ pub async fn create_app(db: &mongodb::Database, name: &str) -> anyhow::Result<Ap
         id: Default::default(),
         name: name.to_string(),
         client_id,
-        client_secret: client_secret,
+        client_secret,
         create_ts: now_ts(),
         update_ts: now_ts(),
     };
@@ -349,17 +358,12 @@ pub async fn fetch_apps(db: &mongodb::Database) -> anyhow::Result<Vec<App>> {
     Ok(apps.try_collect::<Vec<App>>().await?)
 }
 
-pub async fn delete_app(
-    db: &mongodb::Database,
-    client_id: &str,
-    client_secret: &str,
-) -> anyhow::Result<()> {
+pub async fn delete_app(db: &mongodb::Database, client_id: &str) -> anyhow::Result<()> {
     let _ = db
         .collection::<App>("app")
         .delete_one(
             doc! {
                 "clientId":client_id,
-                "clientSecret":client_secret,
             },
             None,
         )
@@ -400,4 +404,21 @@ pub async fn delete_channel(
         )
         .await?;
     Ok(())
+}
+
+pub async fn fetch_admin(
+    db: &mongodb::Database,
+    username: &str,
+    password: &str,
+) -> anyhow::Result<Admin> {
+    db.collection::<Admin>("app")
+        .find_one(
+            doc! {
+                "username":username,
+                "password":password,
+            },
+            None,
+        )
+        .await?
+        .ok_or(anyhow::anyhow!("not found admin. username: {}", username))
 }

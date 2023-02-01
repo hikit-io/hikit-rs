@@ -10,8 +10,6 @@
 
 /// SearchResults : The result of a JQL search.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct SearchResults {
     /// Expand options that include additional search result details in the response.
@@ -55,5 +53,3 @@ impl SearchResults {
         }
     }
 }
-
-

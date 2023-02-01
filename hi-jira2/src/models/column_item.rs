@@ -10,8 +10,6 @@
 
 /// ColumnItem : Details of an issue navigator column item.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct ColumnItem {
     /// The issue navigator column label.
@@ -31,5 +29,3 @@ impl ColumnItem {
         }
     }
 }
-
-

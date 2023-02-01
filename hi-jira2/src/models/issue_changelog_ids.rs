@@ -10,8 +10,6 @@
 
 /// IssueChangelogIds : A list of changelog IDs.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct IssueChangelogIds {
     /// The list of changelog IDs.
@@ -22,10 +20,6 @@ pub struct IssueChangelogIds {
 impl IssueChangelogIds {
     /// A list of changelog IDs.
     pub fn new(changelog_ids: Vec<i64>) -> IssueChangelogIds {
-        IssueChangelogIds {
-            changelog_ids,
-        }
+        IssueChangelogIds { changelog_ids }
     }
 }
-
-

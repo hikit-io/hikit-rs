@@ -10,8 +10,6 @@
 
 /// AvailableDashboardGadgetsResponse : The list of available gadgets.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct AvailableDashboardGadgetsResponse {
     /// The list of available gadgets.
@@ -21,11 +19,9 @@ pub struct AvailableDashboardGadgetsResponse {
 
 impl AvailableDashboardGadgetsResponse {
     /// The list of available gadgets.
-    pub fn new(gadgets: Vec<crate::models::AvailableDashboardGadget>) -> AvailableDashboardGadgetsResponse {
-        AvailableDashboardGadgetsResponse {
-            gadgets,
-        }
+    pub fn new(
+        gadgets: Vec<crate::models::AvailableDashboardGadget>,
+    ) -> AvailableDashboardGadgetsResponse {
+        AvailableDashboardGadgetsResponse { gadgets }
     }
 }
-
-

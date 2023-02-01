@@ -10,8 +10,6 @@
 
 /// Priority : An issue priority.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct Priority {
     /// The URL of the issue priority.
@@ -51,5 +49,3 @@ impl Priority {
         }
     }
 }
-
-

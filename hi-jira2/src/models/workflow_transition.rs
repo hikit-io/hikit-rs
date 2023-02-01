@@ -10,8 +10,6 @@
 
 /// WorkflowTransition : A workflow transition.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct WorkflowTransition {
     /// The transition ID.
@@ -25,11 +23,6 @@ pub struct WorkflowTransition {
 impl WorkflowTransition {
     /// A workflow transition.
     pub fn new(id: i32, name: String) -> WorkflowTransition {
-        WorkflowTransition {
-            id,
-            name,
-        }
+        WorkflowTransition { id, name }
     }
 }
-
-

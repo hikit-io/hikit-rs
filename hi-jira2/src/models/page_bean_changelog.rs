@@ -10,8 +10,6 @@
 
 /// PageBeanChangelog : A page of items.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct PageBeanChangelog {
     /// The URL of the page.
@@ -51,5 +49,3 @@ impl PageBeanChangelog {
         }
     }
 }
-
-

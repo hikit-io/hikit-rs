@@ -10,8 +10,6 @@
 
 /// UpdateScreenSchemeDetails : Details of a screen scheme.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct UpdateScreenSchemeDetails {
     /// The name of the screen scheme. The name must be unique. The maximum length is 255 characters.
@@ -35,5 +33,3 @@ impl UpdateScreenSchemeDetails {
         }
     }
 }
-
-

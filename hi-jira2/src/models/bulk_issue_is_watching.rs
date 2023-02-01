@@ -10,8 +10,6 @@
 
 /// BulkIssueIsWatching : A container for the watch status of a list of issues.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct BulkIssueIsWatching {
     /// The map of issue ID to boolean watch status.
@@ -27,5 +25,3 @@ impl BulkIssueIsWatching {
         }
     }
 }
-
-

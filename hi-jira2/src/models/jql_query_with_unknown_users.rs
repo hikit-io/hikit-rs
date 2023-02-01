@@ -10,8 +10,6 @@
 
 /// JqlQueryWithUnknownUsers : JQL queries that contained users that could not be found
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct JqlQueryWithUnknownUsers {
     /// The original query, for reference
@@ -31,5 +29,3 @@ impl JqlQueryWithUnknownUsers {
         }
     }
 }
-
-

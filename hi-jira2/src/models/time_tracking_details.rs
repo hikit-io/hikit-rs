@@ -10,8 +10,6 @@
 
 /// TimeTrackingDetails : Time tracking details.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct TimeTrackingDetails {
     /// The original estimate of time needed for this issue in readable format.
@@ -24,10 +22,16 @@ pub struct TimeTrackingDetails {
     #[serde(rename = "timeSpent", skip_serializing_if = "Option::is_none")]
     pub time_spent: Option<String>,
     /// The original estimate of time needed for this issue in seconds.
-    #[serde(rename = "originalEstimateSeconds", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "originalEstimateSeconds",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub original_estimate_seconds: Option<i64>,
     /// The remaining estimate of time needed for this issue in seconds.
-    #[serde(rename = "remainingEstimateSeconds", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "remainingEstimateSeconds",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub remaining_estimate_seconds: Option<i64>,
     /// Time worked on this issue in seconds.
     #[serde(rename = "timeSpentSeconds", skip_serializing_if = "Option::is_none")]
@@ -47,5 +51,3 @@ impl TimeTrackingDetails {
         }
     }
 }
-
-

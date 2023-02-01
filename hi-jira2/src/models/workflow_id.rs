@@ -10,8 +10,6 @@
 
 /// WorkflowId : Properties that identify a workflow.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct WorkflowId {
     /// The name of the workflow.
@@ -25,11 +23,6 @@ pub struct WorkflowId {
 impl WorkflowId {
     /// Properties that identify a workflow.
     pub fn new(name: String, draft: bool) -> WorkflowId {
-        WorkflowId {
-            name,
-            draft,
-        }
+        WorkflowId { name, draft }
     }
 }
-
-

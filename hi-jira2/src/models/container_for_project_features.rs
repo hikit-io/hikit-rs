@@ -10,8 +10,6 @@
 
 /// ContainerForProjectFeatures : The list of features on a project.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct ContainerForProjectFeatures {
     /// The project features.
@@ -22,10 +20,6 @@ pub struct ContainerForProjectFeatures {
 impl ContainerForProjectFeatures {
     /// The list of features on a project.
     pub fn new() -> ContainerForProjectFeatures {
-        ContainerForProjectFeatures {
-            features: None,
-        }
+        ContainerForProjectFeatures { features: None }
     }
 }
-
-

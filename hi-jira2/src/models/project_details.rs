@@ -10,8 +10,6 @@
 
 /// ProjectDetails : Details about a project.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct ProjectDetails {
     /// The URL of the project details.
@@ -72,4 +70,3 @@ impl Default for ProjectTypeKey {
         Self::Software
     }
 }
-

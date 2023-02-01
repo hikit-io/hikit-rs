@@ -10,8 +10,6 @@
 
 /// LinkGroup : Details a link group, which defines issue operations.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct LinkGroup {
     #[serde(rename = "id", skip_serializing_if = "Option::is_none")]
@@ -41,5 +39,3 @@ impl LinkGroup {
         }
     }
 }
-
-

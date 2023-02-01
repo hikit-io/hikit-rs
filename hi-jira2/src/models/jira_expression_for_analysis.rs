@@ -10,8 +10,6 @@
 
 /// JiraExpressionForAnalysis : Details of Jira expressions for analysis.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct JiraExpressionForAnalysis {
     /// The list of Jira expressions to analyse.
@@ -31,5 +29,3 @@ impl JiraExpressionForAnalysis {
         }
     }
 }
-
-

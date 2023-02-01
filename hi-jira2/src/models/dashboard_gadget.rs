@@ -10,8 +10,6 @@
 
 /// DashboardGadget : Details of a gadget.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct DashboardGadget {
     /// The ID of the gadget instance.
@@ -36,7 +34,12 @@ pub struct DashboardGadget {
 
 impl DashboardGadget {
     /// Details of a gadget.
-    pub fn new(id: i64, color: Color, position: Option<crate::models::DashboardGadgetPosition>, title: String) -> DashboardGadget {
+    pub fn new(
+        id: i64,
+        color: Color,
+        position: Option<crate::models::DashboardGadgetPosition>,
+        title: String,
+    ) -> DashboardGadget {
         DashboardGadget {
             id,
             module_key: None,
@@ -74,4 +77,3 @@ impl Default for Color {
         Self::Blue
     }
 }
-

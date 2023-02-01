@@ -10,8 +10,6 @@
 
 /// PermissionHolder : Details of a user, group, field, or project role that holds a permission. See [Holder object](../api-group-permission-schemes/#holder-object) in *Get all permission schemes* for more information.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct PermissionHolder {
     /// The type of permission holder.
@@ -35,5 +33,3 @@ impl PermissionHolder {
         }
     }
 }
-
-

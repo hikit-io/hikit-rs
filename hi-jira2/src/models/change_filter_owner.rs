@@ -10,8 +10,6 @@
 
 /// ChangeFilterOwner : The account ID of the new owner.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct ChangeFilterOwner {
     /// The account ID of the new owner.
@@ -22,10 +20,6 @@ pub struct ChangeFilterOwner {
 impl ChangeFilterOwner {
     /// The account ID of the new owner.
     pub fn new(account_id: String) -> ChangeFilterOwner {
-        ChangeFilterOwner {
-            account_id,
-        }
+        ChangeFilterOwner { account_id }
     }
 }
-
-

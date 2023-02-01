@@ -10,8 +10,6 @@
 
 /// IssueTypeScreenSchemeItem : The screen scheme for an issue type.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct IssueTypeScreenSchemeItem {
     /// The ID of the issue type screen scheme.
@@ -27,7 +25,11 @@ pub struct IssueTypeScreenSchemeItem {
 
 impl IssueTypeScreenSchemeItem {
     /// The screen scheme for an issue type.
-    pub fn new(issue_type_screen_scheme_id: String, issue_type_id: String, screen_scheme_id: String) -> IssueTypeScreenSchemeItem {
+    pub fn new(
+        issue_type_screen_scheme_id: String,
+        issue_type_id: String,
+        screen_scheme_id: String,
+    ) -> IssueTypeScreenSchemeItem {
         IssueTypeScreenSchemeItem {
             issue_type_screen_scheme_id,
             issue_type_id,
@@ -35,5 +37,3 @@ impl IssueTypeScreenSchemeItem {
         }
     }
 }
-
-

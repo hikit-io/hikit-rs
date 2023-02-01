@@ -10,8 +10,6 @@
 
 /// FieldWasClause : A clause that asserts a previous value of a field. For example, `status WAS \"Resolved\" BY currentUser() BEFORE \"2019/02/02\"`. See [WAS](https://confluence.atlassian.com/x/dgiiLQ#Advancedsearching-operatorsreference-WASWAS) for more information about the WAS operator.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct FieldWasClause {
     #[serde(rename = "field")]
@@ -28,7 +26,12 @@ pub struct FieldWasClause {
 
 impl FieldWasClause {
     /// A clause that asserts a previous value of a field. For example, `status WAS \"Resolved\" BY currentUser() BEFORE \"2019/02/02\"`. See [WAS](https://confluence.atlassian.com/x/dgiiLQ#Advancedsearching-operatorsreference-WASWAS) for more information about the WAS operator.
-    pub fn new(field: crate::models::JqlQueryField, operator: Operator, operand: crate::models::JqlQueryClauseOperand, predicates: Vec<crate::models::JqlQueryClauseTimePredicate>) -> FieldWasClause {
+    pub fn new(
+        field: crate::models::JqlQueryField,
+        operator: Operator,
+        operand: crate::models::JqlQueryClauseOperand,
+        predicates: Vec<crate::models::JqlQueryClauseTimePredicate>,
+    ) -> FieldWasClause {
         FieldWasClause {
             field: field,
             operator,
@@ -56,4 +59,3 @@ impl Default for Operator {
         Self::Was
     }
 }
-

@@ -10,8 +10,6 @@
 
 /// SanitizedJqlQuery : Details of the sanitized JQL query.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct SanitizedJqlQuery {
     /// The initial query.
@@ -39,5 +37,3 @@ impl SanitizedJqlQuery {
         }
     }
 }
-
-

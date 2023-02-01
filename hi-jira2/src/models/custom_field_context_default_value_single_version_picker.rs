@@ -10,8 +10,6 @@
 
 /// CustomFieldContextDefaultValueSingleVersionPicker : The default value for a version picker custom field.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct CustomFieldContextDefaultValueSingleVersionPicker {
     /// The ID of the default version.
@@ -26,7 +24,10 @@ pub struct CustomFieldContextDefaultValueSingleVersionPicker {
 
 impl CustomFieldContextDefaultValueSingleVersionPicker {
     /// The default value for a version picker custom field.
-    pub fn new(version_id: String, _type: String) -> CustomFieldContextDefaultValueSingleVersionPicker {
+    pub fn new(
+        version_id: String,
+        _type: String,
+    ) -> CustomFieldContextDefaultValueSingleVersionPicker {
         CustomFieldContextDefaultValueSingleVersionPicker {
             version_id,
             version_order: None,
@@ -34,5 +35,3 @@ impl CustomFieldContextDefaultValueSingleVersionPicker {
         }
     }
 }
-
-

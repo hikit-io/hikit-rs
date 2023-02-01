@@ -10,8 +10,6 @@
 
 /// BulkProjectPermissions : Details of project permissions and associated issues and projects to look up.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct BulkProjectPermissions {
     /// List of issue IDs.
@@ -35,5 +33,3 @@ impl BulkProjectPermissions {
         }
     }
 }
-
-

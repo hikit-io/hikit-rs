@@ -10,8 +10,6 @@
 
 /// FilterSubscriptionsList : A paginated list of subscriptions to a filter.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct FilterSubscriptionsList {
     /// The number of items on the page.
@@ -43,5 +41,3 @@ impl FilterSubscriptionsList {
         }
     }
 }
-
-

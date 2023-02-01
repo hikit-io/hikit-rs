@@ -10,8 +10,6 @@
 
 /// CustomFieldUpdatedContextOptionsList : A list of custom field options for a context.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct CustomFieldUpdatedContextOptionsList {
     /// The updated custom field options.
@@ -22,10 +20,6 @@ pub struct CustomFieldUpdatedContextOptionsList {
 impl CustomFieldUpdatedContextOptionsList {
     /// A list of custom field options for a context.
     pub fn new() -> CustomFieldUpdatedContextOptionsList {
-        CustomFieldUpdatedContextOptionsList {
-            options: None,
-        }
+        CustomFieldUpdatedContextOptionsList { options: None }
     }
 }
-
-

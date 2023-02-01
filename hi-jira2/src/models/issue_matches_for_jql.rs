@@ -10,8 +10,6 @@
 
 /// IssueMatchesForJql : A list of the issues matched to a JQL query or details of errors encountered during matching.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct IssueMatchesForJql {
     /// A list of issue IDs.
@@ -31,5 +29,3 @@ impl IssueMatchesForJql {
         }
     }
 }
-
-

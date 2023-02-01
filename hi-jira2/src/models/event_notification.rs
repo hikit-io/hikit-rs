@@ -10,8 +10,6 @@
 
 /// EventNotification : Details about a notification associated with an event.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct EventNotification {
     /// Expand options that include additional event notification details in the response.
@@ -98,4 +96,3 @@ impl Default for NotificationType {
         Self::CurrentAssignee
     }
 }
-

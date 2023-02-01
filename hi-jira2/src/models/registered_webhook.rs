@@ -10,8 +10,6 @@
 
 /// RegisteredWebhook : ID of a registered webhook or error messages explaining why a webhook wasn't registered.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct RegisteredWebhook {
     /// The ID of the webhook. Returned if the webhook is created.
@@ -31,5 +29,3 @@ impl RegisteredWebhook {
         }
     }
 }
-
-

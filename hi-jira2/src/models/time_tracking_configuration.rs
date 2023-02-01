@@ -10,8 +10,6 @@
 
 /// TimeTrackingConfiguration : Details of the time tracking configuration.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct TimeTrackingConfiguration {
     /// The number of hours in a working day.
@@ -30,7 +28,12 @@ pub struct TimeTrackingConfiguration {
 
 impl TimeTrackingConfiguration {
     /// Details of the time tracking configuration.
-    pub fn new(working_hours_per_day: f64, working_days_per_week: f64, time_format: TimeFormat, default_unit: DefaultUnit) -> TimeTrackingConfiguration {
+    pub fn new(
+        working_hours_per_day: f64,
+        working_days_per_week: f64,
+        time_format: TimeFormat,
+        default_unit: DefaultUnit,
+    ) -> TimeTrackingConfiguration {
         TimeTrackingConfiguration {
             working_hours_per_day,
             working_days_per_week,
@@ -74,4 +77,3 @@ impl Default for DefaultUnit {
         Self::Minute
     }
 }
-

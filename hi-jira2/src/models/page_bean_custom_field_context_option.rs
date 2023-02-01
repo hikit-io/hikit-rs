@@ -10,8 +10,6 @@
 
 /// PageBeanCustomFieldContextOption : A page of items.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct PageBeanCustomFieldContextOption {
     /// The URL of the page.
@@ -51,5 +49,3 @@ impl PageBeanCustomFieldContextOption {
         }
     }
 }
-
-

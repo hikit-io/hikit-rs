@@ -10,8 +10,6 @@
 
 /// CreateWorkflowTransitionRulesDetails : The details of a workflow transition rules.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct CreateWorkflowTransitionRulesDetails {
     /// The workflow conditions.
@@ -35,5 +33,3 @@ impl CreateWorkflowTransitionRulesDetails {
         }
     }
 }
-
-

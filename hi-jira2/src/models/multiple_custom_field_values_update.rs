@@ -10,8 +10,6 @@
 
 /// MultipleCustomFieldValuesUpdate : A custom field and its new value with a list of issue to update.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct MultipleCustomFieldValuesUpdate {
     /// The ID or key of the custom field. For example, `customfield_10010`.
@@ -27,7 +25,11 @@ pub struct MultipleCustomFieldValuesUpdate {
 
 impl MultipleCustomFieldValuesUpdate {
     /// A custom field and its new value with a list of issue to update.
-    pub fn new(custom_field: String, issue_ids: Vec<i64>, value: Option<serde_json::Value>) -> MultipleCustomFieldValuesUpdate {
+    pub fn new(
+        custom_field: String,
+        issue_ids: Vec<i64>,
+        value: Option<serde_json::Value>,
+    ) -> MultipleCustomFieldValuesUpdate {
         MultipleCustomFieldValuesUpdate {
             custom_field,
             issue_ids,
@@ -35,5 +37,3 @@ impl MultipleCustomFieldValuesUpdate {
         }
     }
 }
-
-

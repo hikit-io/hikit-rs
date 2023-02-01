@@ -10,8 +10,6 @@
 
 /// CustomFieldContextDefaultValueForgeObjectField : The default value for a Forge object custom field.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct CustomFieldContextDefaultValueForgeObjectField {
     /// The default JSON object.
@@ -30,5 +28,3 @@ impl CustomFieldContextDefaultValueForgeObjectField {
         }
     }
 }
-
-

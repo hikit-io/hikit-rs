@@ -10,8 +10,6 @@
 
 /// ContextualConfiguration : Details of the contextual configuration for a custom field.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct ContextualConfiguration {
     /// The ID of the configuration.
@@ -43,5 +41,3 @@ impl ContextualConfiguration {
         }
     }
 }
-
-

@@ -10,8 +10,6 @@
 
 /// BulkPermissionsRequestBean : Details of global permissions to look up and project permissions with associated projects and issues to look up.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct BulkPermissionsRequestBean {
     /// Project permissions with associated projects and issues to look up.
@@ -35,5 +33,3 @@ impl BulkPermissionsRequestBean {
         }
     }
 }
-
-

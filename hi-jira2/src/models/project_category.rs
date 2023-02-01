@@ -10,8 +10,6 @@
 
 /// ProjectCategory : A project category.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct ProjectCategory {
     /// The URL of the project category.
@@ -39,5 +37,3 @@ impl ProjectCategory {
         }
     }
 }
-
-

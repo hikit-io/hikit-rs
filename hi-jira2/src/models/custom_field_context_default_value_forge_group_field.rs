@@ -10,8 +10,6 @@
 
 /// CustomFieldContextDefaultValueForgeGroupField : The default value for a Forge group custom field.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct CustomFieldContextDefaultValueForgeGroupField {
     /// The ID of the context.
@@ -24,12 +22,13 @@ pub struct CustomFieldContextDefaultValueForgeGroupField {
 
 impl CustomFieldContextDefaultValueForgeGroupField {
     /// The default value for a Forge group custom field.
-    pub fn new(context_id: String, group_id: String) -> CustomFieldContextDefaultValueForgeGroupField {
+    pub fn new(
+        context_id: String,
+        group_id: String,
+    ) -> CustomFieldContextDefaultValueForgeGroupField {
         CustomFieldContextDefaultValueForgeGroupField {
             context_id,
             group_id,
         }
     }
 }
-
-

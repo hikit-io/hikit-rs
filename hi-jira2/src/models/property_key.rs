@@ -10,8 +10,6 @@
 
 /// PropertyKey : Property key details.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct PropertyKey {
     /// The URL of the property.
@@ -31,5 +29,3 @@ impl PropertyKey {
         }
     }
 }
-
-

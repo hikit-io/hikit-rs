@@ -10,8 +10,6 @@
 
 /// TimeTrackingProvider : Details about the time tracking provider.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct TimeTrackingProvider {
     /// The key for the time tracking provider. For example, *JIRA*.
@@ -35,5 +33,3 @@ impl TimeTrackingProvider {
         }
     }
 }
-
-

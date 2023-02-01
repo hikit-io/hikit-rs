@@ -10,8 +10,6 @@
 
 /// AssociateFieldConfigurationsWithIssueTypesRequest : Details of a field configuration to issue type mappings.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct AssociateFieldConfigurationsWithIssueTypesRequest {
     /// Field configuration to issue type mappings.
@@ -21,11 +19,9 @@ pub struct AssociateFieldConfigurationsWithIssueTypesRequest {
 
 impl AssociateFieldConfigurationsWithIssueTypesRequest {
     /// Details of a field configuration to issue type mappings.
-    pub fn new(mappings: Vec<crate::models::FieldConfigurationToIssueTypeMapping>) -> AssociateFieldConfigurationsWithIssueTypesRequest {
-        AssociateFieldConfigurationsWithIssueTypesRequest {
-            mappings,
-        }
+    pub fn new(
+        mappings: Vec<crate::models::FieldConfigurationToIssueTypeMapping>,
+    ) -> AssociateFieldConfigurationsWithIssueTypesRequest {
+        AssociateFieldConfigurationsWithIssueTypesRequest { mappings }
     }
 }
-
-

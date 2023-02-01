@@ -10,8 +10,6 @@
 
 /// GroupDetails : Details about a group.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct GroupDetails {
     /// The name of the group.
@@ -31,5 +29,3 @@ impl GroupDetails {
         }
     }
 }
-
-

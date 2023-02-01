@@ -10,8 +10,6 @@
 
 /// RemoteIssueLinkIdentifies : Details of the identifiers for a created or updated remote issue link.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct RemoteIssueLinkIdentifies {
     /// The ID of the remote issue link, such as the ID of the item on the remote system.
@@ -31,5 +29,3 @@ impl RemoteIssueLinkIdentifies {
         }
     }
 }
-
-

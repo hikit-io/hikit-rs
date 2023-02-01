@@ -10,8 +10,6 @@
 
 /// IssueFieldOptionConfiguration : Details of the projects the option is available in.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct IssueFieldOptionConfiguration {
     /// Defines the projects that the option is available in. If the scope is not defined, then the option is available in all projects.
@@ -46,4 +44,3 @@ impl Default for Attributes {
         Self::NotSelectable
     }
 }
-

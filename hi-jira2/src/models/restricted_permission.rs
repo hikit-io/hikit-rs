@@ -10,8 +10,6 @@
 
 /// RestrictedPermission : Details of the permission.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct RestrictedPermission {
     /// The ID of the permission. Either `id` or `key` must be specified. Use [Get all permissions](#api-rest-api-2-permissions-get) to get the list of permissions.
@@ -31,5 +29,3 @@ impl RestrictedPermission {
         }
     }
 }
-
-

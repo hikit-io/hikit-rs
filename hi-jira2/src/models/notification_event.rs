@@ -10,8 +10,6 @@
 
 /// NotificationEvent : Details about a notification event.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct NotificationEvent {
     /// The ID of the event. The event can be a [Jira system event](https://confluence.atlassian.com/x/8YdKLg#Creatinganotificationscheme-eventsEvents) or a [custom event](https://confluence.atlassian.com/x/AIlKLg).
@@ -39,5 +37,3 @@ impl NotificationEvent {
         }
     }
 }
-
-

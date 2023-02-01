@@ -10,8 +10,6 @@
 
 /// IssueEvent : Details about an issue event.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct IssueEvent {
     /// The ID of the event.
@@ -31,5 +29,3 @@ impl IssueEvent {
         }
     }
 }
-
-

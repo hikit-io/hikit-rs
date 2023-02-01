@@ -10,8 +10,6 @@
 
 /// AuditRecordBean : An audit record.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct AuditRecordBean {
     /// The ID of the audit record.
@@ -66,5 +64,3 @@ impl AuditRecordBean {
         }
     }
 }
-
-

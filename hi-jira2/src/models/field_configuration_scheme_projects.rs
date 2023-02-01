@@ -10,11 +10,12 @@
 
 /// FieldConfigurationSchemeProjects : Project list with assigned field configuration schema.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct FieldConfigurationSchemeProjects {
-    #[serde(rename = "fieldConfigurationScheme", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "fieldConfigurationScheme",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub field_configuration_scheme: Option<crate::models::FieldConfigurationScheme>,
     /// The IDs of projects using the field configuration scheme.
     #[serde(rename = "projectIds")]
@@ -30,5 +31,3 @@ impl FieldConfigurationSchemeProjects {
         }
     }
 }
-
-

@@ -10,8 +10,6 @@
 
 /// JiraExpressionResult : The result of evaluating a Jira expression.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct JiraExpressionResult {
     /// The value of the evaluated expression. It may be a primitive JSON value or a Jira REST API object. (Some expressions do not produce any meaningful results—for example, an expression that returns a lambda function—if that's the case a simple string representation is returned. These string representations should not be relied upon and may change without notice.)
@@ -25,11 +23,6 @@ pub struct JiraExpressionResult {
 impl JiraExpressionResult {
     /// The result of evaluating a Jira expression.
     pub fn new(value: Option<serde_json::Value>) -> JiraExpressionResult {
-        JiraExpressionResult {
-            value,
-            meta: None,
-        }
+        JiraExpressionResult { value, meta: None }
     }
 }
-
-

@@ -10,8 +10,6 @@
 
 /// DeprecatedWorkflow : Details about a workflow.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct DeprecatedWorkflow {
     /// The name of the workflow.
@@ -27,7 +25,10 @@ pub struct DeprecatedWorkflow {
     #[serde(rename = "lastModifiedUser", skip_serializing_if = "Option::is_none")]
     pub last_modified_user: Option<String>,
     /// The account ID of the user that last modified the workflow.
-    #[serde(rename = "lastModifiedUserAccountId", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "lastModifiedUserAccountId",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub last_modified_user_account_id: Option<String>,
     /// The number of steps included in the workflow.
     #[serde(rename = "steps", skip_serializing_if = "Option::is_none")]
@@ -54,5 +55,3 @@ impl DeprecatedWorkflow {
         }
     }
 }
-
-

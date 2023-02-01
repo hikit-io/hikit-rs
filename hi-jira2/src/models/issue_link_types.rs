@@ -10,8 +10,6 @@
 
 /// IssueLinkTypes : A list of issue link type beans.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct IssueLinkTypes {
     /// The issue link type bean.
@@ -27,5 +25,3 @@ impl IssueLinkTypes {
         }
     }
 }
-
-

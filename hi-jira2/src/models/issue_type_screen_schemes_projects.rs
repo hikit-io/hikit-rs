@@ -10,8 +10,6 @@
 
 /// IssueTypeScreenSchemesProjects : Issue type screen scheme with a list of the projects that use it.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct IssueTypeScreenSchemesProjects {
     /// Details of an issue type screen scheme.
@@ -24,12 +22,13 @@ pub struct IssueTypeScreenSchemesProjects {
 
 impl IssueTypeScreenSchemesProjects {
     /// Issue type screen scheme with a list of the projects that use it.
-    pub fn new(issue_type_screen_scheme: Option<crate::models::IssueTypeScreenScheme>, project_ids: Vec<String>) -> IssueTypeScreenSchemesProjects {
+    pub fn new(
+        issue_type_screen_scheme: Option<crate::models::IssueTypeScreenScheme>,
+        project_ids: Vec<String>,
+    ) -> IssueTypeScreenSchemesProjects {
         IssueTypeScreenSchemesProjects {
             issue_type_screen_scheme: issue_type_screen_scheme,
             project_ids,
         }
     }
 }
-
-

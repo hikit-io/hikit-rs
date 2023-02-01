@@ -10,8 +10,6 @@
 
 /// CustomFieldContextDefaultValueUpdate : Default values to update.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct CustomFieldContextDefaultValueUpdate {
     #[serde(rename = "defaultValues", skip_serializing_if = "Option::is_none")]
@@ -26,5 +24,3 @@ impl CustomFieldContextDefaultValueUpdate {
         }
     }
 }
-
-

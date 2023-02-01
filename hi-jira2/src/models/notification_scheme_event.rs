@@ -10,8 +10,6 @@
 
 /// NotificationSchemeEvent : Details about a notification scheme event.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct NotificationSchemeEvent {
     #[serde(rename = "event", skip_serializing_if = "Option::is_none")]
@@ -29,5 +27,3 @@ impl NotificationSchemeEvent {
         }
     }
 }
-
-

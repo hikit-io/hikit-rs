@@ -10,8 +10,6 @@
 
 /// ProjectIdentifierBean : The identifiers for a project.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct ProjectIdentifierBean {
     /// The ID of the project.
@@ -31,5 +29,3 @@ impl ProjectIdentifierBean {
         }
     }
 }
-
-

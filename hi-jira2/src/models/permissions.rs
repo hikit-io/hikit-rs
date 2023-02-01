@@ -10,8 +10,6 @@
 
 /// Permissions : Details about permissions.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct Permissions {
     /// List of permissions.
@@ -22,10 +20,6 @@ pub struct Permissions {
 impl Permissions {
     /// Details about permissions.
     pub fn new() -> Permissions {
-        Permissions {
-            permissions: None,
-        }
+        Permissions { permissions: None }
     }
 }
-
-

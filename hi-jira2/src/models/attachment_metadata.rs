@@ -10,8 +10,6 @@
 
 /// AttachmentMetadata : Metadata for an issue attachment.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct AttachmentMetadata {
     /// The ID of the attachment.
@@ -63,5 +61,3 @@ impl AttachmentMetadata {
         }
     }
 }
-
-

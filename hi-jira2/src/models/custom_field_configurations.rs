@@ -10,8 +10,6 @@
 
 /// CustomFieldConfigurations : Details of configurations for a custom field.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct CustomFieldConfigurations {
     /// The list of custom field configuration details.
@@ -21,11 +19,9 @@ pub struct CustomFieldConfigurations {
 
 impl CustomFieldConfigurations {
     /// Details of configurations for a custom field.
-    pub fn new(configurations: Vec<crate::models::ContextualConfiguration>) -> CustomFieldConfigurations {
-        CustomFieldConfigurations {
-            configurations,
-        }
+    pub fn new(
+        configurations: Vec<crate::models::ContextualConfiguration>,
+    ) -> CustomFieldConfigurations {
+        CustomFieldConfigurations { configurations }
     }
 }
-
-

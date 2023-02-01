@@ -10,8 +10,6 @@
 
 /// WorkflowSchemeIdName : The ID and the name of the workflow scheme.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct WorkflowSchemeIdName {
     /// The ID of the workflow scheme.
@@ -25,11 +23,6 @@ pub struct WorkflowSchemeIdName {
 impl WorkflowSchemeIdName {
     /// The ID and the name of the workflow scheme.
     pub fn new(id: String, name: String) -> WorkflowSchemeIdName {
-        WorkflowSchemeIdName {
-            id,
-            name,
-        }
+        WorkflowSchemeIdName { id, name }
     }
 }
-
-

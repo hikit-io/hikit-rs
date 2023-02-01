@@ -10,8 +10,6 @@
 
 /// FieldMetadata : The metadata describing an issue field.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct FieldMetadata {
     /// Whether the field is required.
@@ -48,12 +46,17 @@ pub struct FieldMetadata {
 
 impl FieldMetadata {
     /// The metadata describing an issue field.
-    pub fn new(required: bool, schema: Option<crate::models::JsonTypeBean>, name: String, operations: Vec<String>) -> FieldMetadata {
+    pub fn new(
+        required: bool,
+        schema: Option<crate::models::JsonTypeBean>,
+        name: String,
+        operations: Vec<String>,
+    ) -> FieldMetadata {
         FieldMetadata {
             required,
             schema: schema,
             name,
-            key:None,
+            key: None,
             auto_complete_url: None,
             has_default_value: None,
             operations,
@@ -63,5 +66,3 @@ impl FieldMetadata {
         }
     }
 }
-
-

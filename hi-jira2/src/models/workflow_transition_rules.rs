@@ -10,8 +10,6 @@
 
 /// WorkflowTransitionRules : A workflow with transition rules.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct WorkflowTransitionRules {
     #[serde(rename = "workflowId")]
@@ -38,5 +36,3 @@ impl WorkflowTransitionRules {
         }
     }
 }
-
-

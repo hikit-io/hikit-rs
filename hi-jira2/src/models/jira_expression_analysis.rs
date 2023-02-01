@@ -10,8 +10,6 @@
 
 /// JiraExpressionAnalysis : Details about the analysed Jira expression.
 
-
-
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct JiraExpressionAnalysis {
     /// The analysed expression.
@@ -42,5 +40,3 @@ impl JiraExpressionAnalysis {
         }
     }
 }
-
-
