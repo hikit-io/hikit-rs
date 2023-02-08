@@ -7,4 +7,5 @@ members = [
 
     "hi-jira2",
     "hi-push",
+    "hi-auth"
 ]
