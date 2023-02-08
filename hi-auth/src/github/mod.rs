@@ -78,10 +78,15 @@ impl super::Profile for Client {
     async fn userinfo(&self, code: &str) -> crate::Result<super::Userinfo> {
         let at = self.login(code).await?;
         let user = self.user(&at).await?;
+        let orgs = self.orgs(&at).await?;
         Ok(super::Userinfo{
             unique_id: user.id.to_string(),
             name: user.login,
             email: None,
+            organization: Some(orgs.into_iter().map(|e|super::Organization{
+                unique_id: e.id.to_string(),
+                name: e.login,
+            }).collect())
         })
     }
 }

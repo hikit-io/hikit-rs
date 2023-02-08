@@ -31,10 +31,11 @@ impl From<reqwest::Error> for Error {
 
 pub type Result<T> = std::result::Result<T, Error>;
 
-pub struct Userinfo {
+pub struct Userinfo{
     pub unique_id: String,
     pub name: String,
     pub email: Option<String>,
+    pub organization: Option<Vec<Organization>>,
 }
 
 pub struct Organization {
@@ -82,9 +83,6 @@ where
 #[async_trait]
 pub trait Profile {
     async fn userinfo(&self, code: &str) -> Result<Userinfo>;
-    async fn organization(&self, code: &str) -> Result<Organization> {
-        Err(Error("No organization".to_string()))
-    }
 }
 
 #[cfg(test)]
