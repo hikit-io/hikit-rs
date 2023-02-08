@@ -1,0 +1,18 @@
+[package]
+name = "hi-auth"
+version = "0.0.1"
+edition = "2021"
+description = "Social account user info libary, include Github,Wechat and Google."
+license = "MIT"
+repository = "https://github.com/hikit-io/hikit-rs/tree/main/hi-auth"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dev-dependencies]
+tokio = { version = "1.25.0", features = ["full"] }
+
+[dependencies]
+reqwest = { version = "0.11.14", features = ["json"] }
+serde = { version = "1.0.152", features = ["derive"] }
+async-trait = "0.1.64"
+oauth2 = { version = "4.3.0" }
