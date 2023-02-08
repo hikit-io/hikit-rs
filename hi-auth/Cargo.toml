@@ -12,7 +12,7 @@ repository = "https://github.com/hikit-io/hikit-rs/tree/main/hi-auth"
 tokio = { version = "1.25.0", features = ["full"] }
 
 [dependencies]
-reqwest = { version = "0.11.14", features = [] }
+reqwest = { version = "0.11.14", features = ["json"] }
 serde = { version = "1.0.152", features = ["derive"] }
 async-trait = "0.1.64"
 oauth2 = { version = "4.3.0" }

@@ -31,7 +31,16 @@ impl From<reqwest::Error> for Error {
 
 pub type Result<T> = std::result::Result<T, Error>;
 
-pub struct Userinfo {}
+pub struct Userinfo {
+    pub unique_id: String,
+    pub name: String,
+    pub email: Option<String>,
+}
+
+pub struct Organization {
+    pub unique_id: String,
+    pub name: String,
+}
 
 pub enum Client {
     Github(github::Client),
@@ -62,19 +71,23 @@ where
         self.clients.remove(&index);
     }
 
-    pub async fn userinfo(&self, index: T, code: &str) -> Result<Userinfo> {
+    pub async fn userinfo(&self, index: &T, code: &str) -> Result<Userinfo> {
         let cli = self.clients.get(index).unwrap();
         match cli {
-            Client::Github(gh) => gh.userinfo(),
+            Client::Github(gh) => gh.userinfo(code).await,
         }
     }
 }
 
 #[async_trait]
-pub trait Login {
+pub trait Profile {
     async fn userinfo(&self, code: &str) -> Result<Userinfo>;
+    async fn organization(&self, code: &str) -> Result<Organization> {
+        Err(Error("No organization".to_string()))
+    }
 }
 
+#[cfg(test)]
 mod tests {
 
     #[derive(Hash, Eq)]
@@ -86,7 +99,7 @@ mod tests {
     fn test_clients() {
         let mut mgr = super::Service::new();
 
-        let gh = super::github::Client::new("", "", "");
+        let gh = super::github::Client::new("", "");
 
         mgr.register(Type::Github, super::Client::Github(gh));
 

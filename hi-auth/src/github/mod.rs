@@ -24,7 +24,7 @@ pub struct OrgResp {
 }
 
 impl Client {
-    pub fn new(client_id: &str, client_secret: &str, redirect_url: &str) -> Self {
+    pub fn new(client_id: &str, client_secret: &str) -> Self {
         let cli = BasicClient::new(
             ClientId::new(client_id.to_string()),
             Some(ClientSecret::new(client_secret.to_string())),
@@ -48,7 +48,7 @@ impl Client {
             .request_async(async_http_client)
             .await
             .map(|resp| resp.access_token().secret().to_string())
-            .map_err(|e| e.to_string())?)
+            .map_err(|e| super::Error(e.to_string()))?)
     }
 
     pub async fn user(&self, access_token: &str) -> super::Result<UserResp> {
@@ -74,10 +74,14 @@ impl Client {
 }
 
 #[async_trait]
-impl super::Login<UserResp> for Client {
-    async fn userinfo(&self, code: &str) -> crate::Result<UserResp> {
+impl super::Profile for Client {
+    async fn userinfo(&self, code: &str) -> crate::Result<super::Userinfo> {
         let at = self.login(code).await?;
         let user = self.user(&at).await?;
-        Ok(user)
+        Ok(super::Userinfo{
+            unique_id: user.id.to_string(),
+            name: user.login,
+            email: None,
+        })
     }
 }
