@@ -12,13 +12,13 @@ pub struct Client {
 }
 
 #[derive(Debug, Deserialize)]
-pub struct UserResp {
+pub struct User {
     pub id: i64,
     pub login: String,
 }
 
 #[derive(Debug, Deserialize)]
-pub struct OrgResp {
+pub struct Organization {
     pub id: i64,
     pub login: String,
 }
@@ -51,24 +51,24 @@ impl Client {
             .map_err(|e| super::Error(e.to_string()))?)
     }
 
-    pub async fn user(&self, access_token: &str) -> super::Result<UserResp> {
+    pub async fn user(&self, access_token: &str) -> super::Result<User> {
         Ok(self
             .http_cli
             .get("https://api.github.com/user")
             .bearer_auth(&access_token)
             .send()
             .await?
-            .json::<UserResp>()
+            .json::<User>()
             .await?)
     }
-    pub async fn orgs(&self, access_token: &str) -> super::Result<Vec<OrgResp>> {
+    pub async fn orgs(&self, access_token: &str) -> super::Result<Vec<Organization>> {
         Ok(self
             .http_cli
             .get("https://api.github.com/user/orgs")
             .bearer_auth(&access_token)
             .send()
             .await?
-            .json::<Vec<OrgResp>>()
+            .json::<Vec<Organization>>()
             .await?)
     }
 }
