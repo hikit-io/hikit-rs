@@ -1,8 +1,7 @@
+use std::error::Error;
+
 use async_trait::async_trait;
-use oauth2::{
-    basic::BasicClient, reqwest::async_http_client, AuthUrl, AuthorizationCode, ClientId,
-    ClientSecret, TokenResponse, TokenUrl,
-};
+use oauth2::{AuthorizationCode, AuthUrl, basic::BasicClient, ClientId, ClientSecret, RequestTokenError, reqwest::async_http_client, TokenResponse, TokenUrl};
 use reqwest::header::HeaderMap;
 use serde::Deserialize;
 
@@ -33,7 +32,7 @@ impl Client {
         );
 
         let mut headers = HeaderMap::new();
-        headers.insert("User-Agent", "hikit_auth_service".parse().unwrap());
+        headers.insert("User-Agent", "HiAuth".parse().unwrap());
         let http_cli = reqwest::Client::builder()
             .default_headers(headers)
             .build()
@@ -48,7 +47,26 @@ impl Client {
             .request_async(async_http_client)
             .await
             .map(|resp| resp.access_token().secret().to_string())
-            .map_err(|e| super::Error(e.to_string()))?)
+            .map_err(|e| {
+                match e {
+                    RequestTokenError::ServerResponse(e) => {
+                        super::Error(e.to_string())
+                    }
+                    RequestTokenError::Request(r) => {
+                        match r {
+                            Error::Reqwest(e) => {
+                                super::Error(e.to_string())
+                            }
+                            e => {
+                                super::Error(e.to_string())
+                            }
+                        }
+                    }
+                    e => {
+                        super::Error(e.to_string())
+                    }
+                }
+            })?)
     }
 
     pub async fn user(&self, access_token: &str) -> super::Result<User> {
@@ -79,14 +97,14 @@ impl super::Profile for Client {
         let at = self.login(code).await?;
         let user = self.user(&at).await?;
         let orgs = self.orgs(&at).await?;
-        Ok(super::Userinfo{
+        Ok(super::Userinfo {
             unique_id: user.id.to_string(),
             name: user.login,
             email: None,
-            organization: Some(orgs.into_iter().map(|e|super::Organization{
+            organization: Some(orgs.into_iter().map(|e| super::Organization {
                 unique_id: e.id.to_string(),
                 name: e.login,
-            }).collect())
+            }).collect()),
         })
     }
 }
