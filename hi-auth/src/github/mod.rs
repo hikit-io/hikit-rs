@@ -1,7 +1,15 @@
 use async_trait::async_trait;
 use oauth2::{
-    basic::BasicClient, reqwest::async_http_client, AuthUrl, AuthorizationCode, ClientId,
-    ClientSecret, TokenResponse, TokenUrl,
+    AuthorizationCode,
+    AuthUrl,
+    basic::BasicClient,
+    ClientId,
+    ClientSecret,
+    RequestTokenError,
+    reqwest::async_http_client,
+    reqwest::Error,
+    TokenResponse,
+    TokenUrl,
 };
 use reqwest::header::HeaderMap;
 use serde::Deserialize;
@@ -12,15 +20,17 @@ pub struct Client {
 }
 
 #[derive(Debug, Deserialize)]
-pub struct UserResp {
+pub struct User {
     pub id: i64,
     pub login: String,
+    pub name: String,
 }
 
 #[derive(Debug, Deserialize)]
-pub struct OrgResp {
+pub struct Organization {
     pub id: i64,
     pub login: String,
+    pub name: String,
 }
 
 impl Client {
@@ -33,7 +43,7 @@ impl Client {
         );
 
         let mut headers = HeaderMap::new();
-        headers.insert("User-Agent", "hikit_auth_service".parse().unwrap());
+        headers.insert("User-Agent", "HiAuth".parse().unwrap());
         let http_cli = reqwest::Client::builder()
             .default_headers(headers)
             .build()
@@ -48,27 +58,46 @@ impl Client {
             .request_async(async_http_client)
             .await
             .map(|resp| resp.access_token().secret().to_string())
-            .map_err(|e| super::Error(e.to_string()))?)
+            .map_err(|e| {
+                match e {
+                    RequestTokenError::ServerResponse(e) => {
+                        super::Error(e.to_string())
+                    }
+                    RequestTokenError::Request(r) => {
+                        match r {
+                            Error::Reqwest(e) => {
+                                super::Error(e.to_string())
+                            }
+                            e => {
+                                super::Error(e.to_string())
+                            }
+                        }
+                    }
+                    e => {
+                        super::Error(e.to_string())
+                    }
+                }
+            })?)
     }
 
-    pub async fn user(&self, access_token: &str) -> super::Result<UserResp> {
+    pub async fn user(&self, access_token: &str) -> super::Result<User> {
         Ok(self
             .http_cli
             .get("https://api.github.com/user")
             .bearer_auth(&access_token)
             .send()
             .await?
-            .json::<UserResp>()
+            .json::<User>()
             .await?)
     }
-    pub async fn orgs(&self, access_token: &str) -> super::Result<Vec<OrgResp>> {
+    pub async fn orgs(&self, access_token: &str) -> super::Result<Vec<Organization>> {
         Ok(self
             .http_cli
             .get("https://api.github.com/user/orgs")
             .bearer_auth(&access_token)
             .send()
             .await?
-            .json::<Vec<OrgResp>>()
+            .json::<Vec<Organization>>()
             .await?)
     }
 }
@@ -79,14 +108,16 @@ impl super::Profile for Client {
         let at = self.login(code).await?;
         let user = self.user(&at).await?;
         let orgs = self.orgs(&at).await?;
-        Ok(super::Userinfo{
+        Ok(super::Userinfo {
             unique_id: user.id.to_string(),
-            name: user.login,
+            name: user.name,
+            account: user.login,
             email: None,
-            organization: Some(orgs.into_iter().map(|e|super::Organization{
+            organization: Some(orgs.into_iter().map(|e| super::Organization {
                 unique_id: e.id.to_string(),
-                name: e.login,
-            }).collect())
+                name: e.name,
+                account: e.login,
+            }).collect()),
         })
     }
 }

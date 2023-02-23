@@ -1,6 +1,8 @@
-use std::collections::HashMap;
-use std::fmt::{Debug, Display, Formatter};
-use std::hash::Hash;
+use std::{
+    collections::HashMap,
+    fmt::{Debug, Display, Formatter},
+    hash::Hash,
+};
 
 use async_trait::async_trait;
 
@@ -31,15 +33,17 @@ impl From<reqwest::Error> for Error {
 
 pub type Result<T> = std::result::Result<T, Error>;
 
-pub struct Userinfo{
+pub struct Userinfo {
     pub unique_id: String,
     pub name: String,
+    pub account: String,
     pub email: Option<String>,
     pub organization: Option<Vec<Organization>>,
 }
 
 pub struct Organization {
     pub unique_id: String,
+    pub account: String,
     pub name: String,
 }
 
@@ -48,15 +52,15 @@ pub enum Client {
 }
 
 pub struct Service<T>
-where
-    T: Eq + Hash,
+    where
+        T: Eq + Hash,
 {
     clients: HashMap<T, Client>,
 }
 
 impl<T> Service<T>
-where
-    T: Eq + Hash,
+    where
+        T: Eq + Hash,
 {
     pub fn new() -> Self {
         Self {
@@ -87,7 +91,6 @@ pub trait Profile {
 
 #[cfg(test)]
 mod tests {
-
     #[derive(Hash, Eq)]
     enum Type {
         Github = 0,
