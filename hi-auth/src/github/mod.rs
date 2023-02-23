@@ -30,7 +30,6 @@ pub struct User {
 pub struct Organization {
     pub id: i64,
     pub login: String,
-    pub name: String,
 }
 
 impl Client {
@@ -115,7 +114,7 @@ impl super::Profile for Client {
             email: None,
             organization: Some(orgs.into_iter().map(|e| super::Organization {
                 unique_id: e.id.to_string(),
-                name: e.name,
+                name: e.login,
                 account: e.login,
             }).collect()),
         })
