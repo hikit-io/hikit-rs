@@ -1,7 +1,16 @@
-use std::error::Error;
-
 use async_trait::async_trait;
-use oauth2::{AuthorizationCode, AuthUrl, basic::BasicClient, ClientId, ClientSecret, RequestTokenError, reqwest::async_http_client, TokenResponse, TokenUrl};
+use oauth2::{
+    AuthorizationCode,
+    AuthUrl,
+    basic::BasicClient,
+    ClientId,
+    ClientSecret,
+    RequestTokenError,
+    reqwest::async_http_client,
+    reqwest::Error,
+    TokenResponse,
+    TokenUrl,
+};
 use reqwest::header::HeaderMap;
 use serde::Deserialize;
 
@@ -14,12 +23,14 @@ pub struct Client {
 pub struct User {
     pub id: i64,
     pub login: String,
+    pub name: String,
 }
 
 #[derive(Debug, Deserialize)]
 pub struct Organization {
     pub id: i64,
     pub login: String,
+    pub name: String,
 }
 
 impl Client {
@@ -99,11 +110,13 @@ impl super::Profile for Client {
         let orgs = self.orgs(&at).await?;
         Ok(super::Userinfo {
             unique_id: user.id.to_string(),
-            name: user.login,
+            name: user.name,
+            account: user.login,
             email: None,
             organization: Some(orgs.into_iter().map(|e| super::Organization {
                 unique_id: e.id.to_string(),
-                name: e.login,
+                name: e.name,
+                account: e.login,
             }).collect()),
         })
     }
